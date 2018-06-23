@@ -1,16 +1,24 @@
 package com.anand.coding.dsalgo.stack;
 import java.util.EmptyStackException;
 
+/**
+ * ArrayStack implementation
+ *
+ * @param <T>
+ */
 public class ArrayStack<T> implements Stack {
+
+    private static final int DEFAULT_SIZE = 100;
+
     private Object [] stackArr;
-    private int size=100;
-    private int top = -1;
+    private int size;
+    private int top=-1;
 
     /**
      *
      */
     public ArrayStack(){
-        stackArr = new Object[size];
+        this(DEFAULT_SIZE);
     }
 
     /**
@@ -41,7 +49,9 @@ public class ArrayStack<T> implements Stack {
         if(isEmpty()){
             throw new EmptyStackException();
         }
-        return elementData(top--);
+        T data =  peek();
+        stackArr[top--]=null;
+        return data;
     }
 
     /**
@@ -79,6 +89,17 @@ public class ArrayStack<T> implements Stack {
      */
     public boolean isFull(){
         return(top==size-1);
+    }
+
+
+    /**
+     *
+     */
+    public void display(){
+        for(int i=0; i<=top; i++){
+            System.out.print(stackArr[i] + " ");
+        }
+        System.out.println();
     }
 
     /**

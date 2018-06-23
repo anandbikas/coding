@@ -5,6 +5,9 @@ import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
 
+/**
+ * Binary Tree
+ */
 public class BinaryTree {
 
     protected Node root;
@@ -20,36 +23,14 @@ public class BinaryTree {
     /**
      *
      */
-    public void inOrderTraversalRec(){
-        println("inOrderTraversalRec");
-        inOrderTraversalRec(root);
-        System.out.println();
-    }
-
-    /**
-     *
-     * @param root
-     */
-    private void inOrderTraversalRec(final Node root){
-        if(root == null){
-            return;
-        }
-        inOrderTraversalRec(root.getLeft());
-        System.out.print(root.getData() + "  ");
-        inOrderTraversalRec(root.getRight());
-    }
-
-    /**
-     *
-     */
     public void preOrderTraversalRec(){
-        println("preOrderTraversalRec");
+        System.out.println("preOrderTraversalRec");
         preOrderTraversalRec(root);
         System.out.println();
     }
 
     /**
-     *
+     * Print in order root, left, right
      * @param root
      */
     private void preOrderTraversalRec(final Node root){
@@ -64,14 +45,36 @@ public class BinaryTree {
     /**
      *
      */
+    public void inOrderTraversalRec(){
+        System.out.println("inOrderTraversalRec");
+        inOrderTraversalRec(root);
+        System.out.println();
+    }
+
+    /**
+     * Print in order left, root, right
+     * @param root
+     */
+    private void inOrderTraversalRec(final Node root){
+        if(root == null){
+            return;
+        }
+        inOrderTraversalRec(root.getLeft());
+        System.out.print(root.getData() + "  ");
+        inOrderTraversalRec(root.getRight());
+    }
+
+    /**
+     *
+     */
     public void postOrderTraversalRec(){
-        println("postOrderTraversalRec");
+        System.out.println("postOrderTraversalRec");
         postOrderTraversalRec(root);
         System.out.println();
     }
 
     /**
-     *
+     * Print in order left, right, root
      * @param root
      */
     private void postOrderTraversalRec(final Node root){
@@ -84,10 +87,11 @@ public class BinaryTree {
     }
 
     /**
-     *
+     * Print in order root, left, right
+     * Without recursion
      */
     public void preOrderTraversal(){
-        println("preOrderTraversal");
+        System.out.println("preOrderTraversal");
 
         Stack<Node> stack = new ArrayStack();
 
@@ -109,10 +113,11 @@ public class BinaryTree {
     }
 
     /**
-     *
+     * Print in order left, root, right
+     * Use loop with the help of a stack
      */
     public void inOrderTraversal(){
-        println("inOrderTraversal");
+        System.out.println("inOrderTraversal");
 
         Stack<Node> stack = new ArrayStack<Node>();
 
@@ -132,19 +137,21 @@ public class BinaryTree {
     }
 
     /**
-     *
+     * Print in order left, right, root
+     * Use loop with the help of
      */
     public void postOrderTraversal(){
-        println("postOrderTraversal");
+        System.out.println("postOrderTraversal");
         //TODO: incomplete
 
     }
 
     /**
-     *
+     * Print in level order
+     * Use loop with the help of a queue
      */
     public void levelOrderTraversal(){
-        println("levelOrderTraversal");
+        System.out.println("levelOrderTraversal");
 
         Queue<Node> queue = new ArrayCircularQueue();
 
@@ -166,10 +173,10 @@ public class BinaryTree {
     }
 
     /**
-     *
+     * Call printLevel method for each level
      */
     public void levelOrderTraversalBruteForce(){
-        println("levelOrderTraversalBruteForce");
+        System.out.println("levelOrderTraversalBruteForce");
 
         for(int level = 1; level <=height(); level++){
             printLevel(level);
@@ -182,10 +189,18 @@ public class BinaryTree {
      * @param level
      */
     public void printLevel(int level){
+        System.out.println("printLevel " + level);
         printLevel(root, level, 1);
         System.out.println();
     }
 
+    /**
+     * Print data in a given level
+     *
+     * @param root
+     * @param level
+     * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
+     */
     private void printLevel(Node root, int level, int currentLevel){
         if(root == null){
             return;
@@ -201,17 +216,46 @@ public class BinaryTree {
 
     /**
      *
+     * @param data
+     * @return
      */
-    public void leftSideView(){
-        println("leftSideView");
-        leftSideView(root, 1, 1);
+    public Node searchRec(int data){
+        return searchRec(root, data);
+    }
+
+    /**
+     * If root is not the one, check in right subTree only if the data is not found in left subTree.
+     *
+     * @param root
+     * @param data
+     * @return
+     */
+    private Node searchRec(Node root, int data){
+
+        if(root==null || root.getData()==data){
+            return root;
+        }
+        Node node = searchRec(root.getLeft(), data);
+        if(node != null){
+            return node;
+        }
+        return searchRec(root.getRight(), data);
     }
 
     /**
      *
+     */
+    public void leftSideView(){
+        System.out.println("leftSideView");
+        leftSideView(root, 1, 1);
+    }
+
+    /**
+     * Print all the nodes present in the left as seen from the left side
+     *
      * @param root
-     * @param currentLevel
-     * @param processingLevel
+     * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
+     * @param processingLevel decides how many levels have already been processed.
      * @return
      */
     private int leftSideView(Node root, int currentLevel, int processingLevel){
@@ -232,15 +276,16 @@ public class BinaryTree {
      *
      */
     public void rightSideView(){
-        println("rightSideView");
+        System.out.println("rightSideView");
         rightSideView(root, 1, 1);
     }
 
     /**
+     * Print all the nodes present in the right as seen from the right side
      *
      * @param root
-     * @param currentLevel
-     * @param processingLevel
+     * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
+     * @param processingLevel decides how many levels have already been processed.
      * @return
      */
     private int rightSideView(Node root, int currentLevel, int processingLevel){
@@ -259,6 +304,69 @@ public class BinaryTree {
 
     /**
      *
+     */
+    public void printLeaves() {
+        System.out.println("printLeaves");
+        printLeaves(root);
+        System.out.println();
+    }
+
+    /**
+     * Print all the leave nodes
+     *
+     * @param root
+     */
+    private void printLeaves(final Node root){
+        if(root == null){
+            return;
+        }
+        if(root.getLeft()==null && root.getRight()==null){
+            System.out.print(root.getData() + "  ");
+            return;
+        }
+        printLeaves(root.getLeft());
+        printLeaves(root.getRight());
+    }
+
+    /**
+     *
+     */
+    public void printAllPaths() {
+        System.out.println("printAllPaths");
+
+        Stack<Node> stack = new ArrayStack<Node>();
+        printAllPaths(root, stack);
+        System.out.println();
+    }
+
+    /**
+     *  Print all the paths of the tree.
+     *  with the help of a stack
+     *
+     * @param root
+     * @param stack used to push the traversed node one by one.
+     *              Pop the node once its path is processed.
+     *              Pop the node once all the paths of its right subTree is processed.
+     */
+    private void printAllPaths(final Node root, final Stack<Node> stack){
+        if(root == null){
+            return;
+        }
+        stack.push(root);
+        if(root.getLeft()==null && root.getRight()==null){
+            stack.display();
+            stack.pop();
+            return;
+        }
+        printAllPaths(root.getLeft(), stack);
+        printAllPaths(root.getRight(), stack);
+
+        //Once right subTree is processed, remove its parent
+        stack.pop();
+    }
+
+    /**
+     *
      * @return
      */
     public int height(){
@@ -266,6 +374,7 @@ public class BinaryTree {
     }
 
     /**
+     * Calculate height of the tree
      *
      * @param root
      * @return
@@ -280,11 +389,11 @@ public class BinaryTree {
      * @return
      */
     public boolean isSimilar(BinaryTree tree){
-        println("isSimilar");
         return isSimilar(this.root, tree.root);
     }
 
     /**
+     * Checks whether two trees are similar in structure
      *
      * @param root1
      * @param root2
@@ -308,11 +417,11 @@ public class BinaryTree {
      * @return
      */
     public boolean isCopy(BinaryTree tree){
-        println("isCopy");
         return isCopy(this.root, tree.root);
     }
 
     /**
+     * Checks whether two trees are similar in structure as well as data
      *
      * @param root1
      * @param root2
@@ -333,17 +442,17 @@ public class BinaryTree {
                 && isCopy(root1.getRight(), root2.getRight());
     }
 
-    /***
+    /**
+     *
      *
      * @return
      */
     public boolean isBinarySearchTree(){
-        println("isBinarySearchTree");
         return isBinarySearchTree(root);
     }
 
     /**
-     *
+     * Checks if the tree is a binary search tree
      * @param root
      * @return
      */
@@ -367,6 +476,7 @@ public class BinaryTree {
     }
 
     /**
+     * Calculate number of nodes
      *
      * @param root
      * @return
@@ -378,26 +488,36 @@ public class BinaryTree {
         return 1 + numberOfNodes(root.getLeft()) + numberOfNodes(root.getRight());
     }
 
+    /**
+     *
+     * @return
+     */
+    public void toMirrorImage(){
+        toMirrorImage(root);
+    }
+
+    /**
+     * Convert the tree to its mirror image by swapping left and right subTree.
+     *
+     * @param root
+     * @return
+     */
+    private void toMirrorImage(Node root){
+        if(root==null){
+            return;
+        }
+        Node temp =  root.getLeft();
+        root.setLeft(root.getRight());
+        root.setRight(temp);
+
+        toMirrorImage(root.getLeft());
+        toMirrorImage(root.getRight());
+    }
 
     /**
      * TODO:
      * diameter
-     * printLeaves
-     * convertMirror
-     * printPaths
-     * LCS lowest common ancestor
      */
-
-    /**
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    private int max(int x, int y){
-        return (x>y) ? x : y;
-    }
-
 
     /**
      *
@@ -410,6 +530,8 @@ public class BinaryTree {
     }
 
     /**
+     * Insert a node to the left of the provided node
+     * Shifts the left child of the provided node to further left.
      *
      * @param root
      * @param data
@@ -444,6 +566,8 @@ public class BinaryTree {
     }
 
     /**
+     * Insert a node to the right of the provided node
+     * Shifts the right child of the provided node to further right.
      *
      * @param root
      * @param data
@@ -478,6 +602,19 @@ public class BinaryTree {
     }
 
     /**
+     * Return max of the two elements
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    private int max(int x, int y){
+        return (x>y) ? x : y;
+    }
+
+
+    /**
+     * Main class to test the code.
      *
      * @param args
      */
@@ -504,28 +641,33 @@ public class BinaryTree {
 
         binaryTree.inOrderTraversal();
         binaryTree.inOrderTraversalRec();
-        binaryTree.preOrderTraversalRec();
+
         binaryTree.preOrderTraversal();
+        binaryTree.preOrderTraversalRec();
+
         binaryTree.postOrderTraversalRec();
-        println("binaryTree.numberOfNodes(): " + binaryTree.numberOfNodes());
+        binaryTree.postOrderTraversal();
 
-        println("binaryTree.isSimilar(binaryTree): " + binaryTree.isSimilar(binaryTree));
-        println("binaryTree.isSimilar(binaryTree): " + binaryTree.isCopy(binaryTree));
-
-        println("binaryTree.printLevel(3): ");
-        binaryTree.printLevel(3);
-
-        println("binaryTree.height(): " + binaryTree.height());
-
-        binaryTree.levelOrderTraversalBruteForce();
         binaryTree.levelOrderTraversal();
-        binaryTree.leftSideView();
+        binaryTree.levelOrderTraversalBruteForce();
 
+        binaryTree.printAllPaths();
+        binaryTree.printLevel(3);
+        binaryTree.printLeaves();
+        binaryTree.leftSideView();
         binaryTree.rightSideView();
 
-    }
+        binaryTree.toMirrorImage();
 
-    public static void println(String s){
-        System.out.println(s);
+        System.out.println("After Converting the tree to mirror image");
+        binaryTree.leftSideView();
+        binaryTree.rightSideView();
+
+        System.out.println("binaryTree.numberOfNodes(): " + binaryTree.numberOfNodes());
+        System.out.println("binaryTree.isSimilar(binaryTree): " + binaryTree.isSimilar(binaryTree));
+        System.out.println("binaryTree.isSimilar(binaryTree): " + binaryTree.isCopy(binaryTree));
+        System.out.println("binaryTree.height(): " + binaryTree.height());
+        System.out.println("binaryTree.searchRec(4) " + binaryTree.searchRec(4));
+        System.out.println("binaryTree.searchRec(9) " + binaryTree.searchRec(9));
     }
 }

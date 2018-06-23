@@ -1,5 +1,10 @@
 package com.anand.coding.dsalgo.queue;
 
+/**
+ * Queue Interface
+ *
+ * @param <T>
+ */
 public interface Queue<T> {
 
     public void insert(T data);

@@ -8,17 +8,20 @@ import java.util.EmptyStackException;
  * @param <T>
  */
 public class ArrayCircularQueue<T> implements Queue {
-    private Object [] queueArr;
-    private int size=100;
 
-    private int front = 0;
-    private int rear = 0;
+    private static final int DEFAULT_SIZE = 100;
+
+    private Object [] queueArr;
+    private int size;
+
+    private int front=0;
+    private int rear=0;
 
     /**
      *
      */
     public ArrayCircularQueue(){
-        queueArr = new Object[size];
+        this(DEFAULT_SIZE);
     }
 
     /**
@@ -36,7 +39,7 @@ public class ArrayCircularQueue<T> implements Queue {
      */
     public void insert(Object data){
         if(isFull()){
-            throw new StackOverflowError();
+            throw new ArrayIndexOutOfBoundsException();
         }
         queueArr[front] = data;
         front = (front+1)%size;
@@ -48,9 +51,10 @@ public class ArrayCircularQueue<T> implements Queue {
      */
     public T delete(){
         if(isEmpty()){
-            throw new EmptyStackException();
+            throw new ArrayIndexOutOfBoundsException();
         }
         T data = elementData(rear);
+        queueArr[rear]=null;
         rear = (rear+1)%size;
         return data;
     }
