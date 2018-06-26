@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.queue;
 
-import java.util.EmptyStackException;
+import com.anand.coding.dsalgo.exception.QueueEmptyException;
+import com.anand.coding.dsalgo.exception.QueueFullException;
 
 /**
  * Total elements inserted = size-1
@@ -12,7 +13,6 @@ public class ArrayCircularQueue<T> implements Queue {
     private static final int DEFAULT_SIZE = 100;
 
     private Object [] queueArr;
-    private int size;
 
     private int front=0;
     private int rear=0;
@@ -29,7 +29,6 @@ public class ArrayCircularQueue<T> implements Queue {
      * @param size
      */
     public ArrayCircularQueue(int size){
-        this.size = size;
         queueArr = new Object[size];
     }
 
@@ -39,10 +38,10 @@ public class ArrayCircularQueue<T> implements Queue {
      */
     public void insert(Object data){
         if(isFull()){
-            throw new ArrayIndexOutOfBoundsException();
+            throw new QueueFullException();
         }
         queueArr[front] = data;
-        front = (front+1)%size;
+        front = (front+1)%queueArr.length;
     }
 
     /**
@@ -51,11 +50,11 @@ public class ArrayCircularQueue<T> implements Queue {
      */
     public T delete(){
         if(isEmpty()){
-            throw new ArrayIndexOutOfBoundsException();
+            throw new QueueEmptyException();
         }
         T data = elementData(rear);
         queueArr[rear]=null;
-        rear = (rear+1)%size;
+        rear = (rear+1)%queueArr.length;
         return data;
     }
 
@@ -77,7 +76,7 @@ public class ArrayCircularQueue<T> implements Queue {
         if(rear <= front){
             return front-rear;
         } else {
-            return size-(rear-front);
+            return queueArr.length-(rear-front);
         }
     }
 
@@ -85,7 +84,7 @@ public class ArrayCircularQueue<T> implements Queue {
      *
      */
     public void display(){
-        for(int i=rear; i!=front; i = (i+1)%size){
+        for(int i=rear; i!=front; i = (i+1)%queueArr.length){
             System.out.print(queueArr[i]);
         }
     }
@@ -103,7 +102,7 @@ public class ArrayCircularQueue<T> implements Queue {
      * @return
      */
     public boolean isFull(){
-        return((front+1)%size==rear);
+        return((front+1)%queueArr.length==rear);
     }
 
     /**

@@ -380,7 +380,7 @@ public class BinaryTree {
      * @return
      */
     private int height(Node root){
-        return root==null? 0 : max(height(root.getLeft()),height(root.getRight())) + 1;
+        return root==null? 0 : Math.max(height(root.getLeft()),height(root.getRight())) + 1;
     }
 
     /**
@@ -599,17 +599,6 @@ public class BinaryTree {
         return "BinaryTree{" +
                 "root=" + root +
                 '}';
-    }
-
-    /**
-     * Return max of the two elements
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    private int max(int x, int y){
-        return (x>y) ? x : y;
     }
 
 
