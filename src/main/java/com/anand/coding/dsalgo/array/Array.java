@@ -543,7 +543,7 @@ public class Array {
 
 
     /**
-     * Main class to test Array
+     * Main function to test Array
      * @param args
      */
     public static void main(String[] args) {

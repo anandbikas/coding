@@ -603,7 +603,7 @@ public class BinaryTree {
 
 
     /**
-     * Main class to test the code.
+     * Main function to test the code.
      *
      * @param args
      */
