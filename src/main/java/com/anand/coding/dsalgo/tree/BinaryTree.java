@@ -47,7 +47,7 @@ public class BinaryTree {
      */
     public void inOrderTraversalRec(){
         System.out.println("inOrderTraversalRec");
-        inOrderTraversalRec(root);
+        inOrderTraversalRec(this.root);
         System.out.println();
     }
 
@@ -376,11 +376,23 @@ public class BinaryTree {
     /**
      * Calculate height of the tree
      *
-     * @param root
+     * @param node
      * @return
      */
-    private int height(Node root){
-        return root==null? 0 : Math.max(height(root.getLeft()),height(root.getRight())) + 1;
+    public int height(Node node){
+        return node==null? 0 : Math.max(height(node.getLeft()),height(node.getRight())) + 1;
+    }
+
+    /**
+     * heightBalanceFactor of a node is heightOfLeftSubTree - heightOfRightSubTree
+     * @param node
+     * @return
+     */
+    public int heightBalanceFactor(Node node){
+        if(node == null){
+            return 0;
+        }
+        return height(node.getLeft()) - height(node.getRight());
     }
 
     /**
@@ -645,6 +657,9 @@ public class BinaryTree {
         binaryTree.printLeaves();
         binaryTree.leftSideView();
         binaryTree.rightSideView();
+
+        System.out.println("binaryTree.heightBalanceFactor(3): " + binaryTree.heightBalanceFactor(binaryTree.searchRec(3)));
+        System.out.println("binaryTree.heightBalanceFactor(1): " + binaryTree.heightBalanceFactor(binaryTree.searchRec(1)));
 
         binaryTree.toMirrorImage();
 

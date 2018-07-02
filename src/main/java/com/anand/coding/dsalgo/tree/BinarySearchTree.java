@@ -27,7 +27,7 @@ public class BinarySearchTree extends BinaryTree {
         if(pivotNode==null){
             pivotNode = new Node(data);
             if(parent == null){
-                root = pivotNode;
+                this.root = pivotNode;
             } else if(parent.getData()>data){
                 parent.setLeft(pivotNode);
             } else {
@@ -42,7 +42,7 @@ public class BinarySearchTree extends BinaryTree {
      * @param data
      */
     public void insertRec(int data){
-        root = insertRec(root, data);
+        this.root = insertRec(this.root, data);
     }
 
     /**
@@ -60,7 +60,7 @@ public class BinarySearchTree extends BinaryTree {
 
         if(root.getData()>data) {
             root.setLeft(insertRec(root.getLeft(), data));
-        } else {
+        } else if(root.getData()<data){
             root.setRight(insertRec(root.getRight(), data));
         }
         return root;

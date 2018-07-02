@@ -9,6 +9,9 @@ public class Node {
     private Node left;
     private Node right;
 
+    // height is used in AVLTree
+    private int height;
+
     /**
      *
      */
@@ -22,6 +25,7 @@ public class Node {
      */
     public Node(int data){
         this.data = data;
+        height=1;
     }
 
     /**
@@ -70,6 +74,22 @@ public class Node {
      */
     public void setRight(Node right) {
         this.right = right;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     *
+     * @param height
+     */
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     /**
