@@ -31,6 +31,14 @@ public class ArrayStack<T> implements Stack {
 
     /**
      *
+     * @return
+     */
+    public int size(){
+        return top+1;
+    }
+
+    /**
+     *
      * @param data
      */
     public void push(Object data){

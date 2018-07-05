@@ -13,4 +13,5 @@ public interface Stack<T> {
     public boolean isEmpty();
     public boolean isFull();
     public void display();
+    public int size();
 }
