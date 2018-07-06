@@ -111,6 +111,18 @@ public class ArrayStack<T> implements Stack {
 
     /**
      *
+     * @return
+     */
+    public String getAsWord(){
+        String word = "";
+        for(int i=0; i<=top; i++){
+            word += stackArr[i];
+        }
+        return word;
+    }
+
+    /**
+     *
      * @param args
      */
     public static void main(String args[]){
