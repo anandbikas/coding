@@ -4,7 +4,6 @@ import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
-import sun.jvm.hotspot.utilities.Assert;
 
 /**
  * AVLTree
@@ -501,9 +500,9 @@ public class AVLTree extends BinarySearchTree {
          *         1    3           11
          *
          */
-        Assert.that(avlTree.isBinarySearchTree()
+        assert avlTree.isBinarySearchTree()
                 && avlTree.isHeightCorrectForAllNodes()
-                && avlTree.isAVLTree(), "AVL property failed");
+                && avlTree.isAVLTree(): "AVL property failed";
     }
 
     /**
@@ -514,25 +513,25 @@ public class AVLTree extends BinarySearchTree {
 
         for(int x=1; x<=numberOfNodes; x++) {
             avlTree.insert(x);
-            Assert.that(avlTree.numberOfNodes()==x, null);
-            Assert.that(avlTree.isBinarySearchTree()
-                                && avlTree.isHeightCorrectForAllNodes()
-                                    && avlTree.isAVLTree(), "AVL property failed for value: " + x);
+            assert avlTree.numberOfNodes()==x;
+            assert avlTree.isBinarySearchTree()
+                    && avlTree.isHeightCorrectForAllNodes()
+                        && avlTree.isAVLTree(): "AVL property failed for value: " + x;
         }
 
         for(int x=1; x<=numberOfNodes; x++) {
-            Assert.that(avlTree.search(x) != null, "search failed for: " + x);
+            assert avlTree.search(x) != null: "search failed for: " + x;
         }
 
         for(int x=1; x<=numberOfNodes; x++) {
             avlTree.delete(x);
-            Assert.that(avlTree.search(x) == null, null);
+            assert avlTree.search(x) == null;
 
-            Assert.that(avlTree.numberOfNodes()==numberOfNodes-x, null);
+            assert avlTree.numberOfNodes()==numberOfNodes-x;
 
-            Assert.that(avlTree.isBinarySearchTree()
+            assert avlTree.isBinarySearchTree()
                     && avlTree.isHeightCorrectForAllNodes()
-                    && avlTree.isAVLTree(), "AVL property failed for value: " + x);
+                    && avlTree.isAVLTree() :  "AVL property failed for value: " + x;
         }
     }
 }
