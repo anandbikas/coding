@@ -6,7 +6,7 @@ import java.util.Arrays;
  * TrieNode for dictionary
  */
 public class TrieNode {
-    public final static int ALPHABET_SIZE = 26;
+    private final static int ALPHABET_SIZE = 26;
     private final static int A = 'A';
 
     private TrieNode [] children = new TrieNode[ALPHABET_SIZE];

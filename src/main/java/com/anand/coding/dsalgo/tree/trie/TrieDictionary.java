@@ -77,7 +77,7 @@ public class TrieDictionary {
      */
     public void display() {
         System.out.println(String.format("%10s%15s", "Words", "Meanings"));
-        System.out.println(String.format("--------------------------------"));
+        System.out.println(             "--------------------------------");
 
         ArrayStack<Character> stack = new ArrayStack<Character>();
         display(root, stack);

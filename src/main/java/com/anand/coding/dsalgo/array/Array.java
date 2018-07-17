@@ -403,6 +403,23 @@ public class Array {
     }
 
     /**
+     * Sort in bubble fashion.
+     *
+     */
+    public void bubbleSort() {
+
+        for (int i=0; i < numberOfElements; i++) {
+            for(int j=0; j < numberOfElements-1-i; j++){
+                if(A[j]>A[j+1]){
+                    int temp = A[j];
+                    A[j]=A[j+1];
+                    A[j+1]=temp;
+                }
+            }
+        }
+    }
+
+    /**
      * Array has two parts each sorted.
      * Merge the two sub arrays into one in a sorted fashion.
      *
@@ -498,7 +515,7 @@ public class Array {
      */
     public List<int []> findAllPairsWithMatchingSum(final int startIndex, final int endIndex, final int sum){
 
-        List<int []> list = new ArrayList();
+        List<int []> list = new ArrayList<>();
 
         for(int i=startIndex; i<=endIndex; i++){
             for(int j=i+1; j<=endIndex; j++){
@@ -530,7 +547,7 @@ public class Array {
     public List<int []> findAllPairsWithMatchingSumNLogN(final int startIndex, final int endIndex, final int sum){
 
         Arrays.sort(A);
-        List<int []> list = new ArrayList();
+        List<int []> list = new ArrayList<>();
 
         for(int i=startIndex; i<=endIndex-1; i++){
             int j = Arrays.binarySearch(A, i+1, endIndex, sum-A[i]);
@@ -557,7 +574,7 @@ public class Array {
 
         int B[] = new int[]{7, 3, 2, 5, 1, 6, 4};
         Array array = new Array(B);
-        array.selectionSort();
+        array.bubbleSort();
         System.out.println(array);
         System.out.println();
 

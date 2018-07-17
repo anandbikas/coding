@@ -8,11 +8,11 @@ import com.anand.coding.dsalgo.exception.QueueFullException;
  * for convenience of curcular queue empty/full condition
  * @param <T>
  */
-public class ArrayCircularQueue<T> implements Queue {
+public class ArrayCircularQueue<T> implements Queue<T> {
 
     private static final int DEFAULT_SIZE = 100;
 
-    private Object [] queueArr;
+    private T [] queueArr;
 
     private int front=0;
     private int rear=0;
@@ -28,15 +28,16 @@ public class ArrayCircularQueue<T> implements Queue {
      *
      * @param size
      */
+    @SuppressWarnings("unchecked")
     public ArrayCircularQueue(int size){
-        queueArr = new Object[size];
+        queueArr = (T[])new Object[size];
     }
 
     /**
      *
      * @param data
      */
-    public void insert(Object data){
+    public void insert(T data){
         if(isFull()){
             throw new QueueFullException();
         }
@@ -52,20 +53,10 @@ public class ArrayCircularQueue<T> implements Queue {
         if(isEmpty()){
             throw new QueueEmptyException();
         }
-        T data = elementData(rear);
+        T data = queueArr[rear];
         queueArr[rear]=null;
         rear = (rear+1)%queueArr.length;
         return data;
-    }
-
-    /**
-     *
-     * @param index
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private T elementData(int index) {
-        return (T) queueArr[index];
     }
 
     /**
@@ -85,7 +76,7 @@ public class ArrayCircularQueue<T> implements Queue {
      */
     public void display(){
         for(int i=rear; i!=front; i = (i+1)%queueArr.length){
-            System.out.print(queueArr[i]);
+            System.out.print(queueArr[i] + ", ");
         }
     }
 
@@ -110,7 +101,7 @@ public class ArrayCircularQueue<T> implements Queue {
      * @param args
      */
     public static void main(String args[]){
-        Queue queue = new ArrayCircularQueue(5);
+        Queue<Integer> queue = new ArrayCircularQueue<>(5);
 
         queue.insert(1);
         queue.insert(2);

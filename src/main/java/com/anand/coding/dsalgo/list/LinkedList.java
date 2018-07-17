@@ -1,22 +1,22 @@
 package com.anand.coding.dsalgo.list;
 
-import java.util.Objects;
 
 /**
- * Linked List implementation
+ * Generic Linked List implementation
+ * @param <T>
  */
-public class LinkedList<T> {
+public class LinkedList<T extends Comparable<T>> {
 
-    private Node start;
+    private Node<T> start;
 
     /**
      *
      * @param data
      * @return
      */
-    public Node insertStart(Object data){
+    public Node insertStart(T data){
 
-        final Node newNode = new Node(data);
+        final Node<T> newNode = new Node<>(data);
         newNode.setNext(start);
         start = newNode;
 
@@ -28,15 +28,15 @@ public class LinkedList<T> {
      * @param data
      * @return
      */
-    public Node insertEnd(Object data){
+    public Node insertEnd(T data){
 
-        final Node newNode = new Node(data);
+        final Node<T> newNode = new Node<>(data);
         if(start==null){
             start=newNode;
             return newNode;
         }
 
-        Node node;
+        Node<T> node;
         for(node=start; node.getNext()!=null; node=node.getNext());
         node.setNext(newNode);
 
@@ -49,9 +49,9 @@ public class LinkedList<T> {
      * @param data
      * @return
      */
-    public Node insertAtIndex(int index, Object data){
+    public Node insertAtIndex(int index, T data){
 
-        final Node newNode = new Node(data);
+        final Node<T> newNode = new Node<>(data);
         if(index==1){
             newNode.setNext(start);
             start=newNode;
@@ -59,7 +59,7 @@ public class LinkedList<T> {
         }
 
         int i;
-        Node node;
+        Node<T> node;
         for(node=start, i=2; node!=null; node=node.getNext(), i++){
             if(index==i){
                 newNode.setNext(node.getNext());
@@ -81,7 +81,7 @@ public class LinkedList<T> {
             return null;
         }
 
-        Node deletedNode = start;
+        Node<T> deletedNode = start;
         start=deletedNode.getNext();
         return deletedNode;
     }
@@ -90,22 +90,22 @@ public class LinkedList<T> {
      *
      * @return
      */
-    public Node deleteEnd(){
+    public Node<T> deleteEnd(){
 
         if(start==null){
             return null;
         }
 
         if(start.getNext()==null){
-            Node deletedNode = start;
+            Node<T> deletedNode = start;
             start=deletedNode.getNext();
             return deletedNode;
         }
 
-        Node node;
+        Node<T> node;
         for(node=start; node.getNext().getNext()!=null; node=node.getNext());
 
-        Node deletedNode=node.getNext();
+        Node<T> deletedNode = node.getNext();
         node.setNext(null);
         return deletedNode;
     }
@@ -115,21 +115,21 @@ public class LinkedList<T> {
      * @param data
      * @return
      */
-    public Node delete(Object data){
+    public Node<T> delete(T data){
 
         if(start==null){
             return null;
         }
 
         if(start.getData()==data){
-            Node deletedNode = start;
+            Node<T> deletedNode = start;
             start=deletedNode.getNext();
             return deletedNode;
         }
 
-        for(Node node=start; node.getNext()!=null; node=node.getNext()){
+        for(Node<T> node=start; node.getNext()!=null; node=node.getNext()){
             if(node.getNext().getData()==data){
-                Node deletedNode=node.getNext();
+                Node<T> deletedNode=node.getNext();
                 node.setNext(deletedNode.getNext());
                 return deletedNode;
             }
@@ -143,23 +143,23 @@ public class LinkedList<T> {
      * @param index
      * @return
      */
-    public Node deleteAtIndex(final int index){
+    public Node<T> deleteAtIndex(final int index){
 
         if(start==null){
             return null;
         }
 
         if(index==1){
-            Node deletedNode = start;
+            Node<T> deletedNode = start;
             start=deletedNode.getNext();
             return deletedNode;
         }
 
         int i;
-        Node node;
+        Node<T> node;
         for(node=start, i=2; node.getNext()!=null; node=node.getNext(), i++){
             if(index==i){
-                Node deletedNode=node.getNext();
+                Node<T> deletedNode=node.getNext();
                 node.setNext(deletedNode.getNext());
                 return deletedNode;
             }
@@ -173,10 +173,10 @@ public class LinkedList<T> {
      * @param data
      * @return
      */
-    public Node search(Object data){
+    public Node<T> search(T data){
 
-        Node node;
-        for(node=start; node!=null && node.getData()!=data; node=node.getNext());
+        Node<T> node;
+        for(node=start; node!=null && !node.getData().equals(data); node=node.getNext());
 
         return node;
     }
@@ -194,6 +194,207 @@ public class LinkedList<T> {
 
     /**
      *
+     * @return
+     */
+    public int length(){
+        int count=0;
+        for(Node node=start; node!=null; node=node.getNext()){
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Node<T> maxValueNode(){
+
+        if(start==null){
+            return null;
+        }
+
+        Node<T> maxValueNode=start;
+        for(Node<T> node=start.getNext(); node!=null; node=node.getNext()) {
+            if (maxValueNode.compareTo(node) < 0) {
+                maxValueNode = node;
+            }
+        }
+        return maxValueNode;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Node<T> minValueNode(){
+
+        if(start==null){
+            return null;
+        }
+        Node<T> minValueNode=start;
+        for(Node<T> node=start.getNext(); node!=null; node=node.getNext()){
+            if(minValueNode.compareTo(node)>0){
+                minValueNode = node;
+
+            }
+        }
+        return minValueNode;
+    }
+
+    /**
+     * Swap k and k+1 th nodes if present
+     * @param k
+     */
+    public void swapAdjacentNodes(final int k){
+
+        if(start==null || start.getNext()==null){
+            return;
+        }
+
+        Node<T> nodeSave=null;
+        Node<T> node=start;
+        for(int i=1; node.getNext()!=null; i++, nodeSave=node, node=node.getNext()){
+            if(k==i){
+                Node<T> temp = node.getNext();
+                node.setNext(temp.getNext());
+                temp.setNext(node);
+                if(nodeSave==null){
+                    start = temp;
+                } else {
+                    nodeSave.setNext(temp);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sort in bubble fashion.
+     *
+     */
+    public void bubbleSort() {
+
+        final int length = length();
+        for (int i=0; i < length; i++) {
+            Node<T> nodeSave = null;
+            Node<T> node = start;
+            for(int j=0; j < length-1-i; j++){
+                if(node.compareTo(node.getNext())>0){
+
+                    Node<T> temp = node.getNext();
+                    node.setNext(temp.getNext());
+                    temp.setNext(node);
+                    if(nodeSave==null){
+                        start = temp;
+                    } else {
+                        nodeSave.setNext(temp);
+                    }
+                    nodeSave=temp;
+                } else {
+                    nodeSave=node;
+                    node=node.getNext();
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public void reverse(){
+
+        Node<T> node = start;
+        start=null;
+
+        while(node!=null ){
+            Node<T> temp = node.getNext();
+            node.setNext(start);
+            start=node;
+            node=temp;
+        }
+    }
+
+    /**
+     * Floyd Algorithm
+     *
+     * @return
+     */
+    public boolean hasLoop(){
+
+        Node slowPointer;
+        Node fastPointer;
+
+        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.getNext()!=null; ){
+            slowPointer=slowPointer.getNext();
+            fastPointer=fastPointer.getNext().getNext();
+
+            if(slowPointer==fastPointer){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Node<T> getStartNodeOfLoop(){
+
+        Node<T> slowPointer;
+        Node<T> fastPointer;
+
+        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.getNext()!=null; ){
+            slowPointer=slowPointer.getNext();
+            fastPointer=fastPointer.getNext().getNext();
+
+            if(slowPointer==fastPointer){
+                for(slowPointer=start; slowPointer!=fastPointer;
+                        slowPointer=slowPointer.getNext(),fastPointer=fastPointer.getNext());
+                return slowPointer;
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getLoopLength(){
+
+        Node<T> slowPointer;
+        Node<T> fastPointer;
+
+        int loopLength=0;
+        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.getNext()!=null; loopLength++){
+            slowPointer=slowPointer.getNext();
+            fastPointer=fastPointer.getNext().getNext();
+
+            if(slowPointer==fastPointer){
+               return loopLength;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     *
+     */
+    public void fixLoop(){
+
+        Node<T> startOfLoop = getStartNodeOfLoop();
+
+        if(startOfLoop==null){
+            return;
+        }
+        Node<T> node;
+        for(node=startOfLoop; node.getNext()!=startOfLoop; node=node.getNext());
+        node.setNext(null);
+    }
+
+    /**
+     *
      */
     public void resetList(){
         start=null;
@@ -206,7 +407,7 @@ public class LinkedList<T> {
      */
     public static void main(String [] args){
 
-        final LinkedList<Integer> list = new LinkedList();
+        final LinkedList<Integer> list = new LinkedList<>();
 
         for(int i=6; i<=10; i++){
             list.insertEnd(i);
@@ -214,14 +415,37 @@ public class LinkedList<T> {
         for(int i=5; i>0; i--){
             list.insertStart(i);
         }
+        System.out.println("length: " + list.minValueNode());
+
+        System.out.println("list.minValueNode(): " + list.minValueNode());
+        System.out.println("list.maxValueNode(): " + list.maxValueNode());
+
         list.insertAtIndex(6, 0);
         list.deleteAtIndex(11);
         System.out.println(list.search(0));
+        list.bubbleSort();
         list.display();
+
+        list.reverse();
+        list.display();
+
+        list.bubbleSort();
+
+        list.swapAdjacentNodes(1);
+        list.display();
+
+        list.search(9).setNext(list.search(3));
+        System.out.println("list.hasLoop(): " + list.hasLoop());
+        System.out.println("list.getStartNodeOfLoop(): " + list.getStartNodeOfLoop());
+        System.out.println("list.getLoopLength(): " + list.getLoopLength());
+
+        list.fixLoop();
 
         list.deleteEnd();
         list.deleteStart();
         list.delete(5);
         list.display();
+
+
     }
 }

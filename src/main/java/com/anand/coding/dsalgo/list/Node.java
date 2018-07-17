@@ -2,18 +2,19 @@ package com.anand.coding.dsalgo.list;
 
 
 /**
- * Node class
+ * Generic Node Class
+ * @param <T>
  */
-public class Node<T> {
+public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
 
-    private Object data;
-    private Node next;
+    private T data;
+    private Node<T> next;
 
     /**
      *
      * @param data
      */
-    public Node(Object data) {
+    public Node(T data) {
         this.data = data;
     }
 
@@ -22,14 +23,14 @@ public class Node<T> {
      * @return
      */
     public T getData() {
-        return (T)data;
+        return data;
     }
 
     /**
      *
      * @param data
      */
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 
@@ -37,7 +38,7 @@ public class Node<T> {
      *
      * @return
      */
-    public Node getNext() {
+    public Node<T> getNext() {
         return next;
     }
 
@@ -45,14 +46,33 @@ public class Node<T> {
      *
      * @param next
      */
-    public void setNext(Node next) {
+    public void setNext(Node<T> next) {
         this.next = next;
     }
 
+    /**
+     *
+     * @param that
+     * @return
+     */
+    @Override
+    public int compareTo(Node<T> that) {
+        return this.data.compareTo(that.data);
+    }
+
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
-        return data + " -> " + next;
+        return data.toString();
     }
+
+//    @Override
+//    public String toString() {
+//        return data + " -> " + next;
+//    }
 //    @Override
 //    public String toString() {
 //        return "Node{" +

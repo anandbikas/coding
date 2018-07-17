@@ -7,11 +7,11 @@ import com.anand.coding.dsalgo.exception.StackFullException;
  *
  * @param <T>
  */
-public class ArrayStack<T> implements Stack {
+public class ArrayStack<T> implements Stack<T> {
 
     private static final int DEFAULT_SIZE = 100;
 
-    public Object [] stackArr;
+    public T [] stackArr;
     private int top=-1;
 
     /**
@@ -25,8 +25,9 @@ public class ArrayStack<T> implements Stack {
      *
      * @param size
      */
+    @SuppressWarnings("unchecked")
     public ArrayStack(int size){
-        stackArr = new Object[size];
+        stackArr = (T[])new Object[size];
     }
 
     /**
@@ -41,7 +42,7 @@ public class ArrayStack<T> implements Stack {
      *
      * @param data
      */
-    public void push(Object data){
+    public void push(T data){
         if(isFull()){
             throw new StackFullException();
         }
@@ -56,7 +57,7 @@ public class ArrayStack<T> implements Stack {
         if(isEmpty()){
             throw new StackEmptyException();
         }
-        T data =  peek();
+        T data =  stackArr[top];
         stackArr[top--]=null;
         return data;
     }
@@ -69,17 +70,7 @@ public class ArrayStack<T> implements Stack {
         if(isEmpty()){
             throw new StackEmptyException();
         }
-        return elementData(top);
-    }
-
-    /**
-     *
-     * @param index
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private T elementData(int index) {
-        return (T) stackArr[index];
+        return stackArr[top];
     }
 
     /**
@@ -98,13 +89,12 @@ public class ArrayStack<T> implements Stack {
         return(top==stackArr.length-1);
     }
 
-
     /**
      *
      */
     public void display(){
         for(int i=0; i<=top; i++){
-            System.out.print(stackArr[i] + " ");
+            System.out.print(stackArr[i] + ", ");
         }
         System.out.println();
     }
@@ -115,6 +105,7 @@ public class ArrayStack<T> implements Stack {
      */
     public String getAsWord(){
         String word = "";
+
         for(int i=0; i<=top; i++){
             word += stackArr[i];
         }
@@ -126,17 +117,19 @@ public class ArrayStack<T> implements Stack {
      * @param args
      */
     public static void main(String args[]){
-        Stack stack = new ArrayStack(5);
+        Stack<Integer> stack = new ArrayStack<>(5);
 
         stack.push(1);
         stack.push(2);
         stack.push(3);
         stack.push(4);
 
+        stack.display();
+        System.out.println(((ArrayStack<Integer>) stack).getAsWord());
+
         System.out.println(stack.pop());
         System.out.println(stack.pop());
         System.out.println(stack.pop());
         System.out.println(stack.pop());
     }
-
 }
