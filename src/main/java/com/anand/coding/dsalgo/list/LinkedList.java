@@ -72,6 +72,29 @@ public class LinkedList<T extends Comparable<T>> {
     }
 
     /**
+     * insert in sorted fashion
+     *
+     * @param data
+     * @return
+     */
+    public Node insertSorted(T data){
+
+        final Node<T> newNode = new Node<>(data);
+        if(start==null || start.getData().compareTo(data)>0){
+            start=newNode;
+            newNode.setNext(start);
+            return newNode;
+        }
+
+        Node<T> node;
+        for(node=start; node.getNext()!=null && node.getNext().getData().compareTo(data)<0; node=node.getNext());
+        newNode.setNext(node.getNext());
+        node.setNext(newNode);
+
+        return newNode;
+    }
+
+    /**
      *
      * @return
      */
@@ -177,6 +200,37 @@ public class LinkedList<T extends Comparable<T>> {
 
         Node<T> node;
         for(node=start; node!=null && !node.getData().equals(data); node=node.getNext());
+
+        return node;
+    }
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public int findIndex(T data){
+
+        Node<T> node;
+        int i=1;
+        for(node=start; node!=null && !node.getData().equals(data); node=node.getNext(), i++);
+
+        if(node==null){
+            return -1;
+        }
+        return i;
+    }
+
+    /**
+     *
+     * @param index
+     * @return
+     */
+    public Node<T> getElementAtIndex(final int index){
+
+        Node<T> node;
+        int i=1;
+        for(node=start; node!=null && i<index; node=node.getNext(), i++);
 
         return node;
     }
@@ -315,6 +369,32 @@ public class LinkedList<T extends Comparable<T>> {
     }
 
     /**
+     *
+     */
+    public void reverseRec() {
+        Node<T> lastNode = reverseRec(start);
+
+        if(lastNode!=null){
+            lastNode.setNext(null);
+        }
+    }
+
+    /**
+     *
+     * @param node
+     */
+    public Node<T> reverseRec(Node<T> node){
+
+        if(node == null || node.getNext()==null){
+            start = node;
+            return node;
+        }
+        reverseRec(node.getNext()).setNext(node);
+
+        return node;
+    }
+
+    /**
      * Floyd Algorithm
      *
      * @return
@@ -372,7 +452,7 @@ public class LinkedList<T extends Comparable<T>> {
             fastPointer=fastPointer.getNext().getNext();
 
             if(slowPointer==fastPointer){
-               return loopLength;
+               return loopLength+1;
             }
         }
         return 0;
@@ -391,6 +471,25 @@ public class LinkedList<T extends Comparable<T>> {
         Node<T> node;
         for(node=startOfLoop; node.getNext()!=startOfLoop; node=node.getNext());
         node.setNext(null);
+    }
+
+    /**
+     *
+     * @param k
+     */
+    public Node<T> kthNodeFromEnd(final int k){
+
+        Node<T> node = start;
+        for(int i=1; node!=null && i<k; node=node.getNext(), i++);
+
+        if(node!=null){
+            Node<T> kthNodeFromEnd = start;
+            for(; node.getNext()!=null; node=node.getNext(), kthNodeFromEnd=kthNodeFromEnd.getNext());
+
+            return kthNodeFromEnd;
+        }
+
+        return null;
     }
 
     /**

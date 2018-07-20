@@ -129,6 +129,6 @@ public class TrieDictionary {
         trieDictionary.display();
 
         System.out.println("trieDictionary.search(elephant): " + trieDictionary.search("elephant"));
-        System.out.println("trieDictionary.search(elephant): " + trieDictionary.search("boot"));
+        System.out.println("trieDictionary.search(boot): " + trieDictionary.search("boot"));
     }
 }
