@@ -14,7 +14,7 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node insertStart(T data){
+    public Node<T> insertStart(T data){
 
         final Node<T> newNode = new Node<>(data);
         newNode.setNext(start);
@@ -28,7 +28,7 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node insertEnd(T data){
+    public Node<T> insertEnd(T data){
 
         final Node<T> newNode = new Node<>(data);
         if(start==null){
@@ -49,7 +49,7 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node insertAtIndex(int index, T data){
+    public Node<T> insertAtIndex(int index, T data){
 
         final Node<T> newNode = new Node<>(data);
         if(index==1){
@@ -77,7 +77,7 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node insertSorted(T data){
+    public Node<T> insertSorted(T data){
 
         final Node<T> newNode = new Node<>(data);
         if(start==null || start.getData().compareTo(data)>0){
@@ -98,7 +98,7 @@ public class LinkedList<T extends Comparable<T>> {
      *
      * @return
      */
-    public Node deleteStart(){
+    public Node<T> deleteStart(){
 
         if(start==null){
             return null;
@@ -106,6 +106,8 @@ public class LinkedList<T extends Comparable<T>> {
 
         Node<T> deletedNode = start;
         start=deletedNode.getNext();
+
+        deletedNode.setNext(null);
         return deletedNode;
     }
 
@@ -115,13 +117,9 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public Node<T> deleteEnd(){
 
-        if(start==null){
-            return null;
-        }
-
-        if(start.getNext()==null){
+        if(start==null || start.getNext()==null){
             Node<T> deletedNode = start;
-            start=deletedNode.getNext();
+            start = null;
             return deletedNode;
         }
 
@@ -147,6 +145,8 @@ public class LinkedList<T extends Comparable<T>> {
         if(start.getData()==data){
             Node<T> deletedNode = start;
             start=deletedNode.getNext();
+
+            deletedNode.setNext(null);
             return deletedNode;
         }
 
@@ -154,6 +154,8 @@ public class LinkedList<T extends Comparable<T>> {
             if(node.getNext().getData()==data){
                 Node<T> deletedNode=node.getNext();
                 node.setNext(deletedNode.getNext());
+
+                deletedNode.setNext(null);
                 return deletedNode;
             }
         }
@@ -175,6 +177,8 @@ public class LinkedList<T extends Comparable<T>> {
         if(index==1){
             Node<T> deletedNode = start;
             start=deletedNode.getNext();
+
+            deletedNode.setNext(null);
             return deletedNode;
         }
 
@@ -184,6 +188,8 @@ public class LinkedList<T extends Comparable<T>> {
             if(index==i){
                 Node<T> deletedNode=node.getNext();
                 node.setNext(deletedNode.getNext());
+
+                deletedNode.setNext(null);
                 return deletedNode;
             }
         }
@@ -499,6 +505,14 @@ public class LinkedList<T extends Comparable<T>> {
         start=null;
     }
 
+    /* TODO:
+        *
+        * reversePair
+        * reverseK
+        * oddEven
+        * isPalindrome
+        * intersectingNode
+     */
 
     /**
      *
@@ -514,7 +528,7 @@ public class LinkedList<T extends Comparable<T>> {
         for(int i=5; i>0; i--){
             list.insertStart(i);
         }
-        System.out.println("length: " + list.minValueNode());
+        System.out.println("length: " + list.length());
 
         System.out.println("list.minValueNode(): " + list.minValueNode());
         System.out.println("list.maxValueNode(): " + list.maxValueNode());
@@ -522,6 +536,8 @@ public class LinkedList<T extends Comparable<T>> {
         list.insertAtIndex(6, 0);
         list.deleteAtIndex(11);
         System.out.println(list.search(0));
+
+        list.display();
         list.bubbleSort();
         list.display();
 
