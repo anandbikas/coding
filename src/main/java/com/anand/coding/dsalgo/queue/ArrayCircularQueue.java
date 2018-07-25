@@ -41,8 +41,8 @@ public class ArrayCircularQueue<T> implements Queue<T> {
         if(isFull()){
             throw new QueueFullException();
         }
-        queueArr[front] = data;
-        front = (front+1)%queueArr.length;
+        queueArr[rear] = data;
+        rear = (rear+1)%queueArr.length;
     }
 
     /**
@@ -53,9 +53,9 @@ public class ArrayCircularQueue<T> implements Queue<T> {
         if(isEmpty()){
             throw new QueueEmptyException();
         }
-        T data = queueArr[rear];
-        queueArr[rear]=null;
-        rear = (rear+1)%queueArr.length;
+        T data = queueArr[front];
+        queueArr[front]=null;
+        front = (front+1)%queueArr.length;
         return data;
     }
 
@@ -64,10 +64,10 @@ public class ArrayCircularQueue<T> implements Queue<T> {
      * @return
      */
     public int length(){
-        if(rear <= front){
-            return front-rear;
+        if(front <= rear){
+            return rear-front;
         } else {
-            return queueArr.length-(rear-front);
+            return queueArr.length-(front-rear);
         }
     }
 
@@ -75,7 +75,7 @@ public class ArrayCircularQueue<T> implements Queue<T> {
      *
      */
     public void display(){
-        for(int i=rear; i!=front; i = (i+1)%queueArr.length){
+        for(int i=front; i!=rear; i = (i+1)%queueArr.length){
             System.out.print(queueArr[i] + ", ");
         }
     }
@@ -93,7 +93,7 @@ public class ArrayCircularQueue<T> implements Queue<T> {
      * @return
      */
     public boolean isFull(){
-        return((front+1)%queueArr.length==rear);
+        return((rear+1)%queueArr.length==front);
     }
 
     /**

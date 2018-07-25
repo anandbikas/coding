@@ -20,7 +20,7 @@ import com.anand.coding.dsalgo.exception.HeapFullException;
  *
  * @param <T>
  */
-public class BinaryMinHeap<T extends Comparable>{
+public class BinaryMinHeap<T extends Comparable<T>>{
 
     private static final int DEFAULT_SIZE = 100;
 
@@ -188,6 +188,31 @@ public class BinaryMinHeap<T extends Comparable>{
         for(int i=0; i<size; i++){
             System.out.print(heapArr[i] + ", ");
         }
+        System.out.println();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getSize(){
+        return size;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isFull(){
+        return size==heapArr.length;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isEmpty(){
+        return size==0;
     }
 
 
