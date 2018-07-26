@@ -1,11 +1,12 @@
 package com.anand.coding.dsalgo.list;
 
+import java.util.Iterator;
 
 /**
  * Generic Linked List implementation
  * @param <T>
  */
-public class LinkedList<T extends Comparable<T>> {
+public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     private Node<T> start;
 
@@ -513,6 +514,37 @@ public class LinkedList<T extends Comparable<T>> {
         * isPalindrome
         * intersectingNode
      */
+
+    /**
+     *
+     * @return
+     */
+    public Iterator<T> iterator() {
+        return new LinkedListIterator();
+    }
+
+    /**
+     *
+     */
+    @SuppressWarnings("unchecked")
+    class LinkedListIterator implements Iterator<T> {
+
+        Node node = start;
+        public boolean hasNext() {
+            return node!=null;
+        }
+
+        public T next() {
+            T data = (T) node.getData();
+            node = node.getNext();
+            return data;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("not supported");
+        }
+    }
+
 
     /**
      *
