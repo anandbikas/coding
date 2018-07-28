@@ -183,6 +183,42 @@ public class Graph<T> {
         System.out.println();
     }
 
+    /**
+     *
+     * @param nodeIndex
+     */
+    public void dfsDisplayRec(int nodeIndex){
+        System.out.println("\nDFS Display Recursive from index: " + nodeIndex);
+        if(nodeIndex>=size){
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        boolean []visited = new boolean[size];
+        dfsDisplayRec(nodeIndex, visited);
+        System.out.println();
+    }
+
+    /**
+     *
+     * @param nodeIndex
+     * @param visited
+     */
+    private void dfsDisplayRec(int nodeIndex, boolean []visited){
+
+        if(visited[nodeIndex]) {
+            return;
+        }
+
+        System.out.print(vertices[nodeIndex] + "  ");
+        visited[nodeIndex] = true;
+
+        for(int i: adjListArray[nodeIndex]){
+            if(!visited[i]){
+                dfsDisplayRec(i, visited);
+            }
+        }
+    }
+
 
     /**
      *
@@ -207,6 +243,7 @@ public class Graph<T> {
         undirectedGraph.display();
         undirectedGraph.bfsDisplay(5);
         undirectedGraph.dfsDisplay(5);
+        undirectedGraph.dfsDisplayRec(5);
 
         undirectedGraph.removeEdge(4,5);
         undirectedGraph.bfsDisplay(5);

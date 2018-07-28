@@ -105,7 +105,7 @@ public class Graph<T> {
      * Display node along with all of its adjacent nodes.
      */
     public void display(){
-        System.out.println("Adjacency Matrix Graph");
+        System.out.println("\nAdjacency Matrix Graph");
 
         for(int i=0; i<size; i++){
             System.out.print(vertices[i] + " -> ");
@@ -124,7 +124,7 @@ public class Graph<T> {
      * @param nodeIndex
      */
     public void bfsDisplay(int nodeIndex) {
-        System.out.println("BFS Display from index: " + nodeIndex);
+        System.out.println("\nBFS Display from index: " + nodeIndex);
         if(nodeIndex>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -156,7 +156,7 @@ public class Graph<T> {
      * @param nodeIndex
      */
     public void dfsDisplay(int nodeIndex) {
-        System.out.println("DFS Display from index: " + nodeIndex);
+        System.out.println("\nDFS Display from index: " + nodeIndex);
         if(nodeIndex>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -185,6 +185,74 @@ public class Graph<T> {
         System.out.println();
     }
 
+    /**
+     *
+     * @param nodeIndex
+     */
+    public void dfsDisplayRec(int nodeIndex){
+        System.out.println("\nDFS Display Recursive from index: " + nodeIndex);
+        if(nodeIndex>=size){
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        boolean []visited = new boolean[size];
+        dfsDisplayRec(nodeIndex, visited);
+        System.out.println();
+    }
+
+    /**
+     *
+     * @param nodeIndex
+     * @param visited
+     */
+    private void dfsDisplayRec(int nodeIndex, boolean []visited){
+
+        if(visited[nodeIndex]) {
+            return;
+        }
+
+        System.out.print(vertices[nodeIndex] + "  ");
+        visited[nodeIndex] = true;
+
+        for(int i=0; i<size; i++){
+            if(!visited[i] && adjArr[nodeIndex][i]>0){
+                dfsDisplayRec(i, visited);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param u
+     */
+    public int inDegree(int u) {
+        int inDegree=0;
+
+        for(int i=0;i<size;i++) {
+            if (adjArr[i][u] > 0) {
+                inDegree++;
+            }
+        }
+
+        return inDegree;
+    }
+
+    /**
+     *
+     * @param u
+     */
+    public int outDegree(int u) {
+        int outDegree=0;
+
+        for(int i=0;i<size;i++) {
+            if (adjArr[u][i] > 0) {
+                outDegree++;
+            }
+        }
+
+        return outDegree;
+    }
+
 
     /**
      *
@@ -209,6 +277,7 @@ public class Graph<T> {
         undirectedGraph.display();
         undirectedGraph.bfsDisplay(5);
         undirectedGraph.dfsDisplay(5);
+        undirectedGraph.dfsDisplayRec(5);
 
         undirectedGraph.removeEdge(4,5);
         undirectedGraph.bfsDisplay(5);
@@ -230,6 +299,9 @@ public class Graph<T> {
 
         directedGraph.display();
         directedGraph.bfsDisplay(0);
+
+        System.out.println("directedGraph.inDegree(5): " + directedGraph.inDegree(5));
+        System.out.println("directedGraph.outDegree(5): " + directedGraph.outDegree(5));
 
         directedGraph.removeEdge(0,5);
         directedGraph.bfsDisplay(0);
