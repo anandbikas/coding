@@ -153,7 +153,7 @@ public class BinaryTree {
     public void levelOrderTraversal(){
         System.out.println("levelOrderTraversal");
 
-        Queue<Node> queue = new ArrayCircularQueue();
+        Queue<Node> queue = new ArrayCircularQueue<>();
 
         if(root!=null){
             queue.insert(root);
