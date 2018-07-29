@@ -141,7 +141,7 @@ public class Graph<T> {
             System.out.print(vertices[nodeIndex] + "  ");
 
             for(int i=0; i<size; i++){
-                if(!visited[i] && adjArr[nodeIndex][i]>0){
+                if(adjArr[nodeIndex][i]>0 && !visited[i]){
                     queue.insert(i);
                     visited[i] = true;
                 }
@@ -177,7 +177,7 @@ public class Graph<T> {
             visited[nodeIndex] = true;
 
             for(int i=0; i<size; i++){
-                if(!visited[i] && adjArr[nodeIndex][i]>0){
+                if(adjArr[nodeIndex][i]>0 && !visited[i]){
                     stack.push(i);
                 }
             }
@@ -215,10 +215,60 @@ public class Graph<T> {
         visited[nodeIndex] = true;
 
         for(int i=0; i<size; i++){
-            if(!visited[i] && adjArr[nodeIndex][i]>0){
+            if(adjArr[nodeIndex][i]>0 && !visited[i]){
                 dfsDisplayRec(i, visited);
             }
         }
+    }
+
+    /**
+     * Use DFS to find a cycle in a directed graph
+     *
+     * @return
+     */
+    public boolean isCyclicDfsRec(){
+
+        boolean []visited = new boolean[size];
+        boolean []inRecStack = new boolean[size];
+
+        for(int nodeIndex=0; nodeIndex<size && !visited[nodeIndex]; nodeIndex++) {
+            if(isCyclicDfsRec(nodeIndex, visited, inRecStack)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param nodeIndex
+     * @param visited
+     * @param inRecStack
+     * @return
+     */
+    private boolean isCyclicDfsRec(int nodeIndex, boolean []visited, boolean []inRecStack){
+
+        if(inRecStack[nodeIndex]){
+            return true;
+        }
+
+        if(visited[nodeIndex]) {
+            return false;
+        }
+
+        inRecStack[nodeIndex] = true;
+        visited[nodeIndex] = true;
+
+        for(int i=0; i<size; i++){
+            //Note: no need to check visited here
+            if(adjArr[nodeIndex][i]>0){
+                if(isCyclicDfsRec(i, visited, inRecStack)){
+                    return true;
+                }
+            }
+        }
+        inRecStack[nodeIndex] = false;
+        return false;
     }
 
     /**
@@ -253,57 +303,4 @@ public class Graph<T> {
         return outDegree;
     }
 
-
-    /**
-     *
-     * @param args
-     */
-    public static void main(String [] args) {
-        // UNDIRECTED Graph
-        System.out.println(("\nUnDirected Graph"));
-        Graph<String> undirectedGraph = new Graph<>();
-
-        for(int i=0; i<=5; i++){
-            undirectedGraph.insert("node" + i);
-        }
-
-        undirectedGraph.addEdge(0,3);
-        undirectedGraph.addEdge(0,5);
-        undirectedGraph.addEdge(1,4, 5);
-        undirectedGraph.addEdge(2,5);
-        undirectedGraph.addEdge(3,2);
-        undirectedGraph.addEdge(5,4);
-
-        undirectedGraph.display();
-        undirectedGraph.bfsDisplay(5);
-        undirectedGraph.dfsDisplay(5);
-        undirectedGraph.dfsDisplayRec(5);
-
-        undirectedGraph.removeEdge(4,5);
-        undirectedGraph.bfsDisplay(5);
-
-        // DIRECTED Graph
-        System.out.println(("\nDirected Graph"));
-        Graph<String> directedGraph = new Graph<>(GraphType.DIRECTED);
-
-        for(int i=0; i<=5; i++){
-            directedGraph.insert("node" + i);
-        }
-
-        directedGraph.addEdge(0,3);
-        directedGraph.addEdge(0,5);
-        directedGraph.addEdge(1,4, 5);
-        directedGraph.addEdge(2,5);
-        directedGraph.addEdge(3,2);
-        directedGraph.addEdge(5,4);
-
-        directedGraph.display();
-        directedGraph.bfsDisplay(0);
-
-        System.out.println("directedGraph.inDegree(5): " + directedGraph.inDegree(5));
-        System.out.println("directedGraph.outDegree(5): " + directedGraph.outDegree(5));
-
-        directedGraph.removeEdge(0,5);
-        directedGraph.bfsDisplay(0);
-    }
 }

@@ -1,12 +1,13 @@
 package com.anand.coding.dsalgo.graph.adjacencylist;
 
-import com.anand.coding.dsalgo.exception.GraphFullException;
 import com.anand.coding.dsalgo.graph.GraphType;
-import com.anand.coding.dsalgo.list.LinkedList;
 import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -14,10 +15,9 @@ import com.anand.coding.dsalgo.stack.Stack;
  */
 public class Graph<T> {
 
-    private static final int DEFAULT_SIZE = 100;
+    private ArrayList<T> vertices;
+    private ArrayList<LinkedList<Integer>> adjListArray;
 
-    private T vertices[];
-    private LinkedList<Integer>[] adjListArray;
     private GraphType type;
     private int size=0;
 
@@ -25,35 +25,16 @@ public class Graph<T> {
      *
      */
     public Graph(){
-        this(DEFAULT_SIZE);
+        this(GraphType.UNDIRECTED);
     }
 
     /**
      *
+     * @param type
      */
-    public Graph(GraphType type) {
-        this(DEFAULT_SIZE, type);
-    }
-
-    /**
-     *
-     * @param size
-     */
-    public Graph(int size){
-        this(size, GraphType.UNDIRECTED);
-    }
-
-    /**
-     *
-     * @param size
-     */
-    @SuppressWarnings("unchecked")
-    public Graph(int size, GraphType type){
-        vertices = (T[])new Comparable[size];
-        adjListArray = new LinkedList[size];
-        for(int i=0; i<size; i++){
-            adjListArray[i] = new LinkedList<>();
-        }
+    public Graph(GraphType type){
+        vertices = new ArrayList<>();
+        adjListArray = new ArrayList<>();
         this.type = type;
     }
 
@@ -62,11 +43,9 @@ public class Graph<T> {
      * @param node
      */
     public void insert(T node){
-        if(size >=vertices.length){
-            throw new GraphFullException();
-        }
-
-        vertices[size++]=node;
+        vertices.add(size, node);
+        adjListArray.add(size, new LinkedList<>());
+        size++;
     }
 
     /**
@@ -74,14 +53,14 @@ public class Graph<T> {
      * @param u
      * @param v
      */
-    public void removeEdge(int u, int v){
+    public void removeEdge(Integer u, Integer v){
         if(u>=size || v >= size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        adjListArray[u].delete(v);
+        adjListArray.get(u).remove(v);
         if(type.equals(GraphType.UNDIRECTED)) {
-            adjListArray[v].delete(u);
+            adjListArray.get(v).remove(u);
         }
     }
 
@@ -95,9 +74,9 @@ public class Graph<T> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        adjListArray[u].insertStart(v);
+        adjListArray.get(u).addFirst(v);
         if (type.equals(GraphType.UNDIRECTED)) {
-            adjListArray[v].insertStart(u);
+            adjListArray.get(v).addFirst(u);
         }
     }
 
@@ -108,9 +87,9 @@ public class Graph<T> {
         System.out.println("Adjacency List Graph");
 
         for(int i=0; i<size; i++){
-            System.out.print(vertices[i] + " -> ");
-            for(Integer nodeIndex: adjListArray[i]){
-                System.out.print(String.format("%s, ", vertices[nodeIndex]));
+            System.out.print(vertices.get(i) + " -> ");
+            for(Integer nodeIndex: adjListArray.get(i)){
+                System.out.print(String.format("%s, ", vertices.get(nodeIndex)));
             }
             System.out.println();
         }
@@ -136,9 +115,9 @@ public class Graph<T> {
         while(!queue.isEmpty()){
 
             nodeIndex = queue.delete();
-            System.out.print(vertices[nodeIndex] + "  ");
+            System.out.print(vertices.get(nodeIndex) + "  ");
 
-            for(int i: adjListArray[nodeIndex]){
+            for(int i: adjListArray.get(nodeIndex)){
                 if(!visited[i]){
                     queue.insert(i);
                     visited[i] = true;
@@ -171,10 +150,10 @@ public class Graph<T> {
                 continue;
             }
 
-            System.out.print(vertices[nodeIndex] + "  ");
+            System.out.print(vertices.get(nodeIndex) + "  ");
             visited[nodeIndex] = true;
 
-            for(int i: adjListArray[nodeIndex]){
+            for(int i: adjListArray.get(nodeIndex)){
                 if(!visited[i]){
                     stack.push(i);
                 }
@@ -209,64 +188,22 @@ public class Graph<T> {
             return;
         }
 
-        System.out.print(vertices[nodeIndex] + "  ");
+        System.out.print(vertices.get(nodeIndex) + "  ");
         visited[nodeIndex] = true;
 
-        for(int i: adjListArray[nodeIndex]){
+        for(int i: adjListArray.get(nodeIndex)){
             if(!visited[i]){
                 dfsDisplayRec(i, visited);
             }
         }
     }
 
-
     /**
      *
-     * @param args
+     * @param u
      */
-    public static void main(String [] args){
-        // UNDIRECTED Graph
-        System.out.println(("\nUnDirected Graph"));
-        Graph<String> undirectedGraph = new Graph<>();
-
-        for(int i=0; i<=5; i++){
-            undirectedGraph.insert("node" + i);
-        }
-
-        undirectedGraph.addEdge(0,3);
-        undirectedGraph.addEdge(0,5);
-        undirectedGraph.addEdge(1,4);
-        undirectedGraph.addEdge(2,5);
-        undirectedGraph.addEdge(3,2);
-        undirectedGraph.addEdge(5,4);
-
-        undirectedGraph.display();
-        undirectedGraph.bfsDisplay(5);
-        undirectedGraph.dfsDisplay(5);
-        undirectedGraph.dfsDisplayRec(5);
-
-        undirectedGraph.removeEdge(4,5);
-        undirectedGraph.bfsDisplay(5);
-
-        // DIRECTED Graph
-        System.out.println(("\nDirected Graph"));
-        Graph<String> directedGraph = new Graph<>(GraphType.DIRECTED);
-
-        for(int i=0; i<=5; i++){
-            directedGraph.insert("node" + i);
-        }
-
-        directedGraph.addEdge(0,3);
-        directedGraph.addEdge(0,5);
-        directedGraph.addEdge(1,4);
-        directedGraph.addEdge(2,5);
-        directedGraph.addEdge(3,2);
-        directedGraph.addEdge(5,4);
-
-        directedGraph.display();
-        directedGraph.bfsDisplay(0);
-
-        directedGraph.removeEdge(0,5);
-        directedGraph.bfsDisplay(0);
+    public int outDegree(int u) {
+        return adjListArray.get(u).size();
     }
+
 }
