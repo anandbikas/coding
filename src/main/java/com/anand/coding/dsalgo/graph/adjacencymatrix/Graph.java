@@ -140,10 +140,10 @@ public class Graph<T> {
             nodeIndex = queue.delete();
             System.out.print(vertices[nodeIndex] + "  ");
 
-            for(int i=0; i<size; i++){
-                if(adjArr[nodeIndex][i]>0 && !visited[i]){
-                    queue.insert(i);
-                    visited[i] = true;
+            for(int childIndex=0; childIndex<size; childIndex++){
+                if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
+                    queue.insert(childIndex);
+                    visited[childIndex] = true;
                 }
             }
         }
@@ -176,9 +176,9 @@ public class Graph<T> {
             System.out.print(vertices[nodeIndex] + "  ");
             visited[nodeIndex] = true;
 
-            for(int i=0; i<size; i++){
-                if(adjArr[nodeIndex][i]>0 && !visited[i]){
-                    stack.push(i);
+            for(int childIndex=0; childIndex<size; childIndex++){
+                if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
+                    stack.push(childIndex);
                 }
             }
         }
@@ -214,61 +214,11 @@ public class Graph<T> {
         System.out.print(vertices[nodeIndex] + "  ");
         visited[nodeIndex] = true;
 
-        for(int i=0; i<size; i++){
-            if(adjArr[nodeIndex][i]>0 && !visited[i]){
-                dfsDisplayRec(i, visited);
+        for(int childIndex=0; childIndex<size; childIndex++){
+            if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
+                dfsDisplayRec(childIndex, visited);
             }
         }
-    }
-
-    /**
-     * Use DFS to find a cycle in a directed graph
-     *
-     * @return
-     */
-    public boolean isCyclicDfsRec(){
-
-        boolean []visited = new boolean[size];
-        boolean []inRecStack = new boolean[size];
-
-        for(int nodeIndex=0; nodeIndex<size && !visited[nodeIndex]; nodeIndex++) {
-            if(isCyclicDfsRec(nodeIndex, visited, inRecStack)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param nodeIndex
-     * @param visited
-     * @param inRecStack
-     * @return
-     */
-    private boolean isCyclicDfsRec(int nodeIndex, boolean []visited, boolean []inRecStack){
-
-        if(inRecStack[nodeIndex]){
-            return true;
-        }
-
-        if(visited[nodeIndex]) {
-            return false;
-        }
-
-        inRecStack[nodeIndex] = true;
-        visited[nodeIndex] = true;
-
-        for(int i=0; i<size; i++){
-            //Note: no need to check visited here
-            if(adjArr[nodeIndex][i]>0){
-                if(isCyclicDfsRec(i, visited, inRecStack)){
-                    return true;
-                }
-            }
-        }
-        inRecStack[nodeIndex] = false;
-        return false;
     }
 
     /**

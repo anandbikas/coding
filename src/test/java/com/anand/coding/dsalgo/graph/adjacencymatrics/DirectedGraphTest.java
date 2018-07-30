@@ -6,6 +6,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
 @Test
 public class DirectedGraphTest {
 
@@ -37,21 +39,6 @@ public class DirectedGraphTest {
 
         Assert.assertEquals(directedGraph.inDegree(5),0);
         Assert.assertEquals(directedGraph.outDegree(5),3);
-    }
-
-    @Test
-    private void testCyclic(){
-
-        Assert.assertFalse(directedGraph.isCyclicDfsRec());
-
-        directedGraph.addEdge(3,5);
-        Assert.assertTrue(directedGraph.isCyclicDfsRec());
-
-        directedGraph.dfsDisplayRec(2);
-
-        directedGraph.removeEdge(3,5);
-
-        directedGraph.dfsDisplayRec(2);
     }
 }
 

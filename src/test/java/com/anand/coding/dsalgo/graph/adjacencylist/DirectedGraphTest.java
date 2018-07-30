@@ -36,5 +36,30 @@ public class DirectedGraphTest {
 
         Assert.assertEquals(directedGraph.outDegree(5),3);
     }
+
+    @Test
+    private void testCyclic(){
+
+        Assert.assertFalse(directedGraph.isCyclicDfsRec());
+
+        directedGraph.addEdge(3,5);
+        Assert.assertTrue(directedGraph.isCyclicDfsRec());
+
+        directedGraph.dfsDisplayRec(2);
+
+        directedGraph.removeEdge(3,5);
+
+        directedGraph.dfsDisplayRec(2);
+    }
+
+    @Test
+    private void testTopologicalSorting(){
+
+        String[] topologicallySortedListBfs = {"node5", "node4", "node2", "node1", "node3", "node0"};
+        Assert.assertEquals(directedGraph.topologicalSortingBfs(),topologicallySortedListBfs);
+
+        String[] topologicallySortedListDfs = {"node5", "node4", "node2", "node3", "node1", "node0"};
+        Assert.assertEquals(directedGraph.topologicalSortingDfsRec(),topologicallySortedListDfs);
+    }
 }
 
