@@ -1,5 +1,8 @@
 package com.anand.coding.dsalgo.list;
 
+import com.anand.coding.dsalgo.stack.ArrayStack;
+import com.anand.coding.dsalgo.stack.Stack;
+
 import java.util.Iterator;
 
 /**
@@ -402,6 +405,110 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     }
 
     /**
+     *
+     * @return
+     */
+    public Node<T> getMiddleNode(){
+
+        Node slowPointer;
+        Node fastPointer;
+
+        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.getNext()!=null; ){
+            slowPointer=slowPointer.getNext();
+            fastPointer=fastPointer.getNext().getNext();
+        }
+
+        return slowPointer;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isPalindrome(){
+        if(start==null || start.getNext()==null){
+            return true;
+        }
+
+        boolean isPalindrome = true;
+        Node<T> prevOfSlowPointer =null;
+        Node<T> slowPointer;
+        Node<T> fastPointer;
+
+        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.getNext()!=null; ){
+            prevOfSlowPointer = slowPointer;
+            slowPointer=slowPointer.getNext();
+            fastPointer=fastPointer.getNext().getNext();
+        }
+
+        Node<T> middleNode=slowPointer;
+        Node<T> prevOfMiddleNode=prevOfSlowPointer;
+
+        prevOfMiddleNode.setNext(null);
+
+        LinkedList<T> list1 = new LinkedList<>();
+        list1.start = middleNode;
+        list1.reverse();
+
+        Node<T> node1;
+        Node<T> node2;
+        for(node1=this.start, node2=list1.start; node1!=null; node1=node1.getNext(), node2=node2.getNext()){
+            if(!node1.equals(node2)) {
+                isPalindrome =  false;
+                break;
+            }
+        }
+        list1.reverse();
+        prevOfMiddleNode.setNext(middleNode);
+        return isPalindrome;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isPalindromeUsingStack(){
+
+        Stack<Node<T>> stack = new ArrayStack<>();
+
+        for(Node<T> node=start; node!=null; node=node.getNext()){
+            stack.push(node);
+        }
+
+        for(Node<T> node=start; node!=null; node=node.getNext()){
+            if(!stack.pop().equals(node)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isPalindromeRec() {
+        LinkedList<T> listWithLeftNode = new LinkedList<>();
+        listWithLeftNode.start = start;
+        return isPalindromeRec(listWithLeftNode, start);
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean isPalindromeRec(LinkedList<T> listWithLeftNode, Node<T> rightNode){
+        if(rightNode==null){
+            return true;
+        }
+
+        boolean isPalindrome = isPalindromeRec(listWithLeftNode, rightNode.getNext())
+                                    && listWithLeftNode.start.equals(rightNode);
+        listWithLeftNode.start = listWithLeftNode.start.getNext();
+        return isPalindrome;
+    }
+
+    /**
      * Floyd Algorithm
      *
      * @return
@@ -543,56 +650,5 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         public void remove() {
             throw new UnsupportedOperationException("not supported");
         }
-    }
-
-
-    /**
-     *
-     * @param args
-     */
-    public static void main(String [] args){
-
-        final LinkedList<Integer> list = new LinkedList<>();
-
-        for(int i=6; i<=10; i++){
-            list.insertEnd(i);
-        }
-        for(int i=5; i>0; i--){
-            list.insertStart(i);
-        }
-        System.out.println("length: " + list.length());
-
-        System.out.println("list.minValueNode(): " + list.minValueNode());
-        System.out.println("list.maxValueNode(): " + list.maxValueNode());
-
-        list.insertAtIndex(6, 0);
-        list.deleteAtIndex(11);
-        System.out.println(list.search(0));
-
-        list.display();
-        list.bubbleSort();
-        list.display();
-
-        list.reverse();
-        list.display();
-
-        list.bubbleSort();
-
-        list.swapAdjacentNodes(1);
-        list.display();
-
-        list.search(9).setNext(list.search(3));
-        System.out.println("list.hasLoop(): " + list.hasLoop());
-        System.out.println("list.getStartNodeOfLoop(): " + list.getStartNodeOfLoop());
-        System.out.println("list.getLoopLength(): " + list.getLoopLength());
-
-        list.fixLoop();
-
-        list.deleteEnd();
-        list.deleteStart();
-        list.delete(5);
-        list.display();
-
-
     }
 }
