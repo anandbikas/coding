@@ -7,6 +7,14 @@ import com.anand.coding.dsalgo.stack.Stack;
 
 /**
  * Binary Tree
+ *
+ * A binary tree has two nods called left and right.
+ *
+ * 1. A binary tee with n nodes has exactly n-1 edges
+ * 2. Maximum number of nodes at level l is 2 pow(l-1).
+ * 3. Maximum number of nodes in a binary tree of height h is 2 pow(h) – 1.
+ * 4. In a Binary Tree with n nodes, minimum possible height is ceil(log2(n+1))
+ * 5. Number of nodes in a complete binary tree lies betwwen 2 pow(h-1) to 2 pow(h) -1
  */
 public class BinaryTree {
 
@@ -334,7 +342,7 @@ public class BinaryTree {
     public void printAllPaths() {
         System.out.println("printAllPaths");
 
-        Stack<Node> stack = new ArrayStack<Node>();
+        Stack<Node> stack = new ArrayStack<>();
         printAllPaths(root, stack);
         System.out.println();
     }

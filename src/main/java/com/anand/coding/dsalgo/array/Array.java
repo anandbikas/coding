@@ -122,6 +122,49 @@ public class Array {
         return data;
     }
 
+    /**
+     * Delete all the duplicate elements. -- Negative thinking. Complexity O(n3)
+     * Or, keep only unique elements in the array -- Positive thinking. Complexity O(n2)
+     */
+    public void deleteDuplicates(){
+
+        if(numberOfElements==0){
+            return;
+        }
+
+        int k=1;
+        for(int i=1; i<numberOfElements; i++){
+
+            for(int j=0; j<k; j++){
+                if(A[j]==A[i]){
+                    break;
+                }
+                A[k++]=A[i];
+            }
+        }
+        numberOfElements = k;
+    }
+
+    /**
+     * Deletes all occurrence of an element. -- Negative thinking. Complexity O(n2)
+     * Or, Keep all the elements except the given one -- Positive thinking. Complexity O(n)
+     */
+    public void deleteAllOccurence(int valueToDelete){
+
+        if(numberOfElements==0){
+            return;
+        }
+
+        int k=0;
+        for(int i=0; i<numberOfElements; i++){
+            if(A[i]==valueToDelete){
+                continue;
+            }
+            A[k++]=A[i];
+        }
+        numberOfElements = k;
+    }
+
 
     /**
      * equivalent to Arrays.toString

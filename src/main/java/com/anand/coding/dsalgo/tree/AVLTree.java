@@ -249,7 +249,7 @@ public class AVLTree extends BinarySearchTree {
      */
     public Node delete(int data){
 
-        Stack<Node> stack = new ArrayStack();
+        Stack<Node> stack = new ArrayStack<>();
 
         Node parent = null;
         Node pivotNode = root;
