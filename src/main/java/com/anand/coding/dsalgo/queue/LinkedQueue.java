@@ -12,7 +12,7 @@ public class LinkedQueue<T extends Comparable<T>> implements Queue<T> {
     private Node<T> front;
     private Node<T> rear;
 
-    int length=0;
+    private int length=0;
 
     /**
      * Insert at end (rear).

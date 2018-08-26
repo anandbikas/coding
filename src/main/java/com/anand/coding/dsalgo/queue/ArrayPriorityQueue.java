@@ -11,7 +11,7 @@ import com.anand.coding.dsalgo.tree.arraybased.BinaryMinHeap;
  *
  * @param <T>
  */
-public class ArrayPriorityQueue<T extends Comparable<T>> extends BinaryMinHeap<T> implements Queue<T> {
+public class ArrayPriorityQueue<T> extends BinaryMinHeap<PriorityObject<T>> implements Queue<T> {
 
     /**
      *
@@ -29,14 +29,24 @@ public class ArrayPriorityQueue<T extends Comparable<T>> extends BinaryMinHeap<T
     }
 
     /**
+     * insert as lowest priority
      *
      * @param data
      */
     public void insert(T data){
+        insert(data, Integer.MAX_VALUE);
+    }
+
+    /**
+     *
+     * @param data
+     * @param priority
+     */
+    public void insert(T data, int priority){
         if(isFull()){
             throw new QueueFullException();
         }
-        super.insert(data);
+        super.insert(new PriorityObject<>(data, priority));
     }
 
     /**
@@ -47,7 +57,7 @@ public class ArrayPriorityQueue<T extends Comparable<T>> extends BinaryMinHeap<T
         if(isEmpty()){
             throw new QueueEmptyException();
         }
-        return super.extractMin();
+        return super.extractMin().getObject();
     }
 
     /**
@@ -60,31 +70,42 @@ public class ArrayPriorityQueue<T extends Comparable<T>> extends BinaryMinHeap<T
 
     /**
      *
+     * @param queueIndex
+     * @param priority
+     */
+    public void updatePriority(int queueIndex, int priority){
+        PriorityObject<T> priorityObject = delete(queueIndex);
+        priorityObject.setPriority(priority);
+        insert(priorityObject);
+    }
+
+
+    /**
+     *
      * @param args
      */
     public static void main(String args[]){
        
-        ArrayPriorityQueue<PriorityObject> priorityQueue = new ArrayPriorityQueue<>(10);
+        ArrayPriorityQueue<String> priorityQueue = new ArrayPriorityQueue<>(10);
 
-        priorityQueue.insert(new PriorityObject("Obj1", 7));
-        priorityQueue.insert(new PriorityObject("Obj2", 1));
-        priorityQueue.insert(new PriorityObject("Obj3", 2));
-        priorityQueue.insert(new PriorityObject("Obj4", 4));
+        priorityQueue.insert("Obj1", 7);
+        priorityQueue.insert("Obj2", 1);
+        priorityQueue.insert("Obj3", 2);
+        priorityQueue.insert("Obj4", 4);
 
         priorityQueue.display();
 
         System.out.println(priorityQueue.delete());
         priorityQueue.display();
 
-        priorityQueue.insert(new PriorityObject("Obj5", 2));
+        priorityQueue.insert("Obj5", 2);
         priorityQueue.display();
 
-        priorityQueue.insert(new PriorityObject("Obj6", 6));
+        priorityQueue.insert("Obj6", 6);
+        priorityQueue.insert("Obj7");
         priorityQueue.display();
 
-        PriorityObject priorityObject = priorityQueue.delete(3);
-        priorityObject.setPriority(0);
-        priorityQueue.insert(priorityObject);
+        priorityQueue.updatePriority(3, 0);
 
         while(!priorityQueue.isEmpty()) {
             System.out.println(priorityQueue.delete());

@@ -3,10 +3,10 @@ package com.anand.coding.dsalgo.queue;
 /**
  * PriorityObject with priority field, implements Comparable
  */
-public class PriorityObject implements Comparable<PriorityObject>{
+public class PriorityObject<T> implements Comparable<PriorityObject<T>>{
 
-    String name;
-    Integer priority;
+    private T object;
+    private Integer priority;
 
     /**
      *
@@ -17,11 +17,11 @@ public class PriorityObject implements Comparable<PriorityObject>{
 
     /**
      *
-     * @param name
+     * @param object
      * @param priority
      */
-    public PriorityObject(String name, Integer priority) {
-        this.name = name;
+    public PriorityObject(T object, int priority) {
+        this.object = object;
         this.priority = priority;
     }
 
@@ -29,16 +29,16 @@ public class PriorityObject implements Comparable<PriorityObject>{
      *
      * @return
      */
-    public String getName() {
-        return name;
+    public T getObject() {
+        return object;
     }
 
     /**
      *
-     * @param name
+     * @param object
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setObject(T object) {
+        this.object = object;
     }
 
     /**
@@ -67,16 +67,8 @@ public class PriorityObject implements Comparable<PriorityObject>{
         return this.priority.compareTo(aPriorityObject.priority);
     }
 
-//    @Override
-//    public String toString() {
-//        return "PriorityObject{" +
-//                "name='" + name + '\'' +
-//                ", priority=" + priority +
-//                '}';
-//    }
-
     @Override
     public String toString(){
-        return String.format("(%s, %s)", name, priority);
+        return String.format("(%s, %s)", object.toString(), priority);
     }
 }

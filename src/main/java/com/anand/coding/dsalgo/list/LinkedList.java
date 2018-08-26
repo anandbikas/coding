@@ -85,8 +85,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         final Node<T> newNode = new Node<>(data);
         if(start==null || start.getData().compareTo(data)>0){
-            start=newNode;
             newNode.setNext(start);
+            start=newNode;
             return newNode;
         }
 
@@ -650,5 +650,13 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         public void remove() {
             throw new UnsupportedOperationException("not supported");
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isEmpty(){
+        return(start==null);
     }
 }
