@@ -51,6 +51,7 @@ public class EmployeeDemo {
 
         System.out.println("Employee records after increment:");
 
+        //Sort on the basis of salary.
         Arrays.sort(employees);
         Arrays.stream(employees).forEach(System.out::println);
         System.out.println();
@@ -74,6 +75,7 @@ public class EmployeeDemo {
         System.out.println(Arrays.stream(employees).map(Employee::getName).collect(Collectors.toSet()));
 
 
+        //Inheritance Test
         List<Employee> staffs = Arrays.asList(
                 new Manager("Manager", 35000, 1998, 8, 15, 4000),
                 new Programmer("Programmer 1",38000,1999,7,30,2009,8,28),

@@ -32,6 +32,7 @@ public class FunctionalInterfaceDemo {
         Predicate is3 = Predicate.isEqual(3);
         System.out.println(is3.test(3));
 
+        System.out.println(isEven.or(is3).test(6));
 
         // Create anonymous inner class object
         new Thread(

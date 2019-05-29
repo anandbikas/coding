@@ -12,7 +12,7 @@ import java.util.Random;
  * Copy Constructor
  * Initialization Block
  * Static Initialization Block
- * (o instanceof Employee)
+ * (o instanceof Employee) operator
  */
 public class Employee implements Comparable<Employee>, Cloneable {
 
@@ -29,6 +29,7 @@ public class Employee implements Comparable<Employee>, Cloneable {
         nextId = random.nextInt(100000);
     }
 
+    //initialization blocks
     {
         id = nextId++;
     }
