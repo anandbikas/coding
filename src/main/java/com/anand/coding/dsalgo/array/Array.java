@@ -233,6 +233,7 @@ public class Array {
     }
 
     /**
+     * *TWISTED* algorithm.
      *
      * @param startIndex
      * @param endIndex
@@ -291,27 +292,27 @@ public class Array {
 
     /**
      *
-     * @param elementCount
+     * @param n
      */
-    public void rotateByElements(int elementCount){
+    public void rotateRightByNElements(int n){
 
         if(numberOfElements<=0){
             return;
         }
 
-        elementCount %= numberOfElements;
-        if(elementCount==0){
+        n %= numberOfElements;
+        if(n==0){
             return;
         }
 
-        int [] tempArr = new int[elementCount];
-        System.arraycopy(A, numberOfElements-elementCount, tempArr, 0, elementCount);
+        int [] tempArr = new int[n];
+        System.arraycopy(A, numberOfElements-n, tempArr, 0, n);
 
-        for(int i=numberOfElements-elementCount-1; i>=0; i--){
-            A[i+elementCount] = A[i];
+        for(int i=numberOfElements-n-1; i>=0; i--){
+            A[i+n] = A[i];
         }
 
-        System.arraycopy(tempArr, 0, A, 0, elementCount);
+        System.arraycopy(tempArr, 0, A, 0, n);
     }
 
     public int getRotatedArrayPivotElementIndex() {
@@ -320,7 +321,7 @@ public class Array {
 
     /**
      * Find the left most element which is less than the first element.
-     * If the array is not rotated, pivot element will be the first element.
+     * If the array is not rotated, pivot element index will be endIndex+1.
      * Works only for unique element array
      *
      * Complexity: O(lon n)
@@ -332,10 +333,10 @@ public class Array {
     public int getRotatedArrayPivotElementIndex(int startIndex, int endIndex) {
 
         int firstElementIndex = startIndex;
-        while (startIndex < endIndex) {
+        while (startIndex <= endIndex) {
             int mid = (startIndex + endIndex) / 2;
             if (A[mid] < A[firstElementIndex]) {
-                endIndex = mid;
+                endIndex = mid-1;
             } else {
                 startIndex = mid+1;
             }
@@ -344,6 +345,7 @@ public class Array {
     }
 
     /**
+     * *TWISTED* algorithm
      *
      * @param key
      * @return
@@ -362,11 +364,11 @@ public class Array {
      */
     public int binarySearchInRotatedArray(final int startIndex, final int endIndex, final int key) {
 
-        final int pivoteElementIndex = getRotatedArrayPivotElementIndex(startIndex, endIndex);
+        final int pivotElementIndex = getRotatedArrayPivotElementIndex(startIndex, endIndex);
 
         return key>=A[startIndex] ?
-                binarySearch(startIndex, pivoteElementIndex-1, key):
-                    binarySearch(pivoteElementIndex, endIndex, key);
+                binarySearch(startIndex, pivotElementIndex-1, key):
+                    binarySearch(pivotElementIndex, endIndex, key);
     }
 
     /**
@@ -621,8 +623,11 @@ public class Array {
         System.out.println(array);
         System.out.println();
 
-        array.rotateByElements(3);
+        array.rotateRightByNElements(3);
         System.out.println(array);
+
+        System.out.println(array.getRotatedArrayPivotElementIndex());
+        System.out.println();
 
         for (int number : B) {
             System.out.println(array.binarySearchInRotatedArray(number));
