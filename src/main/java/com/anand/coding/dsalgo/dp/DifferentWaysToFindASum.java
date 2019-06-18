@@ -1,0 +1,93 @@
+package com.anand.coding.dsalgo.dp;
+
+/**
+ * Example: Given 3 numbers {1, 3, 5}, find total number of ways to form 'N'
+ * using the sum of the given three numbers(repetitions and different arrangements allowed).
+ *
+ * State:
+ *      solve(n) is a state and tells total number of ways to form n using the elements in the array.
+ *
+ * State Transition:
+ *      solve (n) = solve(n-A[0]) + solve(n-A[1]) + .....
+ *                   where: solve(0) = 1;
+ *                          solve(<0) = 0;
+ *
+ * state results:
+ * -------------------------------
+ * state(1) = [1]
+ * state(2) = [1, 1]
+ * state(3) = [1, 1, 1],
+ *            [3]
+ *
+ * state(4) = [1,1,1,1],
+ *            [1, 3],
+ *            [3, 1]
+ * --------------------------------
+ *
+ * Recursion Tree solve(4)
+ * -------------------------------
+ *                  s(4)
+ *                /     \
+ *             s(3)     s(1)
+ *            /   \        \
+ *         s(2)   s(0)     s(0)
+ *         /
+ *       s(1)
+ *       /
+ *     s(0)
+ * --------------------------------
+ *
+ */
+public class DifferentWaysToFindASum {
+
+
+    /**
+     *
+     * @param A
+     * @param sum
+     * @return
+     */
+    public static long solve(int []A, int sum) {
+        long []DP = new long[sum+1];
+
+        long result = solve(A, sum, DP);
+
+        for(int i=0; i<=sum; i++){
+            System.out.print(String.format("%10d", DP[i]));
+        }
+        System.out.println();
+        return result;
+    }
+    private static long solve(int []A, int sum, long []DP) {
+
+        if (sum < 0) {
+            return 0;
+        }
+        if (sum == 0) {
+            return 1;
+        }
+
+        if(DP[sum]>0){
+            return DP[sum];
+        }
+
+        for (int x : A) {
+            DP[sum] += solve(A, sum - x, DP);
+        }
+
+        return DP[sum];
+    }
+
+    // TODO: Next problem:
+    //  in a ring lock of N buds each containing 0-9 numbers, find the number of ways to to form a sum S.
+
+    /**
+     *
+     * @param args
+     */
+    public static void main(String [] args){
+        int []A = {1,3,5};
+
+        System.out.println(solve(A, 8));
+    }
+}
