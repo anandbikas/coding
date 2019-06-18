@@ -17,30 +17,30 @@ public class Knapsack_0_1 {
      */
     public static int knapsackRec(int [] wt, int [] val, int n, int weight) {
 
-        int [][] DP =  new int[n][weight+1];
+        int [][] DP =  new int[n+1][weight+1];
         int finalResult = knapsackRec(wt, val, n, weight, DP);
         printDPArray(DP, n, weight);
 
         return finalResult;
     }
-    private static int knapsackRec(int [] wt, int [] val, int n, int weight, int [][] DP){
+    private static int knapsackRec(int [] wt, int [] val, int n, int w, int [][] DP){
 
-        if(n<=0 || weight<=0){
+        if(n<=0 || w<=0){
             return 0;
         }
 
-        int index = n-1;
+        int itemIndex = n-1;
 
-        if(DP[index][weight] >0){
-            return DP[index][weight];
+        if(DP[n][w] >0){
+            return DP[n][w];
         }
 
-        if(wt[index]>weight){
-            return DP[index][weight] = knapsackRec(wt, val, n-1, weight, DP);
+        if(wt[itemIndex]>w){
+            return DP[n][w] = knapsackRec(wt, val, n-1, w, DP);
         }
 
-        return DP[index][weight] = Math.max(val[index] + knapsackRec(wt, val, n-1, weight-wt[index], DP),
-                                knapsackRec(wt, val, n-1, weight, DP));
+        return DP[n][w] = Math.max(val[itemIndex] + knapsackRec(wt, val, n-1, w-wt[itemIndex], DP),
+                                knapsackRec(wt, val, n-1, w, DP));
     }
 
     /**
@@ -62,26 +62,27 @@ public class Knapsack_0_1 {
         //Populate DP for first element
         if(wt[0] <= weight) {
             for (int w = wt[0]; w<=weight; w++){
-                DP[0][w] = val[0];
+                DP[1][w] = val[0];
             }
         }
 
         //Populate DP from 2nd element onwards
-        for(int i=1; i<n; i++){
+        for(int i=2; i<=n; i++){
 
+            int itemIndex = i-1;
             for(int w=1; w<=weight; w++){
 
                 //Can't take i'th element upto now
-                if(wt[i]>w) {
+                if(wt[itemIndex]>w) {
                     DP[i][w] = DP[i-1][w];
                 }
                 else{
-                    DP[i][w] = Math.max(val[i] + DP[i-1][w-wt[i]], DP[i-1][w]);
+                    DP[i][w] = Math.max(val[itemIndex] + DP[i-1][w-wt[itemIndex]], DP[i-1][w]);
                 }
             }
         }
         printDPArray(DP, n, weight);
-        return DP[n-1][weight];
+        return DP[n][weight];
     }
 
     /**
@@ -134,15 +135,15 @@ public class Knapsack_0_1 {
      *
      * @param DP
      * @param n
-     * @param weight
+     * @param m
      */
-    public static void printDPArray(int [][] DP, int n, int weight)
+    public static void printDPArray(int [][] DP, int n, int m)
     {
         System.out.println();
-        for(int i=0; i<n; i++){
+        for(int i=0; i<=n; i++){
 
-            for(int w =0; w<=weight; w++){
-                System.out.print(String.format("%4d", DP[i][w]));
+            for(int j =0; j<=m; j++){
+                System.out.print(String.format("%4d", DP[i][j]));
             }
             System.out.println();
         }
