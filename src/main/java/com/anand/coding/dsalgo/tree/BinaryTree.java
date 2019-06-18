@@ -146,12 +146,41 @@ public class BinaryTree {
 
     /**
      * Print in order left, right, root
-     * Use loop with the help of
+     * Use loop with the help of two stacks.
+     *
+     * Space complexity: O(height)
      */
     public void postOrderTraversal(){
         System.out.println("postOrderTraversal");
-        //TODO: incomplete
 
+        Stack<Node> stack = new ArrayStack<Node>();
+        Stack<Node> rootStack = new ArrayStack<Node>();
+
+        for(Node node = root; node!= null; node=node.getLeft()){
+            stack.push(node);
+        }
+        while(!stack.isEmpty()){
+            Node node = stack.pop();
+
+            if(node==null){
+                //Process root node
+                System.out.print(rootStack.pop().getData() + "  ");
+
+            } else if(node.getRight()==null) {
+                System.out.print(node.getData() + "  ");
+
+            } else {
+                //Push null to indicate a root needs to be processed from rootStack
+                stack.push(null);
+                rootStack.push(node);
+
+                for(node = node.getRight(); node != null; node = node.getLeft()) {
+                    stack.push(node);
+                }
+            }
+        }
+
+        System.out.println();
     }
 
     /**
