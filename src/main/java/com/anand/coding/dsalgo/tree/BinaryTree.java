@@ -239,7 +239,7 @@ public class BinaryTree {
      * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
      */
     private void printLevel(Node root, int level, int currentLevel){
-        if(root == null){
+        if(root == null || currentLevel > level){
             return;
         }
         if(level == currentLevel){
