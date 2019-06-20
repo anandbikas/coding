@@ -710,5 +710,64 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println("binaryTree.height(): " + binaryTree.height());
         System.out.println("binaryTree.searchRec(4) " + binaryTree.searchRec(4));
         System.out.println("binaryTree.searchRec(9) " + binaryTree.searchRec(9));
+
+
+        // Construct tree using preOrder and inOrder traversals
+        /**
+         *                         a
+         *                     /       \
+         *                  b            c
+         *                /   \        /   \
+         *               d    e       f    g
+         *                   / \     / \
+         *                  j   k   h  i
+         *
+         */
+        Character [] preOrder = {'a', 'b', 'd', 'e', 'j', 'k', 'c', 'f', 'h', 'i', 'g'};
+        Character [] inOrder = {'d', 'b', 'j', 'e', 'k', 'a', 'h', 'f', 'i', 'c', 'g'};
+        BinaryTree<Character> tree1 = new BinaryTree<>(preOrder, inOrder);
+
+        System.out.println(tree1);
+        tree1.preOrderTraversal();
+        tree1.inOrderTraversal();
+    }
+
+    /**
+     * Construct a tree using preOrder and inOrder traversals
+     *
+     * @param preOrder
+     * @param inOrder
+     */
+    public BinaryTree(T [] preOrder, T [] inOrder){
+        this.root = treeFromPreAndInOrder(preOrder, 0, inOrder, 0, inOrder.length-1);
+    }
+
+    private Node<T> treeFromPreAndInOrder(T [] preOrder, int i, T [] inOrder, int left, int right){
+
+        if(i==preOrder.length){
+            return null;
+        }
+
+        int inOrderNodeIndex = -1;
+        for(int k=left; k<=right; k++){
+            if(inOrder[k].equals(preOrder[i])){
+                inOrderNodeIndex = k;
+                break;
+            }
+        }
+
+        if(inOrderNodeIndex==-1) {
+            return  null;
+        }
+
+        Node<T> node = new Node<>(preOrder[i]);
+        node.setLeft(treeFromPreAndInOrder(preOrder, i+1, inOrder, left, inOrderNodeIndex-1));
+
+        //Rewind i to the element which lies in the right side of the node in inOrder traversal.
+        i += (inOrderNodeIndex)-left + 1;
+
+        node.setRight(treeFromPreAndInOrder(preOrder, i, inOrder, inOrderNodeIndex+1, right));
+
+        return node;
     }
 }
