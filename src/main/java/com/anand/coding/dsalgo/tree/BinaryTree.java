@@ -16,16 +16,16 @@ import com.anand.coding.dsalgo.stack.Stack;
  * 4. In a Binary Tree with n nodes, minimum possible height is ceil(log2(n+1))
  * 5. Number of nodes in a complete binary tree lies betwwen 2 pow(h-1) to 2 pow(h) -1
  */
-public class BinaryTree {
+public class BinaryTree <T extends Comparable<T>> {
 
-    protected Node root;
+    protected Node<T> root;
 
     public BinaryTree(){
         super();
     }
 
-    public BinaryTree(final int data){
-        root = new Node(data);
+    public BinaryTree(final T data){
+        root = new Node<>(data);
     }
 
     /**
@@ -101,7 +101,7 @@ public class BinaryTree {
     public void preOrderTraversal(){
         System.out.println("preOrderTraversal");
 
-        Stack<Node> stack = new ArrayStack();
+        Stack<Node> stack = new ArrayStack<>();
 
         if(root!=null){
             stack.push(root);
@@ -127,7 +127,7 @@ public class BinaryTree {
     public void inOrderTraversal(){
         System.out.println("inOrderTraversal");
 
-        Stack<Node> stack = new ArrayStack<Node>();
+        Stack<Node> stack = new ArrayStack<>();
 
         for(Node node = root; node!= null; node=node.getLeft()){
             stack.push(node);
@@ -153,8 +153,8 @@ public class BinaryTree {
     public void postOrderTraversal(){
         System.out.println("postOrderTraversal");
 
-        Stack<Node> stack = new ArrayStack<Node>();
-        Stack<Node> rootStack = new ArrayStack<Node>();
+        Stack<Node> stack = new ArrayStack<>();
+        Stack<Node> rootStack = new ArrayStack<>();
 
         for(Node node = root; node!= null; node=node.getLeft()){
             stack.push(node);
@@ -256,7 +256,7 @@ public class BinaryTree {
      * @param data
      * @return
      */
-    public Node searchRec(int data){
+    public Node<T> searchRec(T data){
         return searchRec(root, data);
     }
 
@@ -267,12 +267,12 @@ public class BinaryTree {
      * @param data
      * @return
      */
-    private Node searchRec(Node root, int data){
+    private Node<T> searchRec(Node<T> root, T data){
 
-        if(root==null || root.getData()==data){
+        if(root==null || root.getData().equals(data)){
             return root;
         }
-        Node node = searchRec(root.getLeft(), data);
+        Node<T> node = searchRec(root.getLeft(), data);
         if(node != null){
             return node;
         }
@@ -486,7 +486,7 @@ public class BinaryTree {
         }
 
 
-        return root1.getData()==root2.getData()
+        return root1.getData().equals(root2.getData())
                 && isCopy(root1.getLeft(), root2.getLeft())
                 && isCopy(root1.getRight(), root2.getRight());
     }
@@ -505,13 +505,13 @@ public class BinaryTree {
      * @param root
      * @return
      */
-    private boolean isBinarySearchTree(Node root){
+    private boolean isBinarySearchTree(Node<T> root){
         if(root == null){
             return true;
         }
 
-        return (root.getLeft()==null || root.getLeft().getData() < root.getData())
-                    && (root.getRight()==null || root.getRight().getData() > root.getData())
+        return (root.getLeft()==null || root.getLeft().compareTo(root) < 0)
+                    && (root.getRight()==null || root.getRight().compareTo(root) > 0)
                         && isBinarySearchTree(root.getLeft())
                             && isBinarySearchTree(root.getRight());
     }
@@ -551,11 +551,11 @@ public class BinaryTree {
      * @param root
      * @return
      */
-    private void toMirrorImage(Node root){
+    private void toMirrorImage(Node<T> root){
         if(root==null){
             return;
         }
-        Node temp =  root.getLeft();
+        Node<T> temp =  root.getLeft();
         root.setLeft(root.getRight());
         root.setRight(temp);
 
@@ -574,7 +574,7 @@ public class BinaryTree {
      * @param nodeData
      * @return
      */
-    public boolean insertAsLeftChild(final int data, final int nodeData){
+    public boolean insertAsLeftChild(final T data, final T nodeData){
         return insertAsLeftChild(root, data, nodeData);
     }
 
@@ -587,13 +587,13 @@ public class BinaryTree {
      * @param nodeData
      * @return
      */
-    private boolean insertAsLeftChild(final Node root, final int data, final int nodeData){
+    private boolean insertAsLeftChild(final Node<T> root, final T data, final T nodeData){
 
         if(null == root){
             return false;
         }
-        if(root.getData() == nodeData){
-            final Node newNode = new Node(data);
+        if(root.getData().equals(nodeData)){
+            final Node<T> newNode = new Node<>(data);
             newNode.setLeft(root.getLeft());
             root.setLeft(newNode);
             return true;
@@ -609,7 +609,7 @@ public class BinaryTree {
      * @param nodeData
      * @return
      */
-    public boolean insertAsRightChild(final int data, final int nodeData){
+    public boolean insertAsRightChild(final T data, final T nodeData){
         return insertAsRightChild(root, data, nodeData);
 
     }
@@ -623,13 +623,13 @@ public class BinaryTree {
      * @param nodeData
      * @return
      */
-    private boolean insertAsRightChild(final Node root, final int data, final int nodeData){
+    private boolean insertAsRightChild(final Node<T> root, final T data, final T nodeData){
 
         if(null == root){
             return false;
         }
-        if(root.getData() == nodeData){
-            final Node newNode = new Node(data);
+        if(root.getData().equals(nodeData)){
+            final Node<T> newNode = new Node<>(data);
             newNode.setRight(root.getRight());
             root.setRight(newNode);
             return true;
@@ -658,13 +658,13 @@ public class BinaryTree {
      */
     public static void main(String[] args) {
 
-        /**
+        /*
          *                     1
          *                 2      3
          *               4  5    6  7
          *                     8
          */
-        final BinaryTree binaryTree = new BinaryTree(1);
+        final BinaryTree<Integer> binaryTree = new BinaryTree<>(1);
 
         binaryTree.insertAsLeftChild(2, 1);
         binaryTree.insertAsRightChild(3, 1);

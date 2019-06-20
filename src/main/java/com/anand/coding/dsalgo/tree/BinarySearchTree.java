@@ -3,7 +3,7 @@ package com.anand.coding.dsalgo.tree;
 /**
  * Binary Seach Tree
  */
-public class BinarySearchTree extends BinaryTree {
+public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
     public BinarySearchTree(){
         super();
@@ -14,21 +14,21 @@ public class BinarySearchTree extends BinaryTree {
      * @param data
      * @return
      */
-    public Node insert(int data){
+    public Node insert(T data){
 
-        Node parent = null;
-        Node pivotNode = root;
+        Node<T> parent = null;
+        Node<T> pivotNode = root;
 
-        while(pivotNode != null && pivotNode.getData()!=data){
+        while(pivotNode != null && !pivotNode.getData().equals(data)){
             parent = pivotNode;
-            pivotNode = pivotNode.getData() > data ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
 
         if(pivotNode==null){
-            pivotNode = new Node(data);
+            pivotNode = new Node<>(data);
             if(parent == null){
                 this.root = pivotNode;
-            } else if(parent.getData()>data){
+            } else if(parent.getData().compareTo(data)>0){
                 parent.setLeft(pivotNode);
             } else {
                 parent.setRight(pivotNode);
@@ -41,7 +41,7 @@ public class BinarySearchTree extends BinaryTree {
      *
      * @param data
      */
-    public void insertRec(int data){
+    public void insertRec(T data){
         this.root = insertRec(this.root, data);
     }
 
@@ -51,16 +51,16 @@ public class BinarySearchTree extends BinaryTree {
      * @param data
      * @return
      */
-    private Node insertRec(Node root, int data){
+    private Node<T> insertRec(Node<T> root, T data){
 
         if(root==null){
-            root = new Node(data);
+            root = new Node<>(data);
             return root;
         }
 
-        if(root.getData()>data) {
+        if(root.getData().compareTo(data)>0) {
             root.setLeft(insertRec(root.getLeft(), data));
-        } else if(root.getData()<data){
+        } else if(root.getData().compareTo(data)<0){
             root.setRight(insertRec(root.getRight(), data));
         }
         return root;
@@ -71,11 +71,11 @@ public class BinarySearchTree extends BinaryTree {
      * @param data
      * @return
      */
-    public Node search(int data){
+    public Node<T> search(T data){
 
-        Node pivotNode=root;
-        while(pivotNode != null && pivotNode.getData()!=data){
-            pivotNode = pivotNode.getData() > data ? pivotNode.getLeft() : pivotNode.getRight();
+        Node<T> pivotNode=root;
+        while(pivotNode != null && !pivotNode.getData().equals(data)){
+            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
         return pivotNode;
     }
@@ -86,7 +86,7 @@ public class BinarySearchTree extends BinaryTree {
      * @return
      */
     @Override
-    public Node searchRec(int data){
+    public Node<T> searchRec(T data){
         return searchRec(root, data);
     }
 
@@ -96,12 +96,12 @@ public class BinarySearchTree extends BinaryTree {
      * @param data
      * @return
      */
-    private Node searchRec(Node root, int data){
+    private Node<T> searchRec(Node<T> root, T data){
 
-        if(root==null || root.getData()==data){
+        if(root==null || root.getData().equals(data)){
             return root;
         }
-        return searchRec(root.getData()>data ? root.getLeft() : root.getRight(), data);
+        return searchRec(root.getData().compareTo(data)>0 ? root.getLeft() : root.getRight(), data);
     }
 
     /**
@@ -110,15 +110,15 @@ public class BinarySearchTree extends BinaryTree {
      * @param data
      * @return
      */
-    public Node delete(int data){
+    public Node<T> delete(T data){
 
-        Node parent = null;
-        Node pivotNode = root;
+        Node<T> parent = null;
+        Node<T> pivotNode = root;
 
         //Find the pivotNode and its parent.
-        while(pivotNode != null && pivotNode.getData() != data){
+        while(pivotNode != null && !pivotNode.getData().equals(data)){
             parent = pivotNode;
-            pivotNode = pivotNode.getData() > data ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
 
         // if pivotNode not found, return
@@ -141,7 +141,7 @@ public class BinarySearchTree extends BinaryTree {
          *     3.3 Replace pivotNode with inOrderSuccessor
          *
          */
-        Node nodeToShift;
+        Node<T> nodeToShift;
         if(pivotNode.getRight() == null) {
             nodeToShift = pivotNode.getLeft();
 
@@ -151,7 +151,7 @@ public class BinarySearchTree extends BinaryTree {
 
         } else {
             //Find inorder successor of pivotNode
-            Node parentOfNodeToShift = pivotNode.getRight();
+            Node<T> parentOfNodeToShift = pivotNode.getRight();
             nodeToShift = parentOfNodeToShift.getLeft();
             while(nodeToShift.getLeft()!= null){
                 parentOfNodeToShift=nodeToShift;
@@ -178,47 +178,13 @@ public class BinarySearchTree extends BinaryTree {
     }
 
     /**
-     *
-     * @param data
-     */
-    public void deleteRec(int data){
-        //TODO: fix
-        root = deleteRec(root, data);
-    }
-
-    /**
-     *
-     * @param root
-     * @param data
-     * @return
-     */
-    private Node deleteRec(Node root, int data){
-
-        //TODO: Incomplete
-        if(root==null){
-            return root;
-        }
-
-        if(root.getRight()==null){
-            return root.getLeft();
-        }
-
-        if(root.getData()>data) {
-            root.setLeft(insertRec(root.getLeft(), data));
-        } else {
-            root.setRight(insertRec(root.getRight(), data));
-        }
-        return root;
-    }
-
-    /**
      * Find the minimum value node
      */
-    public Node min(){
+    public Node<T> min(){
         if(root==null){
             return null;
         }
-        Node node=root;
+        Node<T> node=root;
         for(; node.getLeft()!=null; node=node.getLeft());
         return node;
     }
@@ -227,11 +193,11 @@ public class BinarySearchTree extends BinaryTree {
      * Find the maximum value node
      * @return
      */
-    public Node max(){
+    public Node<T> max(){
         if(root==null){
             return null;
         }
-        Node node=root;
+        Node<T> node=root;
         for(; node.getRight()!=null; node=node.getRight());
         return node;
     }
@@ -241,20 +207,20 @@ public class BinarySearchTree extends BinaryTree {
      *
      * @return
      */
-    public Node lowestCommonAncestor(int data1, int data2){
-        if(data1==data2){
+    public Node<T> lowestCommonAncestor(T data1, T data2){
+        if(data1.equals(data2)){
             return null;
         }
-        if(data1 > data2) {
-            int temp = data2;
+        if(data1.compareTo(data2)>0) {
+            T temp = data2;
             data2 = data1;
             data1 = temp;
         }
-        Node node = root;
+        Node<T> node = root;
         while(node != null){
-            if(node.getData()<data1){
+            if(node.getData().compareTo(data1)<0){
                 node = node.getRight();
-            } else if(node.getData()>data2){
+            } else if(node.getData().compareTo(data2)>0){
                 node = node.getLeft();
             } else {
                 break;
@@ -282,14 +248,14 @@ public class BinarySearchTree extends BinaryTree {
      *
      * @param root
      */
-    private void printAllPaths(final Node root){
+    private void printAllPaths(final Node<T> root){
         if(root == null){
             return;
         }
         if(root.getLeft()==null && root.getRight()==null){
-            for(Node node = this.root; node!=null;){
+            for(Node<T> node = this.root; node!=null;){
                 System.out.print(node.getData() + "  ");
-                node = node.getData() > root.getData() ? node.getLeft() : node.getRight();
+                node = node.compareTo(root) > 0 ? node.getLeft() : node.getRight();
             }
             System.out.println();
             return;
@@ -305,12 +271,12 @@ public class BinarySearchTree extends BinaryTree {
      */
     public static void main(String args[]){
 
-        /**
+        /*
          *               5
          *           3      7
          *        2   4  6   8
          */
-        final BinarySearchTree bst = new BinarySearchTree();
+        final BinarySearchTree<Integer> bst = new BinarySearchTree<>();
 
         for(int x : new int[]{ 5,7,3,6,4,8,2}) {
             bst.insertRec(x);

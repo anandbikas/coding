@@ -3,11 +3,11 @@ package com.anand.coding.dsalgo.tree;
 /**
  * Binary Node with data and left and right child nodes.
  */
-public class Node {
+public class Node <T extends Comparable<T>> implements Comparable<Node<T>>{
 
-    private int data;
-    private Node left;
-    private Node right;
+    private T data;
+    private Node<T> left;
+    private Node<T> right;
 
     // height is used in AVLTree
     private int height;
@@ -23,7 +23,7 @@ public class Node {
      *
      * @param data
      */
-    public Node(int data){
+    public Node(T data){
         this.data = data;
         height=1;
     }
@@ -32,7 +32,7 @@ public class Node {
      *
      * @return
      */
-    public int getData() {
+    public T getData() {
         return data;
     }
 
@@ -40,7 +40,7 @@ public class Node {
      *
      * @param data
      */
-    public void setData(int data) {
+    public void setData(T data) {
         this.data = data;
     }
 
@@ -48,7 +48,7 @@ public class Node {
      *
      * @return
      */
-    public Node getLeft() {
+    public Node<T> getLeft() {
         return left;
     }
 
@@ -56,7 +56,7 @@ public class Node {
      *
      * @param left
      */
-    public void setLeft(Node left) {
+    public void setLeft(Node<T> left) {
         this.left = left;
     }
 
@@ -64,7 +64,7 @@ public class Node {
      *
      * @return
      */
-    public Node getRight() {
+    public Node<T> getRight() {
         return right;
     }
 
@@ -72,7 +72,7 @@ public class Node {
      *
      * @param right
      */
-    public void setRight(Node right) {
+    public void setRight(Node<T> right) {
         this.right = right;
     }
 
@@ -112,5 +112,15 @@ public class Node {
     @Override
     public String toString() {
         return String.valueOf(data);
+    }
+
+    /**
+     *
+     * @param node
+     * @return
+     */
+    @Override
+    public int compareTo(Node<T> node) {
+        return node.getData().compareTo(node.data);
     }
 }

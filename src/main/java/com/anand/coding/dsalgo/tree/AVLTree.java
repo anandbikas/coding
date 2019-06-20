@@ -8,7 +8,7 @@ import com.anand.coding.dsalgo.stack.Stack;
 /**
  * AVLTree
  */
-public class AVLTree extends BinarySearchTree {
+public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
     /**
      *
@@ -123,13 +123,13 @@ public class AVLTree extends BinarySearchTree {
      * @param pivotNode
      * @param parent
      */
-    private void leftRotate(Node pivotNode, Node parent){
+    private void leftRotate(Node<T> pivotNode, Node<T> parent){
 
         if(pivotNode == null || pivotNode.getRight() == null){
             return;
         }
 
-        Node tmpNode = pivotNode.getRight();
+        Node<T> tmpNode = pivotNode.getRight();
         pivotNode.setRight(tmpNode.getLeft());
         tmpNode.setLeft(pivotNode);
 
@@ -149,13 +149,13 @@ public class AVLTree extends BinarySearchTree {
      * @param pivotNode
      * @param parent
      */
-    private void rightRotate(Node pivotNode, Node parent) {
+    private void rightRotate(Node<T> pivotNode, Node<T> parent) {
 
         if (pivotNode == null || pivotNode.getLeft() == null) {
             return;
         }
 
-        Node tmpNode = pivotNode.getLeft();
+        Node<T> tmpNode = pivotNode.getLeft();
         pivotNode.setLeft(tmpNode.getRight());
         tmpNode.setRight(pivotNode);
 
@@ -176,27 +176,27 @@ public class AVLTree extends BinarySearchTree {
      * @return
      */
     @Override
-    public Node insert(int data){
+    public Node insert(T data){
 
-        Stack<Node> stack = new ArrayStack();
+        Stack<Node<T>> stack = new ArrayStack<>();
 
-        Node parent = null;
-        Node pivotNode = root;
+        Node<T> parent = null;
+        Node<T> pivotNode = root;
 
         // Simple BST insertion
-        while(pivotNode != null && pivotNode.getData()!=data){
+        while(pivotNode != null && !pivotNode.getData().equals(data)){
             stack.push(parent);
             parent = pivotNode;
-            pivotNode = pivotNode.getData() > data ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
 
         if(pivotNode!=null) {
             return null;
         }
-        pivotNode = new Node(data);
+        pivotNode = new Node<>(data);
         if(parent == null){
             root = pivotNode;
-        } else if(parent.getData()>data){
+        } else if(parent.getData().compareTo(data)>0){
             parent.setLeft(pivotNode);
         } else {
             parent.setRight(pivotNode);
@@ -204,10 +204,10 @@ public class AVLTree extends BinarySearchTree {
 
         // AVL Tree height recalculation and heightBalanceFactor rotation algorithm
         calculateHeight(parent);
-        Node child = pivotNode;
+        Node<T> child = pivotNode;
 
         while(!(stack.isEmpty() || stack.peek()==null)){
-            Node grandParent = stack.pop();
+            Node<T> grandParent = stack.pop();
             calculateHeight(grandParent);
 
             final int heightBalanceFactor = heightBalanceFactor(grandParent);
@@ -247,18 +247,18 @@ public class AVLTree extends BinarySearchTree {
      * @param data
      * @return
      */
-    public Node delete(int data){
+    public Node<T> delete(T data){
 
-        Stack<Node> stack = new ArrayStack<>();
+        Stack<Node<T>> stack = new ArrayStack<>();
 
-        Node parent = null;
-        Node pivotNode = root;
+        Node<T> parent = null;
+        Node<T> pivotNode = root;
 
         //Find the pivotNode and its parent.
-        while(pivotNode != null && pivotNode.getData() != data){
+        while(pivotNode != null && !pivotNode.getData().equals(data)){
             stack.push(parent);
             parent = pivotNode;
-            pivotNode = pivotNode.getData() > data ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
         stack.push(parent);
 
@@ -282,9 +282,9 @@ public class AVLTree extends BinarySearchTree {
          *     3.3 Replace pivotNode with inOrderSuccessor
          *
          */
-        Queue<Node> queue = new ArrayCircularQueue<>();
+        Queue<Node<T>> queue = new ArrayCircularQueue<>();
 
-        Node nodeToShift;
+        Node<T> nodeToShift;
         if(pivotNode.getRight() == null) {
             nodeToShift = pivotNode.getLeft();
 
@@ -295,7 +295,7 @@ public class AVLTree extends BinarySearchTree {
         } else {
             //Find inorder successor of pivotNode
 
-            Node parentOfNodeToShift = pivotNode.getRight();
+            Node<T> parentOfNodeToShift = pivotNode.getRight();
             nodeToShift = parentOfNodeToShift.getLeft();
             while(nodeToShift.getLeft()!= null){
                 queue.insert(parentOfNodeToShift);
@@ -330,7 +330,7 @@ public class AVLTree extends BinarySearchTree {
         // AVL Tree height recalculation and heightBalanceFactor rotation algorithm
 
         while(!(stack.isEmpty() || stack.peek()==null)){
-            Node node = stack.pop();
+            Node<T> node = stack.pop();
             calculateHeight(node);
 
             final int heightBalanceFactor = heightBalanceFactor(node);
@@ -381,7 +381,7 @@ public class AVLTree extends BinarySearchTree {
          *         2     6    8      12
          *       1     4        10      13
          */
-        final AVLTree avlTree = new AVLTree();
+        final AVLTree<Integer> avlTree = new AVLTree<>();
 
         for(int x : new int[]{ 7,11,3,8,6,12,2,1,4,13,10}) {
             avlTree.insert(x);
@@ -508,8 +508,8 @@ public class AVLTree extends BinarySearchTree {
     /**
      *
      */
-    public static void intenseInsertionDeletionTest(final int numberOfNodes){
-        final AVLTree avlTree = new AVLTree();
+    private static void intenseInsertionDeletionTest(final int numberOfNodes){
+        final AVLTree<Integer> avlTree = new AVLTree<>();
 
         for(int x=1; x<=numberOfNodes; x++) {
             avlTree.insert(x);
