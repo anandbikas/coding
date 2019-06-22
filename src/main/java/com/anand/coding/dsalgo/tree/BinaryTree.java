@@ -433,6 +433,39 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
+     * Diameter of the tree (longest path in the tree)
+     *
+     * @return
+     */
+    public int diameter(){
+        int[] A = diameterCalculator(root);
+        return A[1];
+    }
+
+    /**
+     * Just like height method. Twist is to calculate diameter as well.
+     *
+     * Return array of 2 elements: [height, diameter].
+     * @param root
+     * @return []
+     */
+    private int[] diameterCalculator(Node<T> root){
+
+        if(root == null){
+            return new int[]{0,0};
+        }
+        int [] left = diameterCalculator(root.getLeft());
+        int [] right = diameterCalculator(root.getRight());
+
+        int thisNodeHeight = Math.max(left[0], right[0]) +1;
+        int thisNodeDiameter = left[0]+right[0]+1;
+
+        int maxDiameterInThisTree = Math.max((Math.max(left[1], right[1])), thisNodeDiameter);
+        return new int[]{thisNodeHeight, thisNodeDiameter};
+
+    }
+
+    /**
      *
      * @param tree
      * @return
@@ -562,11 +595,6 @@ public class BinaryTree <T extends Comparable<T>> {
         toMirrorImage(root.getLeft());
         toMirrorImage(root.getRight());
     }
-
-    /**
-     * TODO:
-     * diameter
-     */
 
     /**
      *
@@ -730,6 +758,25 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println(tree1);
         tree1.preOrderTraversal();
         tree1.inOrderTraversal();
+
+        /**
+         *                x
+         *              /
+         *            a
+         *           /
+         *          b
+         *         / \
+         *        d   e
+         *       /     \
+         *      f       g
+         *       \
+         *        h
+         *  Diameter = 6
+         */
+        BinaryTree<String> tree2 =
+                new BinaryTree<>("x a b d f h e g".split("\\s+"), "f h d b g e a x".split("\\s+"));
+
+        System.out.println(tree2.diameter());
     }
 
     /**
