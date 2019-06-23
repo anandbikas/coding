@@ -156,8 +156,8 @@ public class BinaryTree <T extends Comparable<T>> {
         Stack<Node> stack = new ArrayStack<>();
         Stack<Node> rootStack = new ArrayStack<>();
 
-        for(Node node = root; node!= null; node=node.getLeft()){
-            stack.push(node);
+        if(root != null){
+            stack.push(root);
         }
         while(!stack.isEmpty()){
             Node node = stack.pop();
@@ -166,16 +166,16 @@ public class BinaryTree <T extends Comparable<T>> {
                 //Process root node
                 System.out.print(rootStack.pop().getData() + "  ");
 
-            } else if(node.getRight()==null) {
-                System.out.print(node.getData() + "  ");
-
             } else {
                 //Push null to indicate a root needs to be processed from rootStack
                 stack.push(null);
                 rootStack.push(node);
 
-                for(node = node.getRight(); node != null; node = node.getLeft()) {
-                    stack.push(node);
+                if (node.getRight() != null) {
+                    stack.push(node.getRight());
+                }
+                if (node.getLeft() != null) {
+                    stack.push(node.getLeft());
                 }
             }
         }
@@ -461,7 +461,7 @@ public class BinaryTree <T extends Comparable<T>> {
         int thisNodeDiameter = left[0]+right[0]+1;
 
         int maxDiameterInThisTree = Math.max((Math.max(left[1], right[1])), thisNodeDiameter);
-        return new int[]{thisNodeHeight, thisNodeDiameter};
+        return new int[]{thisNodeHeight, maxDiameterInThisTree};
 
     }
 
