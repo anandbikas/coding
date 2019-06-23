@@ -15,8 +15,8 @@ public class Graph<T> {
 
     private static final int DEFAULT_SIZE = 100;
 
-    private T vertices[];
-    private int adjArr[][];
+    private T []vertices;
+    private int [][]adjArr;
     private GraphType type = GraphType.UNDIRECTED;
 
     private int size=0;
@@ -165,20 +165,17 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
 
         stack.push(nodeIndex);
+        visited[nodeIndex] = true;
 
         while(!stack.isEmpty()){
 
             nodeIndex = stack.pop();
-            if(visited[nodeIndex]) {
-                continue;
-            }
-
             System.out.print(vertices[nodeIndex] + "  ");
-            visited[nodeIndex] = true;
 
-            for(int childIndex=0; childIndex<size; childIndex++){
+            for(int childIndex=size-1; childIndex>=0; childIndex--){
                 if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
                     stack.push(childIndex);
+                    visited[childIndex] = true;
                 }
             }
         }

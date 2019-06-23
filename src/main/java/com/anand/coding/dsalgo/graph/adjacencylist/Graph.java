@@ -7,6 +7,7 @@ import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -74,9 +75,9 @@ public class Graph<T> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        adjListArray.get(u).addFirst(v);
+        adjListArray.get(u).addLast(v);
         if (type.equals(GraphType.UNDIRECTED)) {
-            adjListArray.get(v).addFirst(u);
+            adjListArray.get(v).addLast(u);
         }
     }
 
@@ -142,20 +143,20 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
 
         stack.push(nodeIndex);
+        visited[nodeIndex] = true;
 
         while(!stack.isEmpty()){
 
             nodeIndex = stack.pop();
-            if(visited[nodeIndex]) {
-                continue;
-            }
-
             System.out.print(vertices.get(nodeIndex) + "  ");
-            visited[nodeIndex] = true;
 
-            for(int childIndex: adjListArray.get(nodeIndex)){
+            Iterator<Integer> iterator = adjListArray.get(nodeIndex).descendingIterator();
+
+            while (iterator.hasNext()){
+                Integer childIndex = iterator.next();
                 if(!visited[childIndex]){
                     stack.push(childIndex);
+                    visited[childIndex] = true;
                 }
             }
         }
