@@ -5,6 +5,7 @@ package com.anand.coding.dsalgo.dp;
  */
 public class LongestCommonSubSequence {
 
+    //TODO: print the lcs string
     /**
      * Recursive Top Down with memoization
      *
@@ -28,8 +29,9 @@ public class LongestCommonSubSequence {
             return 0;
         }
 
+        //Already calculated?
         if(DP[n][m] >0){
-             return DP[n][m] = DP[n][m];
+             return DP[n][m];
         }
 
         if (A[n-1] == B[m-1]) {
@@ -74,11 +76,39 @@ public class LongestCommonSubSequence {
      */
     public static void main(String[] args) {
 
-        char[] A = "geeksforgeeksstring".toCharArray();
-        char[] B = "geeksquizstring".toCharArray();
+        char[] A = "cupinjava".toCharArray();
+        char[] B = "cupofjava".toCharArray();
 
-        System.out.println(lcsRec(A, A.length, B, B.length));
+        /**
+         *    0   0   0   0   0   0   0   0   0   0
+         *    0   1   1   1   1   1   1   1   1   1
+         *    0   1   2   2   2   2   2   2   2   2
+         *    0   1   2   3   3   3   3   3   3   3
+         *    0   1   2   3   3   3   3   3   3   3
+         *    0   1   2   3   3   3   3   3   3   3
+         *    0   1   2   3   3   3   4   4   4   4
+         *    0   1   2   3   3   3   4   5   5   5
+         *    0   1   2   3   3   3   4   5   6   6
+         *    0   1   2   3   3   3   4   5   6   7
+         * 7
+         */
         System.out.println(lcs(A, A.length, B, B.length));
+
+
+        /**
+         *    0   0   0   0   0   0   0   0   0   0
+         *    0   1   1   1   1   1   0   0   0   0
+         *    0   1   2   2   2   2   0   0   0   0
+         *    0   1   2   3   3   3   0   0   0   0
+         *    0   1   2   3   3   3   0   0   0   0
+         *    0   1   2   3   3   3   0   0   0   0
+         *    0   0   0   0   0   0   4   0   0   0
+         *    0   0   0   0   0   0   0   5   0   0
+         *    0   0   0   0   0   0   0   0   6   0
+         *    0   0   0   0   0   0   0   0   0   7
+         * 7
+         */
+        System.out.println(lcsRec(A, A.length, B, B.length));
     }
 
     /**
