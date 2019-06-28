@@ -1,9 +1,9 @@
 package com.anand.coding.dsalgo.dp;
 
 /**
- * Given a string A, find the longest palindromic sub-string.
+ * Given a string A, find the longest palindromic sub-sequence.
  */
-public class LongestPalindromicSubString {
+public class LongestPalindromicSubSequence {
 
     /**
      * DP Tabulation solution
@@ -11,21 +11,19 @@ public class LongestPalindromicSubString {
      * @param A
      * @return  lps
      */
-    public static String lps(char[] A) {
+    public static int lps(char[] A) {
         int n = A.length;
 
         int [][]DP = new int[n+1][n+1];
 
         if(n==0){
-            return null;
+            return 0;
         }
         //String of length=1 and 0 is palindromic
         for(int i=0; i<=n; i++) {
             DP[0][i] = 0;
             DP[i][i] = 1;
         }
-
-        int maxI=1, maxJ=1;
 
         //String of length=2 is palindromic
         for(int i=1; i<=n-1; i++) {
@@ -42,15 +40,14 @@ public class LongestPalindromicSubString {
                 if(A[i-1]==A[j-1]) {
                     DP[i][j] = 2 + DP[i+1][j-1];
 
-                    if (DP[i][j] > DP[maxI][maxJ]) {
-                        maxI=i; maxJ=j;
-                    }
+                } else {
+                    DP[i][j] = Math.max(DP[i+1][j], DP[i][j-1]);
                 }
             }
         }
 
         printDPArray(DP,n,n);
-        return (new String(A, maxI-1, maxJ-maxI+1));
+        return (DP[1][n]);
     }
 
 
@@ -58,12 +55,12 @@ public class LongestPalindromicSubString {
      * @param A
      * @return
      */
-    public static String lpsRec(char[] A) {
+    public static int lpsRec(char[] A) {
 
         int n = A.length;
 
         if(n==0){
-            return null;
+            return 0;
         }
 
         int [][]DP = new int[n+1][n+1];
@@ -71,20 +68,8 @@ public class LongestPalindromicSubString {
         int lpsLength = lpsRec(A,1, A.length, DP);
         printDPArray(DP,n,n);
 
-        int maxI=0, maxJ=0;
-
-        for(int i=0; i<=n; i++){
-            for(int j=0; j<=n; j++){
-                if (DP[i][j] > DP[maxI][maxJ]) {
-                    maxI=i;
-                    maxJ=j;
-                }
-            }
-        }
-        return (new String(A, maxI-1, maxJ-maxI+1));
-
+        return lpsLength;
     }
-
 
     /**
      *
@@ -108,51 +93,44 @@ public class LongestPalindromicSubString {
             return DP[l][r];
         }
 
-        DP[l][r] = (A[l-1] == A[r-1]) ?
-                       2 + lpsRec(A, l+1, r-1, DP) : 0;
+        if(A[l-1] == A[r-1]) {
+            return DP[l][r] = 2 + lpsRec(A, l+1, r-1, DP);
+        }
 
-        lpsRec(A, l+1, r, DP);
-        lpsRec(A, l, r-1, DP);
-
-        return DP[l][r];
-
+        return DP[l][r] = Math.max(lpsRec(A, l+1, r, DP), lpsRec(A, l, r-1, DP));
     }
+
 
     /**
      * @param args
      */
     public static void main(String[] args) {
 
-        char[] A = "axanjnax".toCharArray();
+        char[] A = "anjbna".toCharArray();
+
 
         /**
-         *
-         *    1   0   0   0   0   0   0   0   0
-         *    0   1   1   3   0   0   0   2   0
-         *    0   0   1   1   0   0   0   0   7
-         *    0   0   0   1   1   0   0   5   0
-         *    0   0   0   0   1   1   3   0   0
-         *    0   0   0   0   0   1   1   0   0
-         *    0   0   0   0   0   0   1   1   0
-         *    0   0   0   0   0   0   0   1   1
-         *    0   0   0   0   0   0   0   0   1
-         * xanjnax
+         *    1   0   0   0   0   0   0
+         *    0   1   1   1   1   3   5
+         *    0   0   1   1   1   3   3
+         *    0   0   0   1   1   1   1
+         *    0   0   0   0   1   1   1
+         *    0   0   0   0   0   1   1
+         *    0   0   0   0   0   0   1
+         * 5
          */
         System.out.println(lps(A));
 
 
         /**
-         *
-         *    0   0   0   0   0   0   0   0   0
-         *    0   1   0   3   0   0   0   2   0
-         *    0   0   1   0   0   0   0   0   7
-         *    0   0   0   1   0   0   0   5   0
-         *    0   0   0   0   1   0   3   0   0
-         *    0   0   0   0   0   1   0   0   0
-         *    0   0   0   0   0   0   1   0   0
-         *    0   0   0   0   0   0   0   1   0
-         *    0   0   0   0   0   0   0   0   1
-         * xanjnax
+         *    0   0   0   0   0   0   0
+         *    0   0   0   0   0   0   5
+         *    0   0   0   0   0   3   0
+         *    0   0   0   1   1   0   0
+         *    0   0   0   0   1   0   0
+         *    0   0   0   0   0   0   0
+         *    0   0   0   0   0   0   0
+         * 5
          */
         System.out.println(lpsRec(A));
     }

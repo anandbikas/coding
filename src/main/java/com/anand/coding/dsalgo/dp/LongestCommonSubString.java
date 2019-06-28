@@ -17,19 +17,16 @@ public class LongestCommonSubString {
     public static String lcs(char[] A, int n, char[] B, int m) {
         int DP[][] = new int[n+1][m+1];
 
-        int maxI=0;
-        int maxJ=0;
+        int maxI=0, maxJ=0;
 
         for(int i=1; i<=n; i++){
-
             for(int j=1; j<=m; j++){
 
                 if(A[i-1] == B[j-1]) {
                     DP[i][j] = 1 + DP[i-1][j-1];
 
                     if (DP[i][j] > DP[maxI][maxJ]) {
-                        maxI=i;
-                        maxJ=j;
+                        maxI=i; maxJ=j;
                     }
                 }
             }
@@ -56,8 +53,7 @@ public class LongestCommonSubString {
         lcsRec(A, n, B, m, DP);
         printDPArray(DP, n, m);
 
-        int maxI=0;
-        int maxJ=0;
+        int maxI=0, maxJ=0;
 
         for(int i=0; i<=n; i++){
             for(int j=0; j<=m; j++){
@@ -94,14 +90,13 @@ public class LongestCommonSubString {
             return DP[n][m];
         }
 
-        if (A[n-1] == B[m-1]) {
-            return DP[n][m] = 1 + lcsRec(A, n-1, B, m-1, DP);
-        } else {
-            lcsRec(A, n, B, m-1, DP);
-            lcsRec(A, n-1, B, m, DP);
-        }
+        DP[n][m] = (A[n-1] == B[m-1]) ?
+                        1 + lcsRec(A, n-1, B, m-1, DP) : 0;
 
-        return DP[n][m] = 0;
+        lcsRec(A, n, B, m-1, DP);
+        lcsRec(A, n-1, B, m, DP);
+
+        return DP[n][m];
     }
 
 
