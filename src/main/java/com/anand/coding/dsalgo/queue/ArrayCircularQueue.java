@@ -4,13 +4,13 @@ import com.anand.coding.dsalgo.exception.QueueEmptyException;
 import com.anand.coding.dsalgo.exception.QueueFullException;
 
 /**
- * Total elements inserted = size-1
- * for convenience of curcular queue empty/full condition
+ * for convenience of curcular queue empty/full condition, one element is wasted.
+ * So declare one extra space than the size.
  * @param <T>
  */
 public class ArrayCircularQueue<T> implements Queue<T> {
 
-    private static final int DEFAULT_SIZE = 100;
+    private static final int DEFAULT_SIZE = 100+1;
 
     private T [] queueArr;
 
@@ -30,7 +30,7 @@ public class ArrayCircularQueue<T> implements Queue<T> {
      */
     @SuppressWarnings("unchecked")
     public ArrayCircularQueue(int size){
-        queueArr = (T[])new Object[size];
+        queueArr = (T[])new Object[size+1];
     }
 
     /**

@@ -31,8 +31,8 @@ public class UndirectedGraphTest {
 
         undirectedGraph.display();
         undirectedGraph.bfsDisplay(5);
-        undirectedGraph.dfsDisplay(5);
-        undirectedGraph.dfsDisplayRec(5);
+        undirectedGraph.dfsDisplayPreOrder(5);
+        undirectedGraph.dfsDisplayPreOrderRec(5);
 
         undirectedGraph.removeEdge(4,5);
         undirectedGraph.bfsDisplay(5);

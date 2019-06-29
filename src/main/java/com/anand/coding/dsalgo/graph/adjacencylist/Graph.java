@@ -118,17 +118,16 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
 
         queue.insert(nodeIndex);
-        visited[nodeIndex] = true;
 
         while(!queue.isEmpty()){
 
             nodeIndex = queue.delete();
             System.out.print(vertices.get(nodeIndex) + "  ");
+            visited[nodeIndex] = true;
 
             for(int childIndex: adjListArray.get(nodeIndex)){
                 if(!visited[childIndex]){
                     queue.insert(childIndex);
-                    visited[childIndex] = true;
                 }
             }
         }
@@ -140,7 +139,7 @@ public class Graph<T> {
      *
      * @param nodeIndex
      */
-    public void dfsDisplay(int nodeIndex) {
+    public void dfsDisplayPreOrder(int nodeIndex) {
         System.out.println("DFS Display from index: " + nodeIndex);
         if(nodeIndex>=size){
             throw new ArrayIndexOutOfBoundsException();
@@ -150,12 +149,14 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
 
         stack.push(nodeIndex);
-        visited[nodeIndex] = true;
 
         while(!stack.isEmpty()){
 
             nodeIndex = stack.pop();
+
+            //For PostOrder printing will be done after processing adjList.
             System.out.print(vertices.get(nodeIndex) + "  ");
+            visited[nodeIndex] = true;
 
             Iterator<Integer> iterator = adjListArray.get(nodeIndex).descendingIterator();
 
@@ -163,7 +164,6 @@ public class Graph<T> {
                 Integer childIndex = iterator.next();
                 if(!visited[childIndex]){
                     stack.push(childIndex);
-                    visited[childIndex] = true;
                 }
             }
         }
@@ -174,34 +174,34 @@ public class Graph<T> {
      *
      * @param nodeIndex
      */
-    public void dfsDisplayRec(int nodeIndex){
+    public void dfsDisplayPreOrderRec(int nodeIndex){
         System.out.println("\nDFS Display Recursive from index: " + nodeIndex);
         if(nodeIndex>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
         boolean []visited = new boolean[size];
-        dfsDisplayRec(nodeIndex, visited);
+        dfsDisplayPreOrderRec(nodeIndex, visited);
         System.out.println();
     }
 
     /**
-     *
      * @param nodeIndex
      * @param visited
      */
-    private void dfsDisplayRec(int nodeIndex, boolean []visited){
+    private void dfsDisplayPreOrderRec(int nodeIndex, boolean []visited){
 
         if(visited[nodeIndex]) {
             return;
         }
 
+        //For PostOrder printing will be done after processing adjList.
         System.out.print(vertices.get(nodeIndex) + "  ");
         visited[nodeIndex] = true;
 
         for(int childIndex: adjListArray.get(nodeIndex)){
             if(!visited[childIndex]){
-                dfsDisplayRec(childIndex, visited);
+                dfsDisplayPreOrderRec(childIndex, visited);
             }
         }
     }
@@ -435,5 +435,59 @@ public class Graph<T> {
 
         pathStack.pop();
         return false;
+    }
+
+    /**
+     * use DFS(PostOrder) to find all paths from u to v
+     *
+     * @param sourceIndex
+     * @param destIndex
+     * @param
+     */
+    public List<T[]> findPathDFS(int sourceIndex, int destIndex) {
+        if (sourceIndex >= size || destIndex >= size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        Stack<Integer> stack = new ArrayStack<>(size);
+        boolean[] visited = new boolean[size];
+
+        Stack<T> pathStack = new ArrayStack<>(size);
+
+        List<T[]> pathList = new ArrayList<>();
+
+        stack.push(sourceIndex);
+
+        while (!stack.isEmpty()) {
+
+            int nodeIndex = stack.pop();
+            if (nodeIndex == -1) {
+                //Means all childs processed, now remove parent from pathStack
+                pathStack.pop();
+                continue;
+            }
+
+            pathStack.push(vertices.get(nodeIndex));
+
+            if (nodeIndex == destIndex) {
+                pathList.add(pathStack.getAsList());
+                pathStack.pop();
+                continue;
+            }
+
+            visited[nodeIndex] = true;
+
+            //Put a marker in stack for parent place holder.
+            stack.push(-1);
+
+            Iterator<Integer> iterator = adjListArray.get(nodeIndex).descendingIterator();
+            while (iterator.hasNext()) {
+                Integer childIndex = iterator.next();
+                if (!visited[childIndex]) {
+                    stack.push(childIndex);
+                }
+            }
+        }
+        return pathList;
     }
 }

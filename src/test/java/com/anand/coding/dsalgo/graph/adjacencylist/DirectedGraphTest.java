@@ -45,8 +45,8 @@ public class DirectedGraphTest {
 
         directedGraph.display();
         directedGraph.bfsDisplay(5);
-        directedGraph.dfsDisplay(5);
-        directedGraph.dfsDisplayRec(5);
+        directedGraph.dfsDisplayPreOrder(5);
+        directedGraph.dfsDisplayPreOrderRec(5);
 
         Assert.assertEquals(directedGraph.outDegree(5),3);
     }
@@ -59,11 +59,11 @@ public class DirectedGraphTest {
         directedGraph.addEdge(3,5);
         Assert.assertTrue(directedGraph.isCyclicDfsRec());
 
-        directedGraph.dfsDisplayRec(2);
+        directedGraph.dfsDisplayPreOrderRec(2);
 
         directedGraph.removeEdge(3,5);
 
-        directedGraph.dfsDisplayRec(2);
+        directedGraph.dfsDisplayPreOrderRec(2);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DirectedGraphTest {
     }
 
     @Test
-    private void testPath(){
+    private void testPathDFSRec(){
 
         Assert.assertTrue(directedGraph.findPathDFSRec(1,3).isEmpty());
 
@@ -86,6 +86,22 @@ public class DirectedGraphTest {
         String[] path5To3_2 =  {"node5", "node3"};
 
         List<String[]> pathList5To3 = directedGraph.findPathDFSRec(5, 3);
+
+        Assert.assertEquals(pathList5To3.get(0), path5To3_1);
+        Assert.assertEquals(pathList5To3.get(1), path5To3_2);
+    }
+
+    @Test
+    private void testPathDFS(){
+
+        Assert.assertTrue(directedGraph.findPathDFS(1,3).isEmpty());
+
+        directedGraph.addEdge(5,3);
+        String[] path5To3_1 =  {"node5", "node2", "node3"};
+        String[] path5To3_2 =  {"node5", "node3"};
+
+
+        List<String[]> pathList5To3 = directedGraph.findPathDFS(5, 3);
 
         Assert.assertEquals(pathList5To3.get(0), path5To3_1);
         Assert.assertEquals(pathList5To3.get(1), path5To3_2);
