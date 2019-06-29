@@ -14,4 +14,7 @@ public interface Stack<T> {
     public boolean isFull();
     public void display();
     public int size();
+
+    public String getAsWord();
+    public T[] getAsList();
 }

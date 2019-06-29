@@ -2,6 +2,8 @@ package com.anand.coding.dsalgo.stack;
 import com.anand.coding.dsalgo.exception.StackEmptyException;
 import com.anand.coding.dsalgo.exception.StackFullException;
 
+import java.util.Arrays;
+
 /**
  * ArrayStack implementation
  *
@@ -110,6 +112,14 @@ public class ArrayStack<T> implements Stack<T> {
             word += stackArr[i];
         }
         return word;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public T[] getAsList(){
+        return Arrays.copyOfRange(stackArr, 0, size());
     }
 
     /**

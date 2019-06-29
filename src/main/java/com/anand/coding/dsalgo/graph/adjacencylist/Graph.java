@@ -9,6 +9,7 @@ import com.anand.coding.dsalgo.stack.Stack;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 1. A non-linear data structure consisting of nodes(vertices) and edges.
@@ -321,7 +322,7 @@ public class Graph<T> {
      *
      * It is a linear ordering of vertices such where for each edge uv, vertex u comes before v in the ordering.
      *
-     * DFS algorithm for topological sorting
+     * DFS (PostOrder) algorithm for topological sorting
      * Applicable for Directed Acyclic Graph (DAG)
      *
      * Algorithm:
@@ -379,4 +380,60 @@ public class Graph<T> {
         topologicalVertexStack.push(vertices.get(nodeIndex));
     }
 
+    /**
+     * use DFS(PreOrder) to find all paths from u to v
+     *
+     * @param sourceIndex
+     * @param destIndex
+     * @param
+     */
+    public List<T[]> findPathDFSRec(int sourceIndex, int destIndex){
+        if(sourceIndex>=size || destIndex >=size){
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        boolean []visited = new boolean[size];
+        Stack<T> pathStack = new ArrayStack<>(size);
+
+        List<T[]> pathList= new ArrayList<>();
+
+        findPathDFSRec(sourceIndex, destIndex, visited, pathStack, pathList);
+        return pathList;
+    }
+
+    /**
+     *
+     * @param nodeIndex
+     * @param destIndex
+     * @param visited
+     */
+    private boolean findPathDFSRec(int nodeIndex, int destIndex, boolean []visited, Stack<T> pathStack, List<T[]> pathList){
+
+        if(visited[nodeIndex]) {
+            return false;
+        }
+
+        pathStack.push(vertices.get(nodeIndex));
+
+        //No don't put visited here, we want destIndex to be visited as many times as the possible paths.
+        //visited[nodeIndex] = true;
+
+        if(nodeIndex == destIndex){
+            pathList.add(pathStack.getAsList());
+
+            pathStack.pop();
+            return true;
+        }
+        //Instead keep visited flag after processing destIndex.
+        visited[nodeIndex] = true;
+
+        for(int childIndex: adjListArray.get(nodeIndex)){
+            if(!visited[childIndex]){
+                 findPathDFSRec(childIndex, destIndex, visited, pathStack, pathList);
+            }
+        }
+
+        pathStack.pop();
+        return false;
+    }
 }

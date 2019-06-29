@@ -5,6 +5,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Test
 public class DirectedGraphTest {
 
@@ -66,11 +69,26 @@ public class DirectedGraphTest {
     @Test
     private void testTopologicalSorting(){
 
-        String[] topologicallySortedListBfs = {"node5", "node4", "node2", "node1", "node3", "node0"};
+        String[] topologicallySortedListBfs = {"node5", "node2", "node4", "node3", "node1", "node0"};
         Assert.assertEquals(directedGraph.topologicalSortingBfs(),topologicallySortedListBfs);
 
         String[] topologicallySortedListDfs = {"node5", "node4", "node2", "node3", "node1", "node0"};
         Assert.assertEquals(directedGraph.topologicalSortingDfsRec(),topologicallySortedListDfs);
+    }
+
+    @Test
+    private void testPath(){
+
+        Assert.assertTrue(directedGraph.findPathDFSRec(1,3).isEmpty());
+
+        directedGraph.addEdge(5,3);
+        String[] path5To3_1 =  {"node5", "node2", "node3"};
+        String[] path5To3_2 =  {"node5", "node3"};
+
+        List<String[]> pathList5To3 = directedGraph.findPathDFSRec(5, 3);
+
+        Assert.assertEquals(pathList5To3.get(0), path5To3_1);
+        Assert.assertEquals(pathList5To3.get(1), path5To3_2);
     }
 }
 

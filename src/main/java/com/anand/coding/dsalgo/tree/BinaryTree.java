@@ -371,8 +371,8 @@ public class BinaryTree <T extends Comparable<T>> {
     public void printAllPaths() {
         System.out.println("printAllPaths");
 
-        Stack<Node> stack = new ArrayStack<>();
-        printAllPaths(root, stack);
+        Stack<Node> pathStack = new ArrayStack<>();
+        printAllPaths(root, pathStack);
         System.out.println();
     }
 
@@ -381,25 +381,26 @@ public class BinaryTree <T extends Comparable<T>> {
      *  with the help of a stack
      *
      * @param root
-     * @param stack used to push the traversed node one by one.
+     * @param pathStack used to push the traversed node one by one.
      *              Pop the node once its path is processed.
      *              Pop the node once all the paths of its right subTree is processed.
      */
-    private void printAllPaths(final Node root, final Stack<Node> stack){
+    private void printAllPaths(final Node root, final Stack<Node> pathStack){
         if(root == null){
             return;
         }
-        stack.push(root);
+        pathStack.push(root);
         if(root.getLeft()==null && root.getRight()==null){
-            stack.display();
-            stack.pop();
+            //TODO: Instead of printing paths we can add the path to pathList available in function parameter
+            pathStack.display();
+            pathStack.pop();
             return;
         }
-        printAllPaths(root.getLeft(), stack);
-        printAllPaths(root.getRight(), stack);
+        printAllPaths(root.getLeft(), pathStack);
+        printAllPaths(root.getRight(), pathStack);
 
         //Once right subTree is processed, remove its parent
-        stack.pop();
+        pathStack.pop();
     }
 
     /**
