@@ -11,6 +11,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
+ * 1. A non-linear data structure consisting of nodes(vertices) and edges.
+ *    It has set of vertices V = {0,1,2,3,4,5} and the set of edges E = {23,30,41,50,52,54}.
+ *
+ * 2. In Connected graph there can be one such node from which all other nodes can be traversed.
+ *
+ * 3. Disconnected graph is like collection of different sub graphs.
  *
  * @param <T>
  */
@@ -312,11 +318,14 @@ public class Graph<T> {
     }
 
     /**
+     *
+     * It is a linear ordering of vertices such where for each edge uv, vertex u comes before v in the ordering.
+     *
      * DFS algorithm for topological sorting
      * Applicable for Directed Acyclic Graph (DAG)
      *
      * Algorithm:
-     *      Apply DFS algorithm to process as following
+     *      Apply DFS (PostOrder) algorithm to process as following
      *      1. traverse all the DFS forests
      *      2. Once all the children are processed, put the vertex in a stack
      *      3. Empty the stack and it gives topological sorting.

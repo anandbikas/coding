@@ -14,6 +14,17 @@ public class DirectedGraphTest {
     private void setUp(){
         directedGraph = new Graph<>(GraphType.DIRECTED);
 
+        /**
+         *
+         *        (0)               (1)
+         *         ^  ^.               ^.
+         *         |     .               .
+         *         |       (5) - - - - > (4)
+         *         |          .
+         *         |            .>
+         *        (3) < - - - - - (2)
+         *
+         */
         for(int i=0; i<=5; i++){
             directedGraph.insert("node" + i);
         }
