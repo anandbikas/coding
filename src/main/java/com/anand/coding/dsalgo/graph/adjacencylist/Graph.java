@@ -207,12 +207,74 @@ public class Graph<T> {
     }
 
     /**
+     * Use DFS to count number of disconnected sub graphs.
+     *
+     * @return
+     */
+    public int countDfsForests(){
+
+        boolean []visited = new boolean[size];
+
+        int dfsForests = 0;
+        // In case of disconnected graph, there can be DFS forest. Loop through all nodes in such cases.
+        for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
+            if(!visited[nodeIndex]){
+                countDfsForests(nodeIndex, visited);
+                dfsForests++;
+            }
+        }
+        return dfsForests;
+    }
+
+    /**
+     *
+     * @param nodeIndex
+     * @param visited
+     * @return
+     */
+    private void countDfsForests(int nodeIndex, boolean []visited){
+
+        if(visited[nodeIndex]) {
+            return;
+        }
+
+        visited[nodeIndex] = true;
+
+        for(int childIndex: adjListArray.get(nodeIndex)){
+            if(!visited[childIndex]){
+                countDfsForests(childIndex, visited);
+            }
+        }
+    }
+
+
+    /**
      *
      * @param u
      */
     public int outDegree(int u) {
         return adjListArray.get(u).size();
     }
+
+    /**
+     *
+     * @param u
+     */
+    public int inDegree(int u) {
+
+        //To calculate inDegrees for all nodes, take an array instead.
+        int inDegree=0;
+
+        for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
+            for(int childIndex: adjListArray.get(nodeIndex)) {
+                if(childIndex==u) {
+                   inDegree++;
+                }
+            }
+        }
+        return inDegree;
+    }
+
 
     /**
      * Use DFS to find a cycle in a directed graph
