@@ -19,7 +19,7 @@ public class ArrayTest {
             for (int i = 1; i <= array.getNumberOfElements(); i++) {
 
 
-                array.rotateRightByNElements(1);
+                array.rotateByNElements(1);
                 int pivotElementIndex = array.getRotatedArrayPivotElementIndex();
                 System.out.println(array + " -> " + pivotElementIndex);
                 Assert.assertEquals(pivotElementIndex, i);

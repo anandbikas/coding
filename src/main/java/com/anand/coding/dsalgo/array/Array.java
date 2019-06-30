@@ -208,18 +208,17 @@ public class Array {
      */
     public int binarySearch(int startIndex, int endIndex, int key) {
 
-        if (key >= A[startIndex] && key <= A[endIndex]) {
-            while (startIndex <= endIndex) {
-                int mid = (startIndex + endIndex) / 2;
-                if (key < A[mid]) {
-                    endIndex = mid - 1;
-                } else if (key > A[mid]) {
-                    startIndex = mid + 1;
-                } else {
-                    return mid;
-                }
+        while (startIndex <= endIndex) {
+            int mid = (startIndex + endIndex) / 2;
+            if (key < A[mid]) {
+                endIndex = mid - 1;
+            } else if (key > A[mid]) {
+                startIndex = mid + 1;
+            } else {
+                return mid;
             }
         }
+
         return -1;
     }
 
@@ -242,9 +241,8 @@ public class Array {
      */
     public int binarySearchFirstOccurence(int startIndex, int endIndex, int key) {
 
-        int mid;
         while (startIndex < endIndex) {
-            mid = (startIndex + endIndex) / 2;
+            int mid = (startIndex + endIndex) / 2;
             if (key <= A[mid]) {
                 endIndex = mid;
             } else {
@@ -291,25 +289,29 @@ public class Array {
     }
 
     /**
+     *  -ve means left rotate
+     *  +ve means right rotate
      *
      * @param n
      */
-    public void rotateRightByNElements(int n){
+    public void rotateByNElements(int n){
 
-        if(numberOfElements<=0){
+        if(numberOfElements==0 || n==0){
             return;
         }
-
-        n %= numberOfElements;
-        if(n==0){
-            return;
+        if(n<0){
+            n = n*-1;
+            n = numberOfElements - n%numberOfElements;
+        }
+        if(n>0){
+            n %= numberOfElements;
         }
 
         int [] tempArr = new int[n];
         System.arraycopy(A, numberOfElements-n, tempArr, 0, n);
 
-        for(int i=numberOfElements-n-1; i>=0; i--){
-            A[i+n] = A[i];
+        for(int i=numberOfElements-1; i>=n; i--){
+            A[i] = A[i-n];
         }
 
         System.arraycopy(tempArr, 0, A, 0, n);
@@ -429,21 +431,25 @@ public class Array {
      */
     public void insertAsSorted(int startIndex, int endIndex, int data) {
 
-        int j=endIndex;
-        while(j >= startIndex && A[j] > data) {
+        int j;
+        for(j=endIndex; j >= startIndex && A[j] > data; j--) {
             A[j+1] = A[j];
-            j--;
         }
         A[j+1] = data;
     }
 
     /**
      * Array of 1 element is sorted.
-     * Insert all other elements in the above sorted array one by one.
+     * Insert all other elements in this sorted array one by one.
      */
     public void insertionSort() {
         for (int i=1; i < numberOfElements ; i++) {
-            insertAsSorted(0, i-1, A[i]);
+
+            int j;
+            for(j=i; j >= 0 && A[j] > A[i]; j--) {
+                A[j+1] = A[j];
+            }
+            A[j+1] = A[i];
         }
     }
 
@@ -472,7 +478,7 @@ public class Array {
      * @param midIndex
      * @param endIndex
      */
-    private void merge(int startIndex, int midIndex, int endIndex){
+    private void mergeAsSorted(int startIndex, int midIndex, int endIndex){
 
         int A1[] = Arrays.copyOfRange(A,startIndex, midIndex);
         int A2[] = Arrays.copyOfRange(A, midIndex+1, endIndex);
@@ -498,6 +504,8 @@ public class Array {
     }
 
     /**
+     * Array of 1 element is sorted,
+     * Sort array of 2 elements onwards using mergeAsSorted recursively
      *
      * @param startIndex
      * @param endIndex
@@ -510,7 +518,7 @@ public class Array {
         int midIndex = (startIndex + endIndex) / 2;
         mergeSort(startIndex, midIndex);
         mergeSort(midIndex+1, endIndex);
-        merge(startIndex, midIndex, endIndex);
+        mergeAsSorted(startIndex, midIndex, endIndex);
     }
 
     /**
@@ -582,7 +590,7 @@ public class Array {
     }
 
     /**
-     * Complexity O(n log n)
+     * Complexity O(n log n) using binarySearch
      *
      * @param startIndex
      * @param endIndex
@@ -623,7 +631,7 @@ public class Array {
         System.out.println(array);
         System.out.println();
 
-        array.rotateRightByNElements(3);
+        array.rotateByNElements(-2);
         System.out.println(array);
 
         System.out.println(array.getRotatedArrayPivotElementIndex());
