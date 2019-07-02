@@ -507,6 +507,22 @@ public class Array {
      * Array of 1 element is sorted,
      * Sort array of 2 elements onwards using mergeAsSorted recursively
      *
+     * Time complexity using recurrence relation
+     *
+     * T(n) = 2 * T(n/2) + n
+     *      = 4 * T(n/4) + 2n
+     *      = 2^i * T(n/2^i) + in
+     *
+     * Say  n = 2^i
+     * Then, log n = log 2^i
+     *             = i
+     *
+     * Now,
+     * T(n) = n * T(n/n) + logn * n
+     *      = n + nLog n
+     *      = O(nLog n)         ~~~In Big O notation we leave the lower terms.
+     *
+     *
      * @param startIndex
      * @param endIndex
      */
