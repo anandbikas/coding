@@ -18,6 +18,21 @@ import com.anand.coding.dsalgo.exception.HeapFullException;
  *
  * Array represents level order traversal of the tree.
  *
+ *  Application:
+ *      1. HeapSort O(nLog n).
+ *
+ *      2. Sort an almost sorted array.
+ *
+ *      3. Merge K sorted arrays
+ *
+ *      4. Priority Queue: insert(), delete(), extractMax(), decreaseKey() operations in O(log n) time.
+ *
+ *      5. Variations: Binomial Heap, Fibonacci Heap perform union in O(long n) which in O(n) in Binary Heap.
+ *
+ *      6. Heap implemented Priority queue is used in Graph Prim's Minimum Spanning Tree and Dijkstra's Shortest Path algorithms.
+ *
+ *      7. Efficiently find kth smallest or largest element in an array.
+ *
  * @param <T>
  */
 public class BinaryMinHeap<T extends Comparable<T>>{
@@ -73,17 +88,20 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     /**
      * fix MinHeap property by comparing with parent
      * applicable for node value parent(i)> i
-     * @param i
+     * @param child
      */
-    private void heapUp(int i){
+    private void heapUp(int child){
 
         int parent;
-        while(i>0 && heapArr[parent=parent(i)].compareTo(heapArr[i])>0){
-            T temp = heapArr[parent];
-            heapArr[parent(i)] = heapArr[i];
-            heapArr[i] = temp;
+        for(; child>0; child=parent){
 
-            i = parent;
+            parent=parent(child);
+            if(heapArr[parent].compareTo(heapArr[child])<=0){
+                break;
+            }
+            T temp = heapArr[parent];
+            heapArr[parent] = heapArr[child];
+            heapArr[child] = temp;
         }
     }
 
@@ -158,6 +176,10 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     }
 
     /**
+     * Replaces a key with a new data.
+     * This can be used for both decreaseKey() or increaseKey() operations.
+     *
+     * Depending upo the operations, it implies heapUp or heapify to fix broken heap property.
      *
      * @param i
      * @param data
