@@ -13,7 +13,7 @@ public class Array {
     private static final int DEFAULT_SIZE = 100;
 
     private int [] A;
-    private int numberOfElements=0;
+    private int size=0;
 
     /**
      *
@@ -36,15 +36,15 @@ public class Array {
      */
     public Array(int [] A){
         this.A = A;
-        numberOfElements=A.length;
+        size=A.length;
     }
 
     /**
      *
      * @return
      */
-    public int getNumberOfElements() {
-        return numberOfElements;
+    public int getSize() {
+        return size;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Array {
      * @param data
      */
     public void insertAtEnd(final int data){
-        insert(data, numberOfElements);
+        insert(data, size);
     }
 
     /**
@@ -72,24 +72,24 @@ public class Array {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
-        if(numberOfElements==A.length){
+        if(size==A.length){
             throw new ArrayFullException();
         }
 
         //Make space for index position by shifting all elements to right;
-        for(int i = numberOfElements-1; i>=index; i--){
+        for(int i = size-1; i>=index; i--){
             A[i+1] = A[i];
         }
 
         A[index]= data;
-        numberOfElements++;
+        size++;
     }
 
     /**
      *
      */
     public int deleteLast(){
-        return delete(numberOfElements-1);
+        return delete(size-1);
     }
 
     /**
@@ -108,7 +108,7 @@ public class Array {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
-        if(numberOfElements==0){
+        if(size==0){
             throw new ArrayEmptyException();
         }
 
@@ -118,7 +118,7 @@ public class Array {
             A[i] = A[i+1];
         }
 
-        numberOfElements--;
+        size--;
         return data;
     }
 
@@ -128,12 +128,12 @@ public class Array {
      */
     public void deleteDuplicates(){
 
-        if(numberOfElements==0){
+        if(size==0){
             return;
         }
 
         int k=1;
-        for(int i=1; i<numberOfElements; i++){
+        for(int i=1; i<size; i++){
 
             for(int j=0; j<k; j++){
                 if(A[j]==A[i]){
@@ -142,7 +142,7 @@ public class Array {
                 A[k++]=A[i];
             }
         }
-        numberOfElements = k;
+        size = k;
     }
 
     /**
@@ -151,18 +151,18 @@ public class Array {
      */
     public void deleteAllOccurence(int valueToDelete){
 
-        if(numberOfElements==0){
+        if(size==0){
             return;
         }
 
         int k=0;
-        for(int i=0; i<numberOfElements; i++){
+        for(int i=0; i<size; i++){
             if(A[i]==valueToDelete){
                 continue;
             }
             A[k++]=A[i];
         }
-        numberOfElements = k;
+        size = k;
     }
 
 
@@ -174,7 +174,7 @@ public class Array {
     public String toString() {
         String s = "[ ";
 
-        for (int i = 0; i<numberOfElements; i++) {
+        for (int i = 0; i<size; i++) {
             s+=A[i] + " ";
         }
         s+="]";
@@ -196,7 +196,7 @@ public class Array {
      * @return
      */
     public int binarySearch(int key) {
-        return binarySearch(0, numberOfElements-1, key);
+        return binarySearch(0, size-1, key);
     }
 
     /**
@@ -228,7 +228,7 @@ public class Array {
      * @return
      */
     public int binarySearchFirstOccurence(int key) {
-        return binarySearchFirstOccurence(0, numberOfElements-1, key);
+        return binarySearchFirstOccurence(0, size-1, key);
     }
 
     /**
@@ -262,7 +262,7 @@ public class Array {
      * @return
      */
     public int binarySearchRec(int key) {
-        return binarySearchRec(0, numberOfElements-1, key);
+        return binarySearchRec(0, size-1, key);
     }
 
     /**
@@ -296,21 +296,21 @@ public class Array {
      */
     public void rotateByNElements(int n){
 
-        if(numberOfElements==0 || n==0){
+        if(size==0 || n==0){
             return;
         }
         if(n<0){
             n = n*-1;
-            n = numberOfElements - n%numberOfElements;
+            n = size - n%size;
         }
         if(n>0){
-            n %= numberOfElements;
+            n %= size;
         }
 
         int [] tempArr = new int[n];
-        System.arraycopy(A, numberOfElements-n, tempArr, 0, n);
+        System.arraycopy(A, size-n, tempArr, 0, n);
 
-        for(int i=numberOfElements-1; i>=n; i--){
+        for(int i=size-1; i>=n; i--){
             A[i] = A[i-n];
         }
 
@@ -318,7 +318,7 @@ public class Array {
     }
 
     public int getRotatedArrayPivotElementIndex() {
-        return getRotatedArrayPivotElementIndex(0, numberOfElements-1);
+        return getRotatedArrayPivotElementIndex(0, size-1);
     }
 
     /**
@@ -353,7 +353,7 @@ public class Array {
      * @return
      */
     public int binarySearchInRotatedArray(final int key) {
-        return binarySearchInRotatedArray(0, numberOfElements-1, key);
+        return binarySearchInRotatedArray(0, size-1, key);
     }
 
     /**
@@ -379,7 +379,7 @@ public class Array {
      * @return
      */
     public int binarySearchInRotatedArrayWithoutPivot(final int key) {
-        return binarySearchInRotatedArrayWithoutPivot(0, numberOfElements-1, key);
+        return binarySearchInRotatedArrayWithoutPivot(0, size-1, key);
     }
     /**
      *
@@ -419,7 +419,7 @@ public class Array {
      * @param data
      */
     private void insertAsSorted(int data) {
-        insertAsSorted(0, numberOfElements-1, data);
+        insertAsSorted(0, size-1, data);
     }
     
     /**
@@ -443,7 +443,7 @@ public class Array {
      * Insert all other elements in this sorted array one by one.
      */
     public void insertionSort() {
-        for (int i=1; i < numberOfElements ; i++) {
+        for (int i=1; i < size ; i++) {
 
             int j;
             for(j=i; j >= 0 && A[j] > A[i]; j--) {
@@ -459,8 +459,8 @@ public class Array {
      */
     public void bubbleSort() {
 
-        for (int i=0; i < numberOfElements; i++) {
-            for(int j=0; j < numberOfElements-1-i; j++){
+        for (int i=0; i < size; i++) {
+            for(int j=0; j < size-1-i; j++){
                 if(A[j]>A[j+1]){
                     int temp = A[j];
                     A[j]=A[j+1];
@@ -500,7 +500,7 @@ public class Array {
      *
      */
     public void mergeSort() {
-        mergeSort(0, numberOfElements-1);
+        mergeSort(0, size-1);
     }
 
     /**
@@ -525,7 +525,7 @@ public class Array {
      *
      */
     public void selectionSort() {
-        selectionSort(0, numberOfElements-1);
+        selectionSort(0, size-1);
     }
 
     /**
@@ -550,12 +550,62 @@ public class Array {
     }
 
     /**
+     * Sort using Binary Max Heap
+     * It takes O(nLog n) time even if the array is already sorte due to creating a heap at the start.
+     *
+     */
+    public void heapSort(){
+        
+        //Create Max Binary Heap inline existing array.
+        for(int i=size/2-1; i>=0; i--){
+            heapify(i, size);
+        }
+
+        //Top element is the largest, replace it with last and heapify the new element upto size -1.
+        for(int x=size-1; x>0;x--){
+            int temp = A[0];
+            A[0] = A[x];
+            A[x] = temp;
+
+            heapify(0, x);
+        }
+    }
+
+    /**
+     * fix MaxHeap property by comparing with children
+     *
+     * @param i
+     */
+    private void heapify(int i, int currentSize){
+
+        int left = 2*i+1;
+        int right = 2*i+2;
+        int largest = i;
+
+        if(left<currentSize && A[left] > A[largest]){
+            largest = left;
+        }
+
+        if(right<currentSize && A[right] > A[largest]){
+            largest = right;
+        }
+
+        if(largest!=i){
+            int temp = A[largest];
+            A[largest] = A[i];
+            A[i] = temp;
+
+            heapify(largest, currentSize);
+        }
+    }
+
+    /**
      *
      * @param sum
      * @return
      */
     public List<int []> findAllPairsWithMatchingSum(final int sum) {
-        return findAllPairsWithMatchingSum(0, numberOfElements-1, sum);
+        return findAllPairsWithMatchingSum(0, size-1, sum);
     }
 
     /**
@@ -586,7 +636,7 @@ public class Array {
      * @return
      */
     public List<int []> findAllPairsWithMatchingSumNLogN(final int sum) {
-        return findAllPairsWithMatchingSumNLogN(0, numberOfElements-1, sum);
+        return findAllPairsWithMatchingSumNLogN(0, size-1, sum);
     }
 
     /**
@@ -627,7 +677,7 @@ public class Array {
 
         int B[] = new int[]{7, 3, 2, 5, 1, 6, 4};
         Array array = new Array(B);
-        array.bubbleSort();
+        array.heapSort();
         System.out.println(array);
         System.out.println();
 
