@@ -540,6 +540,88 @@ public class Array {
     /**
      *
      */
+    public void quickSort() {
+        quickSort(0, size-1);
+    }
+
+    /**
+     * Choose one element (leftmost, rightmost, middle or even random) and put in in the right place as in
+     * the sorted array in O(n) time by keeping all smaller element left and larger to the right.
+     *
+     * Now there are two partitions in the array, repeat the procedure until all partitions are processed.
+     *
+     *
+     * Time complexity
+     *      T(n) = T(k) + T(n-k-1) + Θ(n)
+     *
+     * Worst Case: (when smallest or greatest element is always chosen as pivot element, where k = 0;
+     *      T(n) = T(0) + T(n-1) + Θ(n)
+     *           = T(n-1) + Θ(n)
+     *           =  Θ(n2) , by solving the above recurrence relation.
+     *
+     *
+     * Best Case: (when the pivot is always picked the middle element in sorted array)
+     *      T(n) = 2 * T(n/2) + Θ(n)
+     *           = 4 * T(n/4) + 2Θ(n)
+     *           = 2^i * T(n/2^i) + iΘ(n)
+     *
+     * Say  n = 2^i
+     * Then, log n = log 2^i
+     *             = i
+     *
+     * Now,
+     *      T(n) = n * T(n/n) + logn * Θ(n)
+     *           = n + nLog n
+     *           = O(nLog n)         ~~~In Big O notation we leave the lower terms.
+     *
+     *
+     * @param startIndex
+     * @param endIndex
+     */
+    public void quickSort(final int startIndex, final int endIndex){
+        if(startIndex>=endIndex){
+            return;
+        }
+
+        int partitionIndex = partition(startIndex, endIndex);
+        quickSort(startIndex, partitionIndex-1);
+        quickSort(partitionIndex+1, endIndex);
+    }
+
+    /**
+     * T
+     *
+     * @param startIndex
+     * @param endIndex
+     * @return
+     */
+    private int partition(int startIndex, int endIndex){
+
+        //Smaller array index
+        int i = startIndex-1;
+
+        int j;
+        for(j=startIndex; j<endIndex; j++){
+            if(A[j]<=A[endIndex]){
+
+                //Swap i+1 and j;
+                i++;
+                int temp = A[i];
+                A[i]=A[j];
+                A[j] = temp;
+            }
+        }
+        i++;
+        int temp = A[i];
+        A[i]=A[endIndex];
+        A[endIndex]=temp;
+
+        return i;
+    }
+
+    /**
+     *
+     */
     public void selectionSort() {
         selectionSort(0, size-1);
     }
@@ -567,7 +649,7 @@ public class Array {
 
     /**
      * Sort using Binary Max Heap
-     * It takes O(nLog n) time even if the array is already sorte due to creating a heap at the start.
+     * It takes O(nLog n) time even if the array is already sorted due to creating a heap at the start.
      *
      */
     public void heapSort(){
@@ -693,7 +775,7 @@ public class Array {
 
         int B[] = new int[]{7, 3, 2, 5, 1, 6, 4};
         Array array = new Array(B);
-        array.heapSort();
+        array.quickSort();
         System.out.println(array);
         System.out.println();
 
