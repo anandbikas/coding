@@ -445,11 +445,12 @@ public class Array {
     public void insertionSort() {
         for (int i=1; i < size ; i++) {
 
+            int key = A[i];
             int j;
-            for(j=i; j >= 0 && A[j] > A[i]; j--) {
+            for(j=i-1; j >= 0 && A[j] > key; j--) {
                 A[j+1] = A[j];
             }
-            A[j+1] = A[i];
+            A[j+1] = key;
         }
     }
 
@@ -775,7 +776,7 @@ public class Array {
 
         int B[] = new int[]{7, 3, 2, 5, 1, 6, 4};
         Array array = new Array(B);
-        array.quickSort();
+        array.insertionSort();
         System.out.println(array);
         System.out.println();
 
