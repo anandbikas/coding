@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.graph.problems;
+package com.anand.coding.dsalgo.disjointset;
 
 /**
  * Given a 2D matrix (0/1), find the number of islands.
@@ -11,9 +11,10 @@ package com.anand.coding.dsalgo.graph.problems;
  *                    {1, 0, 1, 0, 1}
  * Output : 5
  *
- * This can be solved using DisjointSets as well, refer IslandCountUsingDisjointSets.java
+ * This can be solved using DisjointSets as well, refer IslandCountUsingDfs.java
+ *
  */
-public class IslandCountUsingDFS {
+public class IslandCountUsingDisjointSets {
 
     // Possible 8 directions of a node.
     static int[] row = { -1, -1, -1, 0, 0, 1, 1, 1 };
@@ -24,46 +25,35 @@ public class IslandCountUsingDFS {
      * @param A
      * @param n
      * @param m
-     * @return
      */
-    public static int islandCount(int [][]A, int n, int m){
+    public static int islandCount(int [][]A, int n, int m) {
 
-        boolean[][] visited = new boolean[n][m];
+        DisjointUnionSets dus = new DisjointUnionSets(n*m);
 
-        int count = 0;
+        int zerosCount = 0;
+
+        //Process each node
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
-                if(A[i][j]==1 && !visited[i][j] ) {
-                    dfs(A, n, m, visited, i, j);
-                    count++;
+                if(A[i][j]==1) {
+
+                    // Process all 8 neighbors if any
+                    for(int k=0; k<8; k++){
+
+                        int p =  i+row[k];
+                        int q =  j+col[k];
+
+                        if(p<0 || p>=n || q<0 || q>=m || A[p][q]==0){
+                            continue;
+                        }
+                        dus.union(i*n+j, p*n+q);
+                    }
+                } else{
+                    zerosCount++;
                 }
             }
         }
-        return count;
-    }
-
-
-    /**
-     *
-     * @param A
-     * @param n
-     * @param m
-     * @param visited
-     * @param i
-     * @param j
-     */
-    public static void dfs(int [][]A, int n, int m, boolean[][] visited, int i, int j) {
-
-        if(i<0 || i>=n || j<0 || j>=m || A[i][j]==0 || visited[i][j]){
-            return;
-        }
-
-        visited[i][j] = true;
-
-        // DFS all 8 neighbors if any
-        for(int k=0; k<8; k++){
-            dfs(A, n, m, visited, i+row[k], j+col[k]);
-        }
+        return dus.countSets()-zerosCount;
     }
 
     /**
