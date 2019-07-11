@@ -34,19 +34,17 @@ public class DisjointUnionSets {
     */
     public int find(int i) {
 
-        int rep;
         // i itself is the representative
         if (this.Parent[i] == i){
-            rep = i;
+            return i;
         }
         // Else recursively call find on its parent
         else {
-            rep = find(this.Parent[i]);
+            int rep = find(this.Parent[i]);
 
             // Path Compression:
-            this.Parent[i] = rep;
+            return this.Parent[i] = rep;
         }
-        return rep;
     }
 
     /**
@@ -67,9 +65,9 @@ public class DisjointUnionSets {
             return;
         }
 
-        if(Rank[iRep] < Rank [jRep]){
+        if(Rank[iRep] < Rank[jRep]){
             this.Parent[iRep] = jRep;
-        } else if (Rank[iRep] > Rank [jRep]){
+        } else if (Rank[iRep] > Rank[jRep]){
             this.Parent[jRep] = iRep;
         } else {
             this.Parent[iRep] = jRep;

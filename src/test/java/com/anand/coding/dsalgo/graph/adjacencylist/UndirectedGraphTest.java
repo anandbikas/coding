@@ -14,6 +14,17 @@ public class UndirectedGraphTest {
     private void setUp(){
         undirectedGraph = new Graph<>(GraphType.UNDIRECTED);
 
+        /**
+         *
+         *        (0)               (1)
+         *         |   .                .
+         *         |     .               .
+         *         |       (5) - - - - - (4)
+         *         |          .
+         *         |            .
+         *        (3) - - - - - - (2)
+         *
+         */
         for(int i=0; i<=5; i++){
             undirectedGraph.insert("node" + i);
         }
@@ -39,4 +50,18 @@ public class UndirectedGraphTest {
 
         Assert.assertEquals(undirectedGraph.outDegree(5),2);
     }
+
+    @Test
+    private void testCyclic(){
+
+        Assert.assertTrue(undirectedGraph.isCyclicUnionFind());
+
+        undirectedGraph.removeEdge(3,2);
+
+        undirectedGraph.dfsDisplayPreOrderRec(2);
+
+        Assert.assertFalse(undirectedGraph.isCyclicUnionFind());
+
+    }
+
 }

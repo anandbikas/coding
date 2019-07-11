@@ -1,10 +1,12 @@
 package com.anand.coding.dsalgo.graph.adjacencylist;
 
+import com.anand.coding.dsalgo.disjointset.DisjointUnionSets;
 import com.anand.coding.dsalgo.graph.GraphType;
 import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -283,6 +285,10 @@ public class Graph<T> {
      */
     public boolean isCyclicDfsRec(){
 
+        if(type.equals(GraphType.UNDIRECTED)){
+            throw new NotImplementedException();
+        }
+
         boolean []visited = new boolean[size];
         boolean []inRecStack = new boolean[size];
 
@@ -323,6 +329,43 @@ public class Graph<T> {
             }
         }
         inRecStack[nodeIndex] = false;
+        return false;
+    }
+
+    /**
+     * Use DisjointSets Union-Find to find a cycle in an undirected graph
+     *
+     * @return
+     */
+    public boolean isCyclicUnionFind() {
+
+        if(type.equals(GraphType.DIRECTED)){
+            throw new NotImplementedException();
+        }
+
+        DisjointUnionSets dus = new DisjointUnionSets(size);
+
+        boolean []visited = new boolean[size];
+
+        // In case of disconnected graph, there can be DFS forest. Loop through all nodes in such cases.
+        for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
+            visited[nodeIndex] = true;
+
+            for(int childIndex: adjListArray.get(nodeIndex)){
+                if(visited[childIndex]){
+                    continue;
+                }
+
+                int leftEnd = dus.find(nodeIndex);
+                int rightEnd = dus.find(childIndex);
+
+                if(leftEnd==rightEnd){
+                    return true;
+                } else{
+                    dus.union(leftEnd, rightEnd);
+                }
+            }
+        }
         return false;
     }
 
