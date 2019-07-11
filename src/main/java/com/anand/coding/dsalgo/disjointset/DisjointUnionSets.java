@@ -30,6 +30,20 @@ public class DisjointUnionSets {
     }
 
     /**
+     *
+     * @return
+     */
+    public int countSets(){
+        int count = 0;
+        for(int i=0; i<Parent.length; i++){
+            if(Parent[i] == i){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Find the representative of element i
     */
     public int find(int i) {
@@ -93,5 +107,7 @@ public class DisjointUnionSets {
 
         // Check if 1 is a friend of 0
         System.out.println(dus.find(1) == dus.find(0));
+
+        System.out.println(dus.countSets());
     }
 }
