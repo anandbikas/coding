@@ -364,6 +364,82 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     /**
      *
+     * @param start1
+     * @param start2
+     * @return start of sorted list.
+     */
+    public Node mergeAsSorted(Node start1, Node start2){
+
+        //Assign a dummy Object so that start ==null check is not required.
+        Node start3 = new Node<>(null);
+        Node end3 = start3;
+
+        while(start1 != null && start2 !=null){
+            if(start1.compareTo(start2) <=0){
+                end3.setNext(start1);
+                end3 = start1;
+                start1= start1.getNext();
+
+            } else {
+                end3.setNext(start2);
+                end3 = start2;
+                start2= start2.getNext();
+            }
+        }
+
+        while(start1!=null){
+            end3.setNext(start1);
+            end3 = start1;
+            start1= start1.getNext();
+        }
+
+        while(start2!=null){
+            end3.setNext(start2);
+            end3 = start2;
+            start2= start2.getNext();
+        }
+
+        end3.setNext(null);
+
+        return start3.getNext();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public void mergeSort() {
+        this.start = mergeSort(start, length());
+    }
+
+    /**
+     *
+     */
+    public Node mergeSort(Node start, int length){
+
+        // List is empty or has only one element
+        if(start == null || start.getNext()==null){
+            return start;
+        }
+
+        Node list1 = start;
+        Node end1=start;
+
+        int middle = length/2;
+        for(int i=0; i<middle-1; i++){
+            end1=end1.getNext();
+        }
+
+        Node list2 = end1.getNext();
+        end1.setNext(null);
+
+        mergeSort(list1, middle);
+        mergeSort(list2, length-middle);
+        return mergeAsSorted(list1, list2);
+    }
+
+    /**
+     *
      */
     public void reverse(){
 
@@ -618,7 +694,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         * reversePair
         * reverseK
         * oddEven
-        * isPalindrome
         * intersectingNode
      */
 

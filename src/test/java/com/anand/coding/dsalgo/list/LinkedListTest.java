@@ -58,6 +58,19 @@ public class LinkedListTest {
     }
 
     @Test
+    private void testMergeSort(){
+
+        list.swapAdjacentNodes(1);
+        Assert.assertEquals(list.findIndex(1), 2);
+
+        list.insertAtIndex(6, 0);
+        Assert.assertEquals(list.findIndex(0), 6);
+
+        list.mergeSort();
+        Assert.assertEquals(list.findIndex(0), 1);
+    }
+
+    @Test
     private void testReverse(){
         list.reverseRec();
 
