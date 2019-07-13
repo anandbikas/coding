@@ -24,15 +24,18 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
 
-        if(pivotNode==null){
-            pivotNode = new Node<>(data);
-            if(parent == null){
-                this.root = pivotNode;
-            } else if(parent.getData().compareTo(data)>0){
-                parent.setLeft(pivotNode);
-            } else {
-                parent.setRight(pivotNode);
-            }
+        if(pivotNode!=null) {
+            //Duplicate node rejected.
+            return null;
+        }
+
+        pivotNode = new Node<>(data);
+        if(parent == null){
+            this.root = pivotNode;
+        } else if(parent.getData().compareTo(data)>0){
+            parent.setLeft(pivotNode);
+        } else {
+            parent.setRight(pivotNode);
         }
         return pivotNode;
     }
@@ -126,42 +129,29 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return null;
         }
 
-        /**
-         * Deletion Algorithm:
-         *  1. If right of pivotNode is null,
-         *     1.1 Replace pivotNode with its left (may be null or a valid node)
-         *
-         *  2. Else if left of right of pivotNode is null, i.e; pivotNode.right is the inOrder successor
-         *     2.1 left of pivotNode becomes left of right of pivotNode
-         *     2.2 Replace pivotNode with right of pivotNode
-         *
-         *  3. Else Find the inOrder successor of pivotNode along with its parent.
-         *     3.1 right of inOrderSuccessor becomes left of inOrderSuccessor's parent
-         *     3.2 left and right of pivotNode becomes left and right of inOrderSuccessor respectively
-         *     3.3 Replace pivotNode with inOrderSuccessor
-         *
-         */
         Node<T> nodeToShift;
+
         if(pivotNode.getRight() == null) {
+            //If pivot node has no inOrder successor, replace pivot with its left node.
             nodeToShift = pivotNode.getLeft();
 
-        } else if (pivotNode.getRight().getLeft() == null){
-            nodeToShift = pivotNode.getRight();
-            nodeToShift.setLeft(pivotNode.getLeft());
-
         } else {
-            //Find inorder successor of pivotNode
-            Node<T> parentOfNodeToShift = pivotNode.getRight();
-            nodeToShift = parentOfNodeToShift.getLeft();
+            // Replace pivot with its inorder successor
+            // 1. update left of inOrderSuccessor's parent with inOrderSuccessor's right node.
+            // 2. update left and right of inOrderSuccessor node with those of pivot node.
+            Node<T> parentOfNodeToShift = pivotNode;
+            nodeToShift = pivotNode.getRight();
+
             while(nodeToShift.getLeft()!= null){
-                parentOfNodeToShift=nodeToShift;
-                nodeToShift=nodeToShift.getLeft();
+                parentOfNodeToShift = nodeToShift;
+                nodeToShift = nodeToShift.getLeft();
             }
 
-            parentOfNodeToShift.setLeft(nodeToShift.getRight());
-
+            if(parentOfNodeToShift != pivotNode) {
+                parentOfNodeToShift.setLeft(nodeToShift.getRight());
+                nodeToShift.setRight(pivotNode.getRight());
+            }
             nodeToShift.setLeft(pivotNode.getLeft());
-            nodeToShift.setRight(pivotNode.getRight());
         }
 
         if(parent == null){
@@ -246,22 +236,22 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * Print all the paths of the tree.
      * Use binary search tree feature to print the path by traversing from root to child
      *
-     * @param root
+     * @param node
      */
-    private void printAllPaths(final Node<T> root){
-        if(root == null){
+    private void printAllPaths(final Node<T> node){
+        if(node == null){
             return;
         }
-        if(root.getLeft()==null && root.getRight()==null){
-            for(Node<T> node = this.root; node!=null;){
-                System.out.print(node.getData() + "  ");
-                node = node.compareTo(root) > 0 ? node.getLeft() : node.getRight();
+        if(node.getLeft()==null && node.getRight()==null){
+            for(Node<T> n = this.root; n!=null;){
+                System.out.print(n.getData() + "  ");
+                n = n.compareTo(node) > 0 ? n.getLeft() : n.getRight();
             }
             System.out.println();
             return;
         }
-        printAllPaths(root.getLeft());
-        printAllPaths(root.getRight());
+        printAllPaths(node.getLeft());
+        printAllPaths(node.getRight());
     }
 
     /**

@@ -121,6 +121,6 @@ public class Node <T extends Comparable<T>> implements Comparable<Node<T>>{
      */
     @Override
     public int compareTo(Node<T> node) {
-        return node.getData().compareTo(node.data);
+        return this.data.compareTo(node.data);
     }
 }
