@@ -575,6 +575,10 @@ public class Array {
      *           = n + nLog n
      *           = O(nLog n)         ~~~In Big O notation we leave the lower terms.
      *
+     *  INFO:
+     *  1. QuickSort is preferred over MergeSort for arrays due to its in-place sorting technique.
+     *  2. MergeSort is preferred over QuickSort for linked list due to linked data structure.
+     *     No extra space is required for linked list and it is always is O(nlog n)
      *
      * @param startIndex
      * @param endIndex
