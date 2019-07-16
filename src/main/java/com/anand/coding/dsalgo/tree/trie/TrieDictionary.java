@@ -2,6 +2,9 @@ package com.anand.coding.dsalgo.tree.trie;
 
 import com.anand.coding.dsalgo.stack.ArrayStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TrieDictionary
  */
@@ -108,6 +111,62 @@ public class TrieDictionary {
         }
     }
 
+    /**
+     *
+     * @param prefix
+     * @return
+     */
+    public List<String> getAllPrefixedWords(String prefix) {
+
+        List<String> list = new ArrayList<>();
+
+        if (prefix == null) {
+            return list;
+        }
+
+        ArrayStack<Character> stack = new ArrayStack<>();
+
+        final char[] charArray = prefix.toUpperCase().toCharArray();
+
+        //Put all characters in prefix in the stack.
+        TrieNode trieNode = root;
+        for(char c: charArray){
+            trieNode = trieNode.getChild(c);
+            if(trieNode==null){
+                return list;
+            }
+            stack.push(c);
+        }
+
+        getAllPrefixedWords(trieNode, stack, list);
+
+        return list;
+    }
+
+    /**
+     *
+     * @param trieNode
+     * @param stack
+     * @param list
+     */
+    private void getAllPrefixedWords(TrieNode trieNode, ArrayStack<Character> stack, List<String> list){
+        if(trieNode == null){
+            return;
+        }
+
+        for(char c='A'; c<'Z'; c++){
+            if(trieNode.getChild(c)!=null){
+                TrieNode child = trieNode.getChild(c);
+                stack.push(c);
+                if(child.getWordMeaning()!=null){
+                    list.add(stack.getAsWord());
+                }
+                getAllPrefixedWords(child, stack, list);
+                stack.pop();
+            }
+        }
+    }
+
 
     /**
      *  main function to test TrieDictionary
@@ -122,8 +181,13 @@ public class TrieDictionary {
         trieDictionary.insert("boot","juta");
         trieDictionary.insert("hippopotamus","dariyayi ghoda");
 
-
         trieDictionary.display();
+
+        String prefix = "bo";
+
+        System.out.println("All words prefixed with : " + prefix);
+        trieDictionary.getAllPrefixedWords(prefix).forEach(System.out::println);
+
 
         trieDictionary.delete("boot");
         trieDictionary.display();
