@@ -66,6 +66,8 @@ public class IntervalScheduling {
     /**
      * List of non-overlapping intervals for which the schedule gives maximum utilization of the resource.
      * The resource can be a teaching room, a meeting hall etc.
+     *
+     * Greedy approach
      **
      * @return
      */
@@ -84,10 +86,11 @@ public class IntervalScheduling {
 
         for(int j=1; j<intervals.size(); j++) {
 
+            //If if we skip job j, total time will workTimeArray[j-1]
             workTimeArray[j]=workTimeArray[j-1];
 
-            // Find k = largest index in workTimeArray where index < j
-            // such that interval k is compatible (not overlapping) with interval j
+            // Now, check if job j can be taken by making more profit by
+            // finding nearest index of one of the previous intervals which is compatible/non-overlapping with interval j
             for(int k=j-1; k>=0; k--) {
                 if (intervals.get(k).getEnd().getTotalMinute()
                         < intervals.get(j).getStart().getTotalMinute()){
@@ -98,40 +101,6 @@ public class IntervalScheduling {
         }
 
         return workTimeArray[intervals.size()-1];
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getMaxWorkingTime1()
-    {
-        if(intervals==null || intervals.isEmpty()) {
-            return 0;
-        }
-
-        int maxWorkingTime=0;
-        for(int i=0; i<intervals.size();i++) {
-
-            int workingTime= intervals.get(i).getIntervalDuration();
-            int start=intervals.get(i).getStart().getTotalMinute();
-            int end = intervals.get(i).getEnd().getTotalMinute();
-
-            for(int j=0; j<intervals.size(); j++) {
-
-                if(intervals.get(j).getStart().getTotalMinute() > end) {
-                    workingTime += intervals.get(j).getIntervalDuration();
-                    end = intervals.get(j).getEnd().getTotalMinute();
-
-                } else if(intervals.get(j).getEnd().getTotalMinute() < start) {
-                    workingTime += intervals.get(j).getIntervalDuration();
-                    start = intervals.get(j).getStart().getTotalMinute();
-                }
-            }
-            if(workingTime>maxWorkingTime)
-                maxWorkingTime=workingTime;
-        }
-        return maxWorkingTime;
     }
 
     /**
