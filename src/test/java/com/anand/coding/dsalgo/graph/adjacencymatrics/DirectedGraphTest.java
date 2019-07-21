@@ -15,12 +15,23 @@ public class DirectedGraphTest {
 
     @BeforeMethod
     private void setUp(){
-        directedGraph = new Graph<>(GraphType.DIRECTED);
+        directedGraph = new Graph<>(6, GraphType.DIRECTED);
 
         for(int i=0; i<=5; i++){
             directedGraph.insert("node" + i);
         }
 
+        /**
+         *
+         *        (0)               (1)
+         *         ^  ^.               ^.
+         *         |     .               .
+         *         |       (5) - - - - > (4)
+         *         |          .
+         *         |            .>
+         *        (3) < - - - - - (2)
+         *
+         */
         directedGraph.addEdge(5,0);
         directedGraph.addEdge(5,2);
         directedGraph.addEdge(5,4);
@@ -40,5 +51,34 @@ public class DirectedGraphTest {
         Assert.assertEquals(directedGraph.inDegree(5),0);
         Assert.assertEquals(directedGraph.outDegree(5),3);
     }
+
+
+    @Test
+    private void testPathMatrix(){
+        directedGraph.addEdge(0,3);
+
+        display(directedGraph.pathMatrix(1));
+
+        display(directedGraph.pathMatrix(2));
+
+        display(directedGraph.allPathMatrix(6));
+
+    }
+
+    /**
+     *
+     */
+    public void display(int [][] A){
+
+        System.out.println("Matrix");
+
+        for(int i=0; i<A.length; i++){
+            for(int j=0; j<A.length; j++){
+                System.out.print(String.format("%4d", A[i][j]));
+            }
+            System.out.println();
+        }
+    }
+
 }
 

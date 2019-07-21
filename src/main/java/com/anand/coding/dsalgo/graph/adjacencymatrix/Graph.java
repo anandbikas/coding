@@ -250,4 +250,114 @@ public class Graph<T> {
         return outDegree;
     }
 
+    /**
+     * 𝑖𝑗'th entry of 𝐴 pow 𝑘 gives the number of 𝑘-length paths/walks connecting the vertices 𝑖 and 𝑗.
+     *
+     * Path vs Walk:
+     *    1. Path doesn't have repeated nodes.
+     *    2. Walk can have repeated nodes.
+     *      1.1 In directed graph this happens due to a loop.
+     *      1.2 In unDirected graph, repeatition is natural.
+     *
+     * @return
+     */
+    public int [][] pathMatrix(int pathLength){
+        return matrixOfPowK(adjArr, pathLength);
+    }
+
+    /**
+     *
+     * @param A
+     * @param k
+     * @return
+     */
+    private int [][] matrixOfPowK(int [][] A, int k){
+
+        int [][] R = new int[A.length][A.length];
+        int [][] T = new int[A.length][A.length];
+
+        if(k<1){
+            return R;
+        }
+
+        for (int p=0; p<A.length; p++) {
+            for (int q=0; q<A.length; q++) {
+                R[p][q] = A[p][q];
+            }
+        }
+
+        while(k-->1) {
+            // Reset result array to 0 and move it to temp.
+            for (int p=0; p<A.length; p++) {
+                for (int q=0; q<A.length; q++) {
+                    T[p][q] = R[p][q];
+                    R[p][q]=0;
+                }
+            }
+
+            // Matrix multiplication.
+            for (int p=0; p<A.length; p++) {
+                for (int q=0; q<A.length; q++) {
+                    for (int r=0; r<A.length; r++) {
+                        R[p][q] += T[p][r] * A[r][q];
+                    }
+                }
+            }
+        }
+        return R;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int [][] allPathMatrix(int uptoPathLength){
+        return sumMatrixOfPowFromOneToK(adjArr, uptoPathLength);
+    }
+
+    /**
+     *
+     * @param A
+     * @param k
+     * @return
+     */
+    private int [][] sumMatrixOfPowFromOneToK(int [][] A, int k){
+
+        int [][] R = new int[A.length][A.length];
+        int [][] T = new int[A.length][A.length];
+
+        int [][] S = new int[A.length][A.length];
+
+        if(k<1){
+            return S;
+        }
+
+        for (int p=0; p<A.length; p++) {
+            for (int q=0; q<A.length; q++) {
+                R[p][q] = A[p][q];
+                S[p][q] += R[p][q];
+            }
+        }
+
+        while(k-->1) {
+            // Reset result array to 0 and move it to temp.
+            for (int p=0; p<A.length; p++) {
+                for (int q=0; q<A.length; q++) {
+                    T[p][q] = R[p][q];
+                    R[p][q]=0;
+                }
+            }
+
+            // Matrix multiplication.
+            for (int p=0; p<A.length; p++) {
+                for (int q=0; q<A.length; q++) {
+                    for (int r=0; r<A.length; r++) {
+                        R[p][q] += T[p][r] * A[r][q];
+                    }
+                    S[p][q] += R[p][q];
+                }
+            }
+        }
+        return S;
+    }
 }
