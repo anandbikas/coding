@@ -63,6 +63,9 @@ public class DirectedGraphTest {
 
         display(directedGraph.allPathMatrix(6));
 
+        display(directedGraph.allPathMatrixWarshall());
+
+
     }
 
     /**

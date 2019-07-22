@@ -360,4 +360,45 @@ public class Graph<T> {
         }
         return S;
     }
+
+    /**
+     * Dynamic Programming approach.
+     * Floyd Warshall: All pairs shortest path matrix.
+     *
+     * R[u][v] represents minimum path value from u to v. The path can be of any length upto size.
+     *
+     * @return
+     */
+    public int [][] allPathMatrixWarshall(){
+
+        int [][] R = new int[size][size];
+
+        for (int p=0; p<adjArr.length; p++) {
+            for (int q=0; q<adjArr.length; q++) {
+                R[p][q] = adjArr[p][q];
+            }
+        }
+
+        for(int k=0; k<size; k++){
+
+            for(int u=0; u<size; u++){
+                for(int v=0; v<size; v++){
+                    // If k is an intermediate node, check if it comes in shortest path.
+                    if(u==v || R[u][k]==0 || R[k][v]==0) {
+                        continue;
+                    }
+                    // For weighted graph store actual path weight.
+                    int pathValue = R[u][k] + R[k][v];
+                    if(R[u][v]==0 || pathValue<R[u][v]){
+                        R[u][v] = pathValue;
+                    }
+
+                    // For unweighted graph, store only 1 to indicate a path is present.
+                    // R[u][v] = 1;
+                }
+            }
+        }
+        return R;
+    }
+
 }
