@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.graph.adjacencylist;
 
 import com.anand.coding.dsalgo.disjointset.DisjointUnionSets;
+import com.anand.coding.dsalgo.graph.Edge;
 import com.anand.coding.dsalgo.graph.GraphType;
 import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
@@ -8,10 +9,7 @@ import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 1. A non-linear data structure consisting of nodes(vertices) and edges.
@@ -594,5 +592,67 @@ public class Graph<T> {
             }
         }
         return pathList;
+    }
+
+    /**
+     * Kruskal:
+     * -> In a connected and undirected graph there can be many sub graphs (spanning tree) which connects all
+     *    the vertices together with exactly V-1 edges.
+     *
+     * -> In a weighted, connected and undirected graph, Minimum (Weight) Spanning Tree (MST) is one of the spanning trees
+     *    having minimum total weight.
+     *
+     *  1. Sort all edges in increasing order of their weight
+     *  2. Insert smallest edge into spanning tree.
+     *  3. If the newly inserted edge forms a cycle, discard it.
+     *
+     *  Use union-find to detect cycle in an undirected graph.
+     *
+     * @return
+     */
+    public Graph<T> kruskalsMinimumSpanningTree(){
+
+        if(type.equals(GraphType.DIRECTED)){
+            throw new NotImplementedException();
+        }
+
+        List<Edge> edgeList = new ArrayList<>();
+
+        for(int u=0; u<size; u++) {
+            Iterator<Integer> iterator = adjListArray.get(u).iterator();
+            while (iterator.hasNext()) {
+                int v = iterator.next();
+                edgeList.add(new Edge(u, v, 1));
+            }
+        }
+        Collections.sort(edgeList);
+
+        Graph<T> mstGraph = new Graph<>();
+
+        for(int i=0; i<size; i++){
+            mstGraph.insert(vertices.get(i));
+        }
+
+        //DisjointSets: Union find for loop detection.
+        DisjointUnionSets dus = new DisjointUnionSets(size);
+
+        int edgeCount=0;
+        for(Edge edge: edgeList){
+            if(edgeCount >= size-1){
+                break;
+            }
+
+            int leftEnd = dus.find(edge.getU());
+            int rightEnd = dus.find(edge.getV());
+
+            // If u,v does not create loop add it to mstGraph.
+            if(leftEnd!=rightEnd){
+                edgeCount++;
+                mstGraph.addEdge(edge.getU(), edge.getV());
+                dus.union(leftEnd, rightEnd);
+            }
+        }
+
+        return mstGraph;
     }
 }

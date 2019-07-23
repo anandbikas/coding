@@ -64,4 +64,10 @@ public class UndirectedGraphTest {
 
     }
 
+    @Test
+    private void testKruskalMST(){
+        undirectedGraph.display();
+        undirectedGraph.kruskalsMinimumSpanningTree().display();
+    }
+
 }
