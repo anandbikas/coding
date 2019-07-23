@@ -7,6 +7,7 @@ import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
+import javafx.util.Pair;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
@@ -24,7 +25,9 @@ import java.util.*;
 public class Graph<T> {
 
     private ArrayList<T> vertices;
-    private ArrayList<LinkedList<Integer>> adjListArray;
+
+    // Pair<Integer,Integer> represents childNode and weight pair
+    private ArrayList<LinkedList<Pair<Integer,Integer>>> adjListArray;
 
     private GraphType type;
     private int size=0;
@@ -61,14 +64,23 @@ public class Graph<T> {
      * @param u
      * @param v
      */
-    public void removeEdge(Integer u, Integer v){
+    public void removeEdge(Integer u, Integer v) {
+        removeEdge(u, v,1);
+    }
+
+    /**
+     *
+     * @param u
+     * @param v
+     * @param wt
+     */
+    public void removeEdge(Integer u, Integer v, Integer wt){
         if(u>=size || v >= size){
             throw new ArrayIndexOutOfBoundsException();
         }
-
-        adjListArray.get(u).remove(v);
+        adjListArray.get(u).remove(new Pair<>(v, wt));
         if(type.equals(GraphType.UNDIRECTED)) {
-            adjListArray.get(v).remove(u);
+            adjListArray.get(v).remove(new Pair<>(u, wt));
         }
     }
 
@@ -78,13 +90,23 @@ public class Graph<T> {
      * @param v
      */
     public void addEdge(int u, int v) {
+        addEdge(u, v, 1);
+    }
+
+    /**
+     *
+     * @param u
+     * @param v
+     * @param wt
+     */
+    public void addEdge(int u, int v, int wt) {
         if (u >= size || v >= size) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        adjListArray.get(u).addLast(v);
+        adjListArray.get(u).addLast(new Pair<>(v, wt));
         if (type.equals(GraphType.UNDIRECTED)) {
-            adjListArray.get(v).addLast(u);
+            adjListArray.get(v).addLast(new Pair<>(u, wt));
         }
     }
 
@@ -96,8 +118,23 @@ public class Graph<T> {
 
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
             System.out.print(vertices.get(nodeIndex) + " -> ");
-            for(Integer childIndex: adjListArray.get(nodeIndex)){
-                System.out.print(String.format("%s, ", vertices.get(childIndex)));
+            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+                System.out.print(String.format("%s, ", vertices.get(childIndex.getKey())));
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     *
+     */
+    public void displayWeighted(){
+        System.out.println("Adjacency List Graph");
+
+        for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
+            System.out.print(vertices.get(nodeIndex) + " -> ");
+            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+                System.out.print(String.format("%s(%s), ", vertices.get(childIndex.getKey()), childIndex.getValue()));
             }
             System.out.println();
         }
@@ -125,9 +162,9 @@ public class Graph<T> {
             System.out.print(vertices.get(nodeIndex) + "  ");
             visited[nodeIndex] = true;
 
-            for(int childIndex: adjListArray.get(nodeIndex)){
-                if(!visited[childIndex]){
-                    queue.insert(childIndex);
+            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+                if(!visited[childIndex.getKey()]){
+                    queue.insert(childIndex.getKey());
                 }
             }
         }
@@ -158,12 +195,12 @@ public class Graph<T> {
             System.out.print(vertices.get(nodeIndex) + "  ");
             visited[nodeIndex] = true;
 
-            Iterator<Integer> iterator = adjListArray.get(nodeIndex).descendingIterator();
+            Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(nodeIndex).descendingIterator();
 
             while (iterator.hasNext()){
-                Integer childIndex = iterator.next();
-                if(!visited[childIndex]){
-                    stack.push(childIndex);
+                Pair<Integer, Integer> childIndex = iterator.next();
+                if(!visited[childIndex.getKey()]){
+                    stack.push(childIndex.getKey());
                 }
             }
         }
@@ -199,9 +236,9 @@ public class Graph<T> {
         System.out.print(vertices.get(nodeIndex) + "  ");
         visited[nodeIndex] = true;
 
-        for(int childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex]){
-                dfsDisplayPreOrderRec(childIndex, visited);
+        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+            if(!visited[childIndex.getKey()]){
+                dfsDisplayPreOrderRec(childIndex.getKey(), visited);
             }
         }
     }
@@ -240,9 +277,9 @@ public class Graph<T> {
 
         visited[nodeIndex] = true;
 
-        for(int childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex]){
-                countDfsForests(childIndex, visited);
+        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+            if(!visited[childIndex.getKey()]){
+                countDfsForests(childIndex.getKey(), visited);
             }
         }
     }
@@ -266,8 +303,8 @@ public class Graph<T> {
         int inDegree=0;
 
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
-            for(int childIndex: adjListArray.get(nodeIndex)) {
-                if(childIndex==u) {
+            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)) {
+                if(childIndex.getKey()==u) {
                    inDegree++;
                 }
             }
@@ -319,9 +356,9 @@ public class Graph<T> {
         inRecStack[nodeIndex] = true;
         visited[nodeIndex] = true;
 
-        for(int childIndex: adjListArray.get(nodeIndex)){
+        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
             //Note: no need to check visited here
-            if(isCyclicDfsRec(childIndex, visited, inRecStack)){
+            if(isCyclicDfsRec(childIndex.getKey(), visited, inRecStack)){
                 return true;
 
             }
@@ -349,13 +386,13 @@ public class Graph<T> {
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
             visited[nodeIndex] = true;
 
-            for(int childIndex: adjListArray.get(nodeIndex)){
-                if(visited[childIndex]){
+            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+                if(visited[childIndex.getKey()]){
                     continue;
                 }
 
                 int leftEnd = dus.find(nodeIndex);
-                int rightEnd = dus.find(childIndex);
+                int rightEnd = dus.find(childIndex.getKey());
 
                 if(leftEnd==rightEnd){
                     return true;
@@ -395,8 +432,8 @@ public class Graph<T> {
         int[] inDegrees = new int[size];
 
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
-            for(int childIndex: adjListArray.get(nodeIndex)) {
-                inDegrees[childIndex]++;
+            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)) {
+                inDegrees[childIndex.getKey()]++;
             }
         }
 
@@ -410,10 +447,10 @@ public class Graph<T> {
             int nodeIndex = queue.delete();
             topologicallySortedVertices[k++] = vertices.get(nodeIndex);
 
-            for(int childIndex: adjListArray.get(nodeIndex)){
+            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
                 //Reduce indegree once its parent is processed.
-                if(--inDegrees[childIndex] == 0){
-                    queue.insert(childIndex);
+                if(--inDegrees[childIndex.getKey()] == 0){
+                    queue.insert(childIndex.getKey());
                 }
             }
         }
@@ -475,9 +512,9 @@ public class Graph<T> {
         }
         visited[nodeIndex] = true;
 
-        for(int childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex]){
-                topologicalSortingDfsRec(childIndex, visited, topologicalVertexStack);
+        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+            if(!visited[childIndex.getKey()]){
+                topologicalSortingDfsRec(childIndex.getKey(), visited, topologicalVertexStack);
             }
         }
         topologicalVertexStack.push(vertices.get(nodeIndex));
@@ -530,9 +567,9 @@ public class Graph<T> {
         //Instead keep visited flag after processing destIndex.
         visited[nodeIndex] = true;
 
-        for(int childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex]){
-                 findPathDFSRec(childIndex, destIndex, visited, pathStack, pathList);
+        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+            if(!visited[childIndex.getKey()]){
+                 findPathDFSRec(childIndex.getKey(), destIndex, visited, pathStack, pathList);
             }
         }
 
@@ -583,11 +620,11 @@ public class Graph<T> {
             //Put a marker in stack for parent place holder.
             stack.push(-1);
 
-            Iterator<Integer> iterator = adjListArray.get(nodeIndex).descendingIterator();
+            Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(nodeIndex).descendingIterator();
             while (iterator.hasNext()) {
-                Integer childIndex = iterator.next();
-                if (!visited[childIndex]) {
-                    stack.push(childIndex);
+                Pair<Integer, Integer> childIndex = iterator.next();
+                if (!visited[childIndex.getKey()]) {
+                    stack.push(childIndex.getKey());
                 }
             }
         }
@@ -619,10 +656,10 @@ public class Graph<T> {
         List<Edge> edgeList = new ArrayList<>();
 
         for(int u=0; u<size; u++) {
-            Iterator<Integer> iterator = adjListArray.get(u).iterator();
+            Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).iterator();
             while (iterator.hasNext()) {
-                int v = iterator.next();
-                edgeList.add(new Edge(u, v, 1));
+                Pair<Integer, Integer> v = iterator.next();
+                edgeList.add(new Edge(u, v.getKey(), v.getValue()));
             }
         }
         Collections.sort(edgeList);
@@ -648,7 +685,7 @@ public class Graph<T> {
             // If u,v does not create loop add it to mstGraph.
             if(leftEnd!=rightEnd){
                 edgeCount++;
-                mstGraph.addEdge(edge.getU(), edge.getV());
+                mstGraph.addEdge(edge.getU(), edge.getV(), edge.getWeight());
                 dus.union(leftEnd, rightEnd);
             }
         }
