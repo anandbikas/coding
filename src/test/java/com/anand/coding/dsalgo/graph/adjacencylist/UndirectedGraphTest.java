@@ -10,6 +10,9 @@ public class UndirectedGraphTest {
 
     private Graph<String> undirectedGraph;
 
+    private Graph<String> undirectedWeightedGraph;
+
+
     @BeforeMethod
     private void setUp(){
         undirectedGraph = new Graph<>(GraphType.UNDIRECTED);
@@ -35,6 +38,48 @@ public class UndirectedGraphTest {
         undirectedGraph.addEdge(2,5);
         undirectedGraph.addEdge(3,2);
         undirectedGraph.addEdge(5,4);
+
+
+        undirectedWeightedGraph = new Graph<>(GraphType.UNDIRECTED);
+
+        /**
+         *                  8            7
+         *           (1) - - - - - (2) - - - - - (3)
+         *      4  .  |             | \           |  .
+         *       .    |            2|   \         |     .9
+         *     .      |             |     \4      |        .
+         *  (0)     11|            (8)      \     |14       (4)
+         *     .      |          .  |         \   |        .
+         *      8.    |      . 7    |6         \  |     .10
+         *         .  |   .    .    |            \|  .
+         *           (7) - - - - - (6) - - - - - (5)
+         *                   1             2
+         */
+        for(int i=0; i<=8; i++){
+            undirectedWeightedGraph.insert("node" + i);
+        }
+
+        undirectedWeightedGraph.addEdge(0,1,4);
+        undirectedWeightedGraph.addEdge(0,7, 8);
+
+        undirectedWeightedGraph.addEdge(1,2, 8);
+        undirectedWeightedGraph.addEdge(1,7, 11);
+
+        undirectedWeightedGraph.addEdge(2,3, 7);
+        undirectedWeightedGraph.addEdge(2,8, 2);
+        undirectedWeightedGraph.addEdge(2,5, 4);
+
+        undirectedWeightedGraph.addEdge(3,5, 14);
+        undirectedWeightedGraph.addEdge(3,4, 9);
+
+        undirectedWeightedGraph.addEdge(4,5, 10);
+
+        undirectedWeightedGraph.addEdge(6,5, 2);
+        undirectedWeightedGraph.addEdge(6,7, 1);
+        undirectedWeightedGraph.addEdge(6,8, 6);
+
+        undirectedWeightedGraph.addEdge(7,8, 7);
+
     }
 
     @Test
@@ -74,50 +119,17 @@ public class UndirectedGraphTest {
     @Test
     private void testKruskalMSTWeighted(){
 
-        undirectedGraph = new Graph<>(GraphType.UNDIRECTED);
-
-        /**
-         *                  8            7
-         *           (1) - - - - - (2) - - - - - (3)
-         *      4  .  |             | \           |  .
-         *       .    |            2|   \         |     .9
-         *     .      |             |     \4      |        .
-         *  (0)     11|            (8)      \     |14       (4)
-         *     .      |          .  |         \   |        .
-         *      8.    |      . 7    |6         \  |     .10
-         *         .  |   .    .    |            \|  .
-         *           (7) - - - - - (6) - - - - - (5)
-         *                   1             2
-         */
-        for(int i=0; i<=8; i++){
-            undirectedGraph.insert("node" + i);
-        }
-
-        undirectedGraph.addEdge(0,1,4);
-        undirectedGraph.addEdge(0,7, 8);
-
-        undirectedGraph.addEdge(1,2, 8);
-        undirectedGraph.addEdge(1,7, 11);
-
-        undirectedGraph.addEdge(2,3, 7);
-        undirectedGraph.addEdge(2,8, 2);
-        undirectedGraph.addEdge(2,5, 4);
-
-        undirectedGraph.addEdge(3,5, 14);
-        undirectedGraph.addEdge(3,4, 9);
-
-        undirectedGraph.addEdge(4,5, 10);
-
-        undirectedGraph.addEdge(6,5, 2);
-        undirectedGraph.addEdge(6,7, 1);
-        undirectedGraph.addEdge(6,8, 6);
-
-        undirectedGraph.addEdge(7,8, 7);
-
-
-        undirectedGraph.displayWeighted();
+        undirectedWeightedGraph.displayWeighted();
         System.out.println();
-        undirectedGraph.kruskalsMinimumSpanningTree().displayWeighted();
+        undirectedWeightedGraph.kruskalsMinimumSpanningTree().displayWeighted();
+    }
+
+    @Test
+    private void testPrimsMSTWeighted(){
+
+        undirectedWeightedGraph.displayWeighted();
+        System.out.println();
+        undirectedWeightedGraph.primsMinimumSpanningTree().displayWeighted();
     }
 
 }
