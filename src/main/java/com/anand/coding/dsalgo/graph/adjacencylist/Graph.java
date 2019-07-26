@@ -699,7 +699,7 @@ public class Graph<T> {
      *
      *  1. Create a new set of vertices with a key value INFINITY to all. Assign key value 0 to the first element for it to be picked up.
      *  3. Insert min valued node u to the MST.
-     *  3. Update the key value of all the adjacent nodes v of u to minimum of current_key_value and weight(u,v) and change its parent if required.
+     *  3. Update the key value of all the adjacent nodes v of u to minimum of current_key_value_v and weight(u,v) and change its parent if required.
      *
      *
      * @return
@@ -748,6 +748,71 @@ public class Graph<T> {
                 if(!selected[u] && weightValue[u]<minValue) {
                     minValuedNode = u;
                     minValue = weightValue[u];
+                }
+            }
+        }
+        return mstGraph;
+    }
+
+    /**
+     * DijkstraShortestPathTree: Greedy Algorithm
+     * -> This is same as Prim's except it calculates distance pathValue instead of weightValue.
+     * -> It works for both directed and undirected graphs
+     *
+     *  1. Create a new set of vertices with a key value INFINITY to all. Assign key value 0 to the SOURCE element for it to be picked up.
+     *  3. Insert min valued node u to the MST.
+     *  3. Update the key value of all the adjacent nodes v of u to minimum of current_key_value_v and weight(u,v)+current_key_value_u and change its parent if required.
+     *
+     *
+     * @return
+     */
+    public Graph<T> dijkstraShortestPathTree(int source){
+
+        int INF= Integer.MAX_VALUE;
+        Graph<T> mstGraph = new Graph<>(this.type);
+
+        if(size==0){
+            return mstGraph;
+        }
+
+        int [] pathValue = new int[size];
+        int [] weightValue = new int[size];
+        int [] parent = new int[size];
+        boolean [] selected = new boolean[size];
+
+        for(int i=0; i<size; i++) {
+            pathValue[i]=INF;
+            weightValue[i]=0;
+            parent[i]=i;
+            mstGraph.insert(vertices.get(i));
+        }
+        pathValue[source]=0;
+
+        int minValuedNode = source;
+        while(minValuedNode !=-1) {
+
+            selected[minValuedNode]=true;
+            if(parent[minValuedNode] != minValuedNode) {
+                mstGraph.addEdge(parent[minValuedNode], minValuedNode, weightValue[minValuedNode]);
+            }
+
+            for(Pair<Integer, Integer> childIndex : adjListArray.get(minValuedNode)){
+
+                if(!selected[childIndex.getKey()] &&
+                        childIndex.getValue()+pathValue[minValuedNode] < pathValue[childIndex.getKey()]){
+
+                    pathValue[childIndex.getKey()] = childIndex.getValue()+pathValue[minValuedNode];
+                    weightValue[childIndex.getKey()] = childIndex.getValue();
+                    parent[childIndex.getKey()] = minValuedNode;
+                }
+            }
+
+            int minValue=INF;
+            minValuedNode=-1;
+            for(int u=0; u<size; u++) {
+                if(!selected[u] && pathValue[u]<minValue) {
+                    minValuedNode = u;
+                    minValue = pathValue[u];
                 }
             }
         }

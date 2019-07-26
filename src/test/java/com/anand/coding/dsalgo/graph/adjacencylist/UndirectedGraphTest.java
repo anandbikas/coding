@@ -132,4 +132,12 @@ public class UndirectedGraphTest {
         undirectedWeightedGraph.primsMinimumSpanningTree().displayWeighted();
     }
 
+    @Test
+    private void testDijkstraSPTWeighted(){
+
+        undirectedWeightedGraph.displayWeighted();
+        System.out.println();
+        undirectedWeightedGraph.dijkstraShortestPathTree(0).displayWeighted();
+    }
+
 }
