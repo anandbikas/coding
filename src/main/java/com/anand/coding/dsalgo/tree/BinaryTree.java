@@ -252,6 +252,82 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
+     * Range: an empty range has right < left
+     */
+    private class Range{
+        public int left=0;
+        public int right=-1;
+    }
+
+    /**
+     *
+     * @param node
+     * @param currentLevel
+     * @param range
+     */
+    public void calculateVerticalLevelRange(Node node,  int currentLevel, Range range){
+
+        if(node == null){
+            return;
+        }
+
+        if(currentLevel<range.left){
+            range.left=currentLevel;
+        }
+
+        if(currentLevel>range.right){
+            range.right = currentLevel;
+        }
+
+        calculateVerticalLevelRange(node.getLeft(), currentLevel-1, range);
+        calculateVerticalLevelRange(node.getRight(), currentLevel+1, range);
+    }
+
+
+    /**
+     * Call printLevelVertical method for each vertical level
+     */
+    public void verticalOrderTraversalBruteForce(){
+        System.out.println("verticalOrderTraversalBruteForce");
+
+        Range verticalLevelRange = new Range();
+        calculateVerticalLevelRange(root, 0, verticalLevelRange);
+
+        for(int level = verticalLevelRange.left; level<=verticalLevelRange.right; level++){
+            printVerticalLevel(level);
+        }
+        System.out.println();
+    }
+
+    /**
+     *
+     * @param level
+     */
+    public void printVerticalLevel(int level){
+        System.out.println("printLevel " + level);
+        printVerticalLevel(root, level, 0);
+        System.out.println();
+    }
+
+    /**
+     * Print data in a given level vertical
+     *
+     * @param root
+     * @param level
+     * @param currentLevel this tags each node with its vertical level, is handy to find the level of a node while processing.
+     */
+    private void printVerticalLevel(Node root, int level, int currentLevel){
+        if(root == null){
+            return;
+        }
+        if(level == currentLevel){
+            System.out.print( root.getData() + " ");
+        }
+        printVerticalLevel(root.getLeft(), level, currentLevel-1);
+        printVerticalLevel(root.getRight(), level, currentLevel+1);
+    }
+
+    /**
      *
      * @param data
      * @return
@@ -759,6 +835,8 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println(tree1);
         tree1.preOrderTraversal();
         tree1.inOrderTraversal();
+        tree1.verticalOrderTraversalBruteForce();
+
 
         /**
          *                x
