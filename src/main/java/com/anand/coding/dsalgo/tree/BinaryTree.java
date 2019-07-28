@@ -5,6 +5,11 @@ import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Binary Tree
  *
@@ -249,6 +254,54 @@ public class BinaryTree <T extends Comparable<T>> {
         printLevel(root.getLeft(), level, currentLevel+1);
         printLevel(root.getRight(), level, currentLevel+1);
 
+    }
+
+    /**
+     * verticalOrderTraversal using HashMap
+     */
+    public void verticalOrderTraversal(){
+
+        Map<Integer, List<Node>> nodeMap= new HashMap<>();
+        Range verticalRange = new Range();
+        verticalOrderTraversal(root, nodeMap, 0, verticalRange);
+
+        for(int level = verticalRange.left; level<=verticalRange.right; level++) {
+            System.out.println("printLevel " + level);
+
+            nodeMap.get(level).forEach(node -> {
+                System.out.print( node.getData() + " ");
+            });
+            System.out.println();
+        }
+
+    }
+
+    /**
+     *
+     * @param node
+     * @param nodeMap
+     * @param currentLevel
+     * @param range
+     */
+    private void verticalOrderTraversal(Node node, Map<Integer, List<Node>> nodeMap, int currentLevel, Range range){
+
+        if(node == null){
+            return;
+        }
+
+        if(currentLevel<range.left){
+            range.left=currentLevel;
+        }
+
+        if(currentLevel>range.right){
+            range.right = currentLevel;
+        }
+
+        nodeMap.computeIfAbsent(currentLevel, k->new ArrayList<>());
+        nodeMap.get(currentLevel).add(node);
+
+        verticalOrderTraversal(node.getLeft(), nodeMap, currentLevel-1, range);
+        verticalOrderTraversal(node.getRight(), nodeMap,currentLevel+1, range);
     }
 
     /**
@@ -836,6 +889,7 @@ public class BinaryTree <T extends Comparable<T>> {
         tree1.preOrderTraversal();
         tree1.inOrderTraversal();
         tree1.verticalOrderTraversalBruteForce();
+        tree1.verticalOrderTraversal();
 
 
         /**
