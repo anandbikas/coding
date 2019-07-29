@@ -215,6 +215,52 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
+     * Print in level order zigzag/spiral
+     * Use loop with the help of a queue and a stack
+     */
+    public void levelOrderSpiralTraversal(){
+        System.out.println("levelOrderSpiralTraversal");
+
+        Queue<Node> queue = new ArrayCircularQueue<>();
+        Stack<Node> stack = new ArrayStack<>();
+
+        if(root!=null){
+            queue.insert(root);
+        }
+
+        int level=1;
+        while (!(queue.isEmpty() && stack.isEmpty())) {
+
+            while (!queue.isEmpty()) {
+                Node node = queue.delete();
+                System.out.print(node.getData() + "  ");
+
+                if(level%2==1) {
+                    if (node.getLeft() != null) {
+                        stack.push(node.getLeft());
+                    }
+                    if (node.getRight() != null) {
+                        stack.push(node.getRight());
+                    }
+                } else {
+                    if (node.getRight() != null) {
+                        stack.push(node.getRight());
+                    }
+                    if (node.getLeft() != null) {
+                        stack.push(node.getLeft());
+                    }
+                }
+            }
+            while(!stack.isEmpty()){
+                queue.insert(stack.pop());
+            }
+            level++;
+        }
+
+        System.out.println();
+    }
+
+    /**
      * Call printLevel method for each level
      */
     public void levelOrderTraversalBruteForce(){
@@ -846,6 +892,7 @@ public class BinaryTree <T extends Comparable<T>> {
 
         binaryTree.levelOrderTraversal();
         binaryTree.levelOrderTraversalBruteForce();
+        binaryTree.levelOrderSpiralTraversal();
 
         binaryTree.printAllPaths();
         binaryTree.printLevel(3);
