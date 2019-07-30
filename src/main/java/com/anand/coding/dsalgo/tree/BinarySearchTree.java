@@ -1,5 +1,11 @@
 package com.anand.coding.dsalgo.tree;
 
+import com.anand.coding.dsalgo.stack.ArrayStack;
+import com.anand.coding.dsalgo.stack.Stack;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Binary Seach Tree
  */
@@ -255,6 +261,31 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     }
 
     /**
+     * InOrderTraversal gives sorted list.
+     * @return
+     */
+    public List<T> getSortedList(){
+
+        List<T> sortedList = new ArrayList<>();
+
+        Stack<Node> stack = new ArrayStack<>();
+
+        for(Node node = root; node!= null; node=node.getLeft()){
+            stack.push(node);
+        }
+        while(!stack.isEmpty()){
+            Node node = stack.pop();
+            sortedList.add((T)node.getData());
+
+            for(node=node.getRight(); node!= null; node = node.getLeft()){
+                stack.push(node);
+            }
+        }
+
+        return sortedList;
+    }
+
+    /**
      * Main function to test the code.
      *
      * @param args
@@ -274,6 +305,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         System.out.println(bst);
         bst.inOrderTraversalRec();
+        System.out.println(bst.getSortedList());
         bst.printAllPaths();
 
         System.out.println("bst.height(): " + bst.height());
