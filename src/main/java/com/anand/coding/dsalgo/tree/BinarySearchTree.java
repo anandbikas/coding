@@ -25,7 +25,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         Node<T> parent = null;
         Node<T> pivotNode = root;
 
-        while(pivotNode != null && !pivotNode.getData().equals(data)){
+        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
             parent = pivotNode;
             pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
@@ -83,10 +83,25 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     public Node<T> search(T data){
 
         Node<T> pivotNode=root;
-        while(pivotNode != null && !pivotNode.getData().equals(data)){
+        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
             pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
         return pivotNode;
+    }
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public boolean containsData(T data){
+
+        Node<T> pivotNode=root;
+        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
+            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
+        }
+
+        return pivotNode!=null && pivotNode.getData().equals(data);
     }
 
     /**
@@ -107,7 +122,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      */
     private Node<T> searchRec(Node<T> root, T data){
 
-        if(root==null || root.getData().equals(data)){
+        if(root==null || root.getData().compareTo(data)==0){
             return root;
         }
         return searchRec(root.getData().compareTo(data)>0 ? root.getLeft() : root.getRight(), data);
@@ -125,7 +140,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         Node<T> pivotNode = root;
 
         //Find the pivotNode and its parent.
-        while(pivotNode != null && !pivotNode.getData().equals(data)){
+        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
             parent = pivotNode;
             pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
         }
@@ -204,7 +219,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @return
      */
     public Node<T> lowestCommonAncestor(T data1, T data2){
-        if(data1.equals(data2)){
+        if(data1.compareTo(data2)==0){
             return null;
         }
         if(data1.compareTo(data2)>0) {
@@ -212,6 +227,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             data2 = data1;
             data1 = temp;
         }
+
         Node<T> node = root;
         while(node != null){
             if(node.getData().compareTo(data1)<0){
@@ -310,6 +326,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         System.out.println("bst.height(): " + bst.height());
         System.out.println("bst.search(8): " + bst.search(8));
+        System.out.println("bst.containsData(8): " + bst.containsData(8));
+
         System.out.println("bst.searchRec(8): " + bst.searchRec(8));
 
         System.out.println("bst.isBinarySearchTree(): " + bst.isBinarySearchTree());
@@ -323,6 +341,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         System.out.println("bst.delete(4): " + bst.delete(4));
         bst.inOrderTraversalRec();
         System.out.println("bst.search(4): " + bst.search(4));
-        System.out.println("bst.delete(9): " + bst.delete(4));
+        System.out.println("bst.delete(4): " + bst.delete(4));
     }
 }

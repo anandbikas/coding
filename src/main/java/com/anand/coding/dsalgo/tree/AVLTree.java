@@ -183,7 +183,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         Node<T> pivotNode = root;
 
         // Simple BST insertion
-        while(pivotNode != null && !pivotNode.getData().equals(data)){
+        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
             pathStack.push(parent);
             parent = pivotNode;
             pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
@@ -261,7 +261,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         Node<T> pivotNode = root;
 
         //Find the pivotNode and its parent.
-        while(pivotNode != null && !pivotNode.getData().equals(data)){
+        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
             pathStack.push(parent);
             parent = pivotNode;
             pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
