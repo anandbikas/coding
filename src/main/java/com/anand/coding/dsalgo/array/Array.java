@@ -2,6 +2,7 @@ package com.anand.coding.dsalgo.array;
 
 import com.anand.coding.dsalgo.exception.ArrayEmptyException;
 import com.anand.coding.dsalgo.exception.ArrayFullException;
+import com.anand.coding.dsalgo.tree.multivalue.BinarySearchTree;
 
 import java.util.*;
 
@@ -704,6 +705,23 @@ public class Array {
 
     /**
      *
+     */
+    public void bstSort(){
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+
+        for(int x: A){
+            bst.insert(x);
+        }
+
+        List<Integer> sortedList = bst.getSortedList();
+
+        for(int i=0; i<A.length; i++){
+            A[i] = sortedList.get(i);
+        }
+    }
+
+    /**
+     *
      * @param sum
      * @return
      */
@@ -813,6 +831,9 @@ public class Array {
         array1.display();
         System.out.println(array1.binarySearchFirstOccurence(8));
 
+        Array array2 = new Array(new int[]{7, 3, 2, 5, 1, 6, 4, 3, 5, 2, 1});
+        array2.bstSort();
+        System.out.println(array2);
 
     }
 
