@@ -700,6 +700,61 @@ public class BinaryTree <T extends Comparable<T>> {
                 && isCopy(root1.getRight(), root2.getRight());
     }
 
+    private class NodePair{
+        Node root1;
+        Node root2;
+
+        public NodePair(Node root1, Node root2){
+            this.root1 = root1;
+            this.root2 = root2;
+        }
+    }
+
+    /**
+     *
+     * @param tree
+     * @return
+     */
+    public boolean isCopyUsingLoop(BinaryTree tree){
+        return isCopyUsingLoop(this.root, tree.root);
+    }
+
+    /**
+     * Checks whether two trees are similar in structure as well as data
+     *
+     * @param root1
+     * @param root2
+     * @return
+     */
+    private boolean isCopyUsingLoop(Node root1, Node root2){
+
+        java.util.Stack<NodePair> stack = new java.util.Stack<>();
+
+        stack.push(new NodePair(root1, root2));
+
+        boolean result = true;
+        while(!stack.isEmpty() && result){
+            NodePair pair = stack.pop();
+            if(pair.root1 == null && pair.root2 == null){
+                result = true;
+                continue;
+            }
+
+            if(pair.root1 == null || pair.root2 ==null){
+                result = false;
+                continue;
+            }
+
+            result = pair.root1.getData().equals(pair.root2.getData());
+
+            stack.push(new NodePair(pair.root1.getLeft(), pair.root2.getLeft()));
+            stack.push(new NodePair(pair.root1.getRight(), pair.root2.getRight()));
+        }
+
+        return result;
+    }
+
+
     /**
      *
      *
@@ -911,7 +966,8 @@ public class BinaryTree <T extends Comparable<T>> {
 
         System.out.println("binaryTree.numberOfNodes(): " + binaryTree.numberOfNodes());
         System.out.println("binaryTree.isSimilar(binaryTree): " + binaryTree.isSimilar(binaryTree));
-        System.out.println("binaryTree.isSimilar(binaryTree): " + binaryTree.isCopy(binaryTree));
+        System.out.println("binaryTree.isCopy(binaryTree): " + binaryTree.isCopy(binaryTree));
+        System.out.println("binaryTree.isCopyUsingLoop(binaryTree): " + binaryTree.isCopyUsingLoop(binaryTree));
         System.out.println("binaryTree.height(): " + binaryTree.height());
         System.out.println("binaryTree.searchRec(4) " + binaryTree.searchRec(4));
         System.out.println("binaryTree.searchRec(9) " + binaryTree.searchRec(9));
@@ -937,6 +993,8 @@ public class BinaryTree <T extends Comparable<T>> {
         tree1.inOrderTraversal();
         tree1.verticalOrderTraversalBruteForce();
         tree1.verticalOrderTraversal();
+
+        System.out.println("binaryTree.isCopyUsingLoop(tree1): " + binaryTree.isCopyUsingLoop(tree1));
 
 
         /**
