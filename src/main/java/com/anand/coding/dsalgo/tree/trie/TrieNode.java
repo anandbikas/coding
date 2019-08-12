@@ -1,6 +1,6 @@
 package com.anand.coding.dsalgo.tree.trie;
 
-import java.util.Arrays;
+import com.anand.coding.dsalgo.tree.trie.exception.TrieCharacterNotSupportedException;
 
 /**
  * TrieNode for dictionary
@@ -21,12 +21,28 @@ public class TrieNode {
         super();
     }
 
+
+    /**
+     *
+     * @param c
+     * @return
+     * @throws TrieCharacterNotSupportedException
+     */
+    private int charToIndex(char c){
+        c = Character.toUpperCase(c);
+        if(c>='A' && c<='Z'){
+            return Character.toUpperCase(c)-A;
+        } else {
+            throw new TrieCharacterNotSupportedException(String.format("Character %s not supported", c));
+        }
+    }
+
     /**
      *
      * @param c
      */
     public void setChild(final char c){
-        final int childIndex = Character.toUpperCase(c)-A;
+        final int childIndex = charToIndex(c);
         if(children[childIndex] == null){
             children[childIndex] = new TrieNode();
         }
@@ -38,7 +54,7 @@ public class TrieNode {
      * @return
      */
     public TrieNode getChild(final char c){
-        return children[Character.toUpperCase(c)-A];
+        return children[charToIndex(c)];
     }
 
     /**
