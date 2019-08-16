@@ -10,7 +10,23 @@ import java.util.List;
  */
 public class TrieDictionary<T> {
 
-    private TrieNode root = new TrieNode();
+    private TrieNode root;
+
+    /**
+     *
+     */
+    public TrieDictionary() {
+        super();
+        root = new TrieNode(new EnglishAlphabet());
+    }
+
+    /**
+     *
+     * @param alphabet
+     */
+    public TrieDictionary(Alphabet alphabet) {
+        this.root = new TrieNode(alphabet);
+    }
 
     /**
      *

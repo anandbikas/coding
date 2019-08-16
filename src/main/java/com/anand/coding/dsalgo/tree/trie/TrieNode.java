@@ -6,10 +6,9 @@ import com.anand.coding.dsalgo.tree.trie.exception.TrieCharacterNotSupportedExce
  * TrieNode for dictionary
  */
 public class TrieNode<T> {
-    private final static int ALPHABET_SIZE = 26;
-    private final static int A = 'A';
 
-    private TrieNode [] children = new TrieNode[ALPHABET_SIZE];
+    private Alphabet alphabet;
+    private TrieNode [] children;
 
     //if value == null, this is not a dictionary word. Else a corresponding value to the key.
     private T value;
@@ -17,34 +16,21 @@ public class TrieNode<T> {
     /**
      *
      */
-    public TrieNode(){
+    public TrieNode(Alphabet alphabet){
         super();
+        this.alphabet = alphabet;
+        this.children = new TrieNode[alphabet.getSize()];
     }
 
-
-    /**
-     *
-     * @param c
-     * @return
-     * @throws TrieCharacterNotSupportedException
-     */
-    private int charToIndex(char c){
-        c = Character.toUpperCase(c);
-        if(c>='A' && c<='Z'){
-            return Character.toUpperCase(c)-A;
-        } else {
-            throw new TrieCharacterNotSupportedException(String.format("Character %s not supported", c));
-        }
-    }
 
     /**
      *
      * @param c
      */
     public void setChild(final char c){
-        final int childIndex = charToIndex(c);
+        final int childIndex = alphabet.charToIndex(c);
         if(children[childIndex] == null){
-            children[childIndex] = new TrieNode();
+            children[childIndex] = new TrieNode(alphabet);
         }
     }
 
@@ -54,7 +40,7 @@ public class TrieNode<T> {
      * @return
      */
     public TrieNode getChild(final char c){
-        return children[charToIndex(c)];
+        return children[alphabet.charToIndex(c)];
     }
 
     /**
