@@ -7,11 +7,11 @@ import org.testng.annotations.Test;
 @Test
 public class TrieDictionaryTest {
 
-    private TrieDictionary trieDictionary;
+    private TrieDictionary<String> trieDictionary;
 
     @BeforeMethod
     private void setUp(){
-        trieDictionary = new TrieDictionary();
+        trieDictionary = new TrieDictionary<>();
 
         trieDictionary.insert("elephant", "hathi");
         trieDictionary.insert("book", "kitab");

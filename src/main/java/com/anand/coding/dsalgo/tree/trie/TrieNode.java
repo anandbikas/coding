@@ -5,14 +5,14 @@ import com.anand.coding.dsalgo.tree.trie.exception.TrieCharacterNotSupportedExce
 /**
  * TrieNode for dictionary
  */
-public class TrieNode {
+public class TrieNode<T> {
     private final static int ALPHABET_SIZE = 26;
     private final static int A = 'A';
 
     private TrieNode [] children = new TrieNode[ALPHABET_SIZE];
 
-    //if wordMeaning == null, this is not a dictionary word.
-    private String wordMeaning;
+    //if value == null, this is not a dictionary word. Else a corresponding value to the key.
+    private T value;
 
     /**
      *
@@ -61,16 +61,16 @@ public class TrieNode {
      *
      * @return
      */
-    public String getWordMeaning() {
-        return wordMeaning;
+    public T getValue() {
+        return value;
     }
 
     /**
      *
-     * @param meaning
+     * @param value
      */
-    public void setWordMeaning(String meaning) {
-        this.wordMeaning = meaning;
+    public void setValue(T value) {
+        this.value = value;
     }
 
     /**
@@ -80,7 +80,7 @@ public class TrieNode {
     @Override
     public String toString() {
         return "TrieNode{" +
-                "wordMeaning='" + wordMeaning + '\'' +
+                "value='" + value + '\'' +
                 '}';
     }
 }

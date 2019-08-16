@@ -8,69 +8,69 @@ import java.util.List;
 /**
  * TrieDictionary
  */
-public class TrieDictionary {
+public class TrieDictionary<T> {
 
     private TrieNode root = new TrieNode();
 
     /**
      *
-     * @param word
-     * @param wordMeaning
+     * @param key
+     * @param value
      */
-    public void insert(final String word, final String wordMeaning){
+    public void insert(final String key, final T value){
 
-        final char[] charArray = word.toCharArray();
+        final char[] charArray = key.toCharArray();
 
         TrieNode trieNode = root;
         for(char c: charArray){
             trieNode.setChild(c);
             trieNode = trieNode.getChild(c);
         }
-        trieNode.setWordMeaning(wordMeaning);
+        trieNode.setValue(value);
     }
 
     /**
      *
-     * @param word
+     * @param key
      * @return
      */
-    public String search(final String word){
+    public T search(final String key){
         if(root == null){
             return null;
         }
 
-        final char[] charArray = word.toCharArray();
+        final char[] charArray = key.toCharArray();
 
-        TrieNode trieNode = root;
+        TrieNode<T> trieNode = root;
         for(char c: charArray){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return null;
             }
         }
-        return trieNode.getWordMeaning();
+        return trieNode.getValue();
     }
 
     /**
      *
-     * @param word
+     * @param key
      * @return
      */
-    public void delete(final String word){
+    public void delete(final String key){
         if(root == null){
             return;
         }
 
-        final char[] charArray = word.toCharArray();
+        final char[] charArray = key.toCharArray();
 
-        TrieNode trieNode = root;
+        TrieNode<T> trieNode = root;
         for(char c: charArray){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return;
             }
         }
-        trieNode.setWordMeaning(null);
+        trieNode.setValue(null);
     }
 
     /**
@@ -79,10 +79,10 @@ public class TrieDictionary {
      * printAllPaths
      */
     public void display() {
-        System.out.println(String.format("%10s%15s", "Words", "Meanings"));
+        System.out.println(String.format("%10s%15s", "Key", "Value"));
         System.out.println(             "--------------------------------");
 
-        ArrayStack<Character> stack = new ArrayStack<Character>();
+        ArrayStack<Character> stack = new ArrayStack<>();
         display(root, stack);
         System.out.println();
     }
@@ -101,9 +101,9 @@ public class TrieDictionary {
             if(trieNode.getChild(c)!=null){
                 TrieNode child = trieNode.getChild(c);
                 stack.push(c);
-                if(child.getWordMeaning()!=null){
+                if(child.getValue()!=null){
                     System.out.println(
-                            String.format("%-18s%s", stack.getAsWord(), child.getWordMeaning()));
+                            String.format("%-18s%s", stack.getAsWord(), child.getValue()));
                 }
                 display(child, stack);
                 stack.pop();
@@ -158,7 +158,7 @@ public class TrieDictionary {
             if(trieNode.getChild(c)!=null){
                 TrieNode child = trieNode.getChild(c);
                 stack.push(c);
-                if(child.getWordMeaning()!=null){
+                if(child.getValue()!=null){
                     list.add(stack.getAsWord());
                 }
                 getAllPrefixedWords(child, stack, list);
@@ -174,7 +174,7 @@ public class TrieDictionary {
      */
     public static void main(String [] args){
 
-        final TrieDictionary trieDictionary = new TrieDictionary();
+        final TrieDictionary<String> trieDictionary = new TrieDictionary<>();
 
         trieDictionary.insert("elephant", "hathi");
         trieDictionary.insert("book", "kitab");
