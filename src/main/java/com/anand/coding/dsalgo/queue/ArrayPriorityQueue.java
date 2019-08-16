@@ -43,9 +43,9 @@ public class ArrayPriorityQueue<T> extends BinaryMinHeap<PriorityObject<T>> impl
      * @param priority
      */
     public void insert(T data, int priority){
-        if(isFull()){
-            throw new QueueFullException();
-        }
+//        if(isFull()){
+//            throw new QueueFullException();
+//        }
         super.insert(new PriorityObject<>(data, priority));
     }
 
@@ -110,5 +110,7 @@ public class ArrayPriorityQueue<T> extends BinaryMinHeap<PriorityObject<T>> impl
         while(!priorityQueue.isEmpty()) {
             System.out.println(priorityQueue.delete());
         }
+
+        System.out.println("Capacity: " + priorityQueue.getCapacity());
     }
 }

@@ -18,7 +18,7 @@ import com.anand.coding.dsalgo.exception.HeapFullException;
  *
  * Array represents level order traversal of the tree.
  *
- *  Application:
+ * TODO: Application:
  *      1. HeapSort O(nLog n).
  *
  *      2. Sort an almost sorted array.
@@ -37,8 +37,6 @@ import com.anand.coding.dsalgo.exception.HeapFullException;
  */
 public class BinaryMinHeap<T extends Comparable<T>>{
 
-    private static final int DEFAULT_SIZE = 100;
-
     private T [] heapArr;
     private int size=0;
 
@@ -46,7 +44,7 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      *
      */
     public BinaryMinHeap(){
-        this(DEFAULT_SIZE);
+        this(1);
     }
 
     /**
@@ -56,6 +54,26 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     @SuppressWarnings("unchecked")
     public BinaryMinHeap(int size){
         heapArr = (T[])new Comparable[size];
+    }
+
+    /**
+     *
+     * @param newSize
+     */
+    @SuppressWarnings("unchecked")
+    public void alterSize(int newSize){
+        T[] heapArrTemp = (T[])new Comparable[newSize];
+
+        System.arraycopy(heapArr, 0, heapArrTemp, 0, this.size);
+        heapArr = heapArrTemp;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getCapacity(){
+        return heapArr.length;
     }
 
     /**
@@ -86,8 +104,7 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     }
 
     /**
-     * fix MinHeap property by comparing with parent
-     * applicable for node value parent(i)> i
+     * fix MinHeap property by comparing with parent, bottom up
      * @param child
      */
     private void heapUp(int child){
@@ -106,8 +123,7 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     }
 
     /**
-     * fix MinHeap property by comparing with children
-     * applicable for node value parent(i)<i
+     * fix MinHeap property by comparing with children, top down.
      * @param i
      */
     private void heapify(int i){
@@ -139,7 +155,9 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     public void insert(T data){
 
         if(heapArr.length==size){
-            throw new HeapFullException();
+            // throw new HeapFullException();
+            //Dynamic size increase.
+            alterSize(heapArr.length*2);
         }
 
         int i = size++;
@@ -161,6 +179,11 @@ public class BinaryMinHeap<T extends Comparable<T>>{
         heapArr[size]=null;
         heapify(0);
 
+        //Dynamic size decrease.
+        if(size == heapArr.length/4){
+            alterSize(heapArr.length/2);
+        }
+
         return root;
     }
 
@@ -171,6 +194,11 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     public T delete(int i){
         final T deletedNode = replace(i, heapArr[--size]);
         heapArr[size]=null;
+
+        //Dynamic size decrease.
+        if(size == heapArr.length/4){
+            alterSize(heapArr.length/2);
+        }
 
         return deletedNode;
     }
@@ -263,9 +291,15 @@ public class BinaryMinHeap<T extends Comparable<T>>{
         binaryMinHeap.display();
 
         System.out.println(binaryMinHeap.extractMin());
+        System.out.println("Capacity: " + binaryMinHeap.getCapacity());
 
         // Heap now: 2, 5, 6
         binaryMinHeap.display();
 
+        binaryMinHeap.extractMin();
+
+        // Heap now: 5, 6
+        binaryMinHeap.display();
+        System.out.println("Capacity: " + binaryMinHeap.getCapacity());
     }
 }
