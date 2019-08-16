@@ -71,7 +71,7 @@ public class DirectedGraphTest {
     /**
      *
      */
-    public void display(int [][] A){
+    private void display(int [][] A){
 
         System.out.println("Matrix");
 
