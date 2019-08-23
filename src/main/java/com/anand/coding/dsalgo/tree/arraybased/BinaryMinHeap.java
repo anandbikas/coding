@@ -191,6 +191,18 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      *
      * @param i
      */
+    public T view(int i){
+        if(i>=heapArr.length){
+            throw new IllegalArgumentException("Index out of size: " + i);
+        }
+
+        return heapArr[i];
+    }
+
+    /**
+     *
+     * @param i
+     */
     public T delete(int i){
         final T deletedNode = replace(i, heapArr[--size]);
         heapArr[size]=null;

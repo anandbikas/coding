@@ -74,9 +74,11 @@ public class ArrayPriorityQueue<T> extends BinaryMinHeap<PriorityObject<T>> impl
      * @param priority
      */
     public void updatePriority(int queueIndex, int priority){
-        PriorityObject<T> priorityObject = delete(queueIndex);
-        priorityObject.setPriority(priority);
-        insert(priorityObject);
+
+        PriorityObject<T> object = view(queueIndex);
+        object.setPriority(priority);
+
+        replace(queueIndex, object);
     }
 
 
