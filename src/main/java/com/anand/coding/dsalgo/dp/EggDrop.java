@@ -57,17 +57,40 @@ public class EggDrop {
             return DP[n][k];
         }
 
-        int min = Integer.MAX_VALUE;
 
-        // Consider all droppings from 1st floor to kth floor and
-        // find the minimum of these values plus 1.
-        for (int x = 1; x <= k; x++) {
-            min = Math.min(
-                    Math.max(eggDrop(n-1, x-1, DP), eggDrop(n, k-x, DP)),
-                    min
-                );
+//        //Approach 1:
+//        // Consider all droppings from 1st floor to kth floor and
+//        // find the minimum of these values plus 1.
+//        int min = Integer.MAX_VALUE;
+//
+//        for (int x = 1; x <= k; x++) {
+//            min = Math.min(
+//                    Math.max(eggDrop(n-1, x-1, DP), eggDrop(n, k-x, DP)),
+//                    min
+//                );
+//        }
+//        return DP[n][k] = min + 1;
+
+        //Approach 2: Binary search
+        int low=1;
+        int high = k;
+        int result = k;
+        while(low < high) {
+            int midFloor = low + (high-low)/2;
+            int left = eggDrop(n-1, midFloor-1, DP);
+            int right = eggDrop(n, k-midFloor, DP);
+
+            result = Math.min(Math.max(left,right), result) +1;
+
+            if(left==right){
+                break;
+            } else if(left<right){
+                low = midFloor+1;
+            } else {
+                high = midFloor;
+            }
         }
-        return DP[n][k] = min + 1;
+        return DP[n][k] = result;
     }
 
 
@@ -102,6 +125,7 @@ public class EggDrop {
             DP[1][j] = j;
         }
 
+        //TODO: optimize loop
         for(int i=2; i<=n; i++) {
             for(int j=2; j<=k; j++){
                 int min = Integer.MAX_VALUE;
