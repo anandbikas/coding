@@ -262,6 +262,33 @@ public class Array {
      * @param key
      * @return
      */
+    private Integer floor(int left, int right, int key) {
+
+        if (A[left] > key) {
+            return null;
+        }
+        if (A[right] <= key) {
+            return A[right];
+        }
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if(key<=A[mid]){
+                right = mid;
+            } else{
+                left=mid+1;
+            }
+        }
+
+        return (A[left] == key) ? A[left] : A[left-1];
+    }
+
+    /**
+     *
+     * @param key
+     * @return
+     */
     public int binarySearchRec(int key) {
         return binarySearchRec(0, size-1, key);
     }
@@ -830,6 +857,7 @@ public class Array {
 
         array1.display();
         System.out.println(array1.binarySearchFirstOccurence(8));
+        System.out.println(array1.floor(0,array1.size-1,4));
 
         Array array2 = new Array(new int[]{7, 3, 2, 5, 1, 6, 4, 3, 5, 2, 1});
         array2.bstSort();
