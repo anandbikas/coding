@@ -70,10 +70,10 @@ public class DirectedGraphTest {
     private void testTopologicalSorting(){
 
         String[] topologicallySortedListBfs = {"node5", "node2", "node4", "node3", "node1", "node0"};
-        Assert.assertEquals(directedGraph.topologicalSortingBfs(),topologicallySortedListBfs);
+        Assert.assertEquals(directedGraph.topologicalSortingBfs().toArray(),topologicallySortedListBfs);
 
         String[] topologicallySortedListDfs = {"node5", "node4", "node2", "node3", "node1", "node0"};
-        Assert.assertEquals(directedGraph.topologicalSortingDfsRec(),topologicallySortedListDfs);
+        Assert.assertEquals(directedGraph.topologicalSortingDfsRec().toArray(),topologicallySortedListDfs);
     }
 
     @Test

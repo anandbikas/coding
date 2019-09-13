@@ -7,7 +7,6 @@ import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
-import javafx.util.Pair;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
@@ -64,23 +63,13 @@ public class Graph<T> {
      * @param u
      * @param v
      */
-    public void removeEdge(Integer u, Integer v) {
-        removeEdge(u, v,1);
-    }
-
-    /**
-     *
-     * @param u
-     * @param v
-     * @param wt
-     */
-    public void removeEdge(Integer u, Integer v, Integer wt){
+    public void removeEdge(Integer u, Integer v){
         if(u>=size || v >= size){
             throw new ArrayIndexOutOfBoundsException();
         }
-        adjListArray.get(u).remove(new Pair<>(v, wt));
+        adjListArray.get(u).remove(new Pair<>(v, 1));
         if(type.equals(GraphType.UNDIRECTED)) {
-            adjListArray.get(v).remove(new Pair<>(u, wt));
+            adjListArray.get(v).remove(new Pair<>(u, 1));
         }
     }
 
@@ -177,7 +166,7 @@ public class Graph<T> {
      * @param nodeIndex
      */
     public void dfsDisplayPreOrder(int nodeIndex) {
-        System.out.println("DFS Display from index: " + nodeIndex);
+        System.out.println("DFS Display PreOrder from index: " + nodeIndex);
         if(nodeIndex>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -212,7 +201,7 @@ public class Graph<T> {
      * @param nodeIndex
      */
     public void dfsDisplayPreOrderRec(int nodeIndex){
-        System.out.println("\nDFS Display Recursive from index: " + nodeIndex);
+        System.out.println("\nDFS Display PreOrder Recursive from index: " + nodeIndex);
         if(nodeIndex>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -253,7 +242,8 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
 
         int dfsForests = 0;
-        // In case of disconnected graph, there can be DFS forest. Loop through all nodes in such cases.
+        // In case of disconnected graph, there can be DFS forest.
+        // Loop through all nodes in such cases.
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
             if(!visited[nodeIndex]){
                 countDfsForests(nodeIndex, visited);
@@ -327,7 +317,8 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
         boolean []inRecStack = new boolean[size];
 
-        // In case of disconnected graph, there can be DFS forest. Loop through all nodes in such cases.
+        // In case of disconnected graph, there can be DFS forest.
+        // Loop through all nodes in such cases.
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
             if(!visited[nodeIndex] && isCyclicDfsRec(nodeIndex, visited, inRecStack)){
                 return true;
@@ -382,7 +373,8 @@ public class Graph<T> {
 
         boolean []visited = new boolean[size];
 
-        // In case of disconnected graph, there can be DFS forest. Loop through all nodes in such cases.
+        // In case of disconnected graph, there can be DFS forest.
+        // Loop through all nodes in such cases.
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
             visited[nodeIndex] = true;
 
@@ -418,16 +410,14 @@ public class Graph<T> {
      *
      * @return
      */
-    public T[] topologicalSortingBfs(){
+    public List<T> topologicalSortingBfs(){
 
         if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()){
             return null;
         }
 
         Queue<Integer> queue = new ArrayCircularQueue<>(size);
-
-        T[] topologicallySortedVertices = (T[])new Object[size];
-        int k =0;
+        List<T> topologicallySortedVertices = new ArrayList<>();
 
         int[] inDegrees = new int[size];
 
@@ -445,7 +435,7 @@ public class Graph<T> {
 
         while(!queue.isEmpty()){
             int nodeIndex = queue.delete();
-            topologicallySortedVertices[k++] = vertices.get(nodeIndex);
+            topologicallySortedVertices.add(vertices.get(nodeIndex));
 
             for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
                 //Reduce indegree once its parent is processed.
@@ -460,7 +450,7 @@ public class Graph<T> {
 
     /**
      *
-     * It is a linear ordering of vertices such where for each edge uv, vertex u comes before v in the ordering.
+     * It is a linear ordering of vertices where for each edge uv, vertex u comes before v in the ordering.
      *
      * DFS (PostOrder) algorithm for topological sorting
      * Applicable for Directed Acyclic Graph (DAG)
@@ -473,7 +463,7 @@ public class Graph<T> {
      *
      * @return
      */
-    public T[] topologicalSortingDfsRec(){
+    public List<T> topologicalSortingDfsRec(){
 
         if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()){
             return null;
@@ -482,18 +472,17 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
         Stack<T> topologicalVertexStack = new ArrayStack<>(size);
 
-        // In case of disconnected graph, there can be DFS forest. Loop through all nodes in such cases.
+        // In case of disconnected graph, there can be DFS forest.
+        // Loop through all nodes in such cases.
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
             if(!visited[nodeIndex]) {
                 topologicalSortingDfsRec(nodeIndex, visited, topologicalVertexStack);
             }
         }
 
-        T[] topologicallySortedVertices = (T[])new Object[size];
-        int k=0;
-
+        List<T> topologicallySortedVertices = new ArrayList<>();
         while(!topologicalVertexStack.isEmpty()){
-            topologicallySortedVertices[k++] = topologicalVertexStack.pop();
+            topologicallySortedVertices.add(topologicalVertexStack.pop());
         }
 
         return topologicallySortedVertices;
@@ -547,24 +536,21 @@ public class Graph<T> {
      * @param destIndex
      * @param visited
      */
-    private boolean findPathDFSRec(int nodeIndex, int destIndex, boolean []visited, Stack<T> pathStack, List<T[]> pathList){
+    private void findPathDFSRec(int nodeIndex, int destIndex, boolean []visited, Stack<T> pathStack, List<T[]> pathList){
 
         if(visited[nodeIndex]) {
-            return false;
+            return;
         }
 
         pathStack.push(vertices.get(nodeIndex));
-
-        //No don't put visited here, we want destIndex to be visited as many times as the possible paths.
-        //visited[nodeIndex] = true;
 
         if(nodeIndex == destIndex){
             pathList.add(pathStack.getAsList());
 
             pathStack.pop();
-            return true;
+            return;
         }
-        //Instead keep visited flag after processing destIndex.
+
         visited[nodeIndex] = true;
 
         for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
@@ -574,7 +560,6 @@ public class Graph<T> {
         }
 
         pathStack.pop();
-        return false;
     }
 
     /**
@@ -630,6 +615,8 @@ public class Graph<T> {
         }
         return pathList;
     }
+
+
 
     /**
      * Kruskal MST: Greedy Algorithm
