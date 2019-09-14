@@ -640,7 +640,7 @@ public class Graph<T> {
             throw new NotImplementedException();
         }
 
-        List<Edge> edgeList = new ArrayList<>();
+        List<Edge<Integer>> edgeList = new ArrayList<>();
 
         for(int u=0; u<size; u++) {
             Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).iterator();
@@ -661,7 +661,7 @@ public class Graph<T> {
         DisjointUnionSets dus = new DisjointUnionSets(size);
 
         int edgeCount=0;
-        for(Edge edge: edgeList){
+        for(Edge<Integer> edge: edgeList){
             if(edgeCount >= size-1){
                 break;
             }

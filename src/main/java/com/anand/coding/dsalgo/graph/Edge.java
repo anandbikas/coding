@@ -3,30 +3,30 @@ package com.anand.coding.dsalgo.graph;
 /**
  *
  */
-public class Edge implements Comparable<Edge> {
-    int u;
-    int v;
+public class Edge<T> implements Comparable<Edge<T>> {
+    T u;
+    T v;
     Integer weight;
 
-    public Edge(int u, int v, int weight){
+    public Edge(T u, T v, int weight){
         this.u = u;
         this.v = v;
         this.weight = weight;
     }
 
-    public int getU() {
+    public T getU() {
         return u;
     }
 
-    public void setU(int u) {
+    public void setU(T u) {
         this.u = u;
     }
 
-    public int getV() {
+    public T getV() {
         return v;
     }
 
-    public void setV(int v) {
+    public void setV(T v) {
         this.v = v;
     }
 
