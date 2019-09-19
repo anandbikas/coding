@@ -56,6 +56,57 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
     }
 
     /**
+     * Move to rear
+     *
+     * @return
+     */
+    public void moveToRear(Node<T> node){
+
+        if(node == rear){
+            return;
+        }
+
+        if(node==front){
+            front=node.getNext();
+            front.setPrev(null);
+        } else {
+            node.getPrev().setNext(node.getNext());
+            node.getNext().setPrev(node.getPrev());
+        }
+
+        node.setNext(null);
+        node.setPrev(rear);
+        rear.setNext(node);
+        rear = node;
+    }
+
+    /**
+     * Move to front
+     *
+     * @return
+     */
+    public void moveToFront(Node<T> node){
+
+        if(node == front){
+            return;
+        }
+
+        if(node==rear){
+            rear=node.getPrev();
+            rear.setNext(null);
+        } else {
+            node.getPrev().setNext(node.getNext());
+            node.getNext().setPrev(node.getPrev());
+        }
+
+        node.setPrev(null);
+        node.setNext(front);
+        front.setPrev(node);
+        front = node;
+    }
+
+
+    /**
      *
      * @return
      */
