@@ -5,7 +5,7 @@ package com.anand.coding.dsalgo.graph.adjacencylist;
  * @param <K>
  * @param <V>
  */
-public class Pair<K,V> {
+public class Pair<K extends Comparable<K>, V> implements Comparable<Pair<K,V>> {
 
     private K key;
     private V value;
@@ -74,4 +74,8 @@ public class Pair<K,V> {
         return key.equals(pair.key);
     }
 
+    @Override
+    public int compareTo(Pair<K,V> o) {
+        return this.key.compareTo(o.key);
+    }
 }

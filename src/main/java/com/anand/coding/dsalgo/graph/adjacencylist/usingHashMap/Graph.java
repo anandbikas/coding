@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @param <T>
  */
-public class Graph<T> {
+public class Graph<T extends Comparable<T>> {
 
     private HashMap<T,LinkedList<Pair<T,Integer>>> vertices;
 
