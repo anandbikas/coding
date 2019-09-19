@@ -7,7 +7,7 @@ import com.anand.coding.dsalgo.list.Node;
  *
  * @param <T>
  */
-public class LinkedPriorityQueue<T> {
+public class LinkedPriorityQueue<T> implements Queue<T> {
 
     private Node<PriorityObject<T>> front;
     private int length=0;
@@ -17,8 +17,8 @@ public class LinkedPriorityQueue<T> {
      *
      * @param data
      */
-    public void insert(T data){
-        insert(data, Integer.MAX_VALUE);
+    public Node<PriorityObject<T>> insert(T data){
+        return insert(data, Integer.MAX_VALUE);
     }
 
     /**
@@ -27,7 +27,7 @@ public class LinkedPriorityQueue<T> {
      * @param data
      * @param priority
      */
-    public void insert(T data, int priority){
+    public Node<PriorityObject<T>> insert(T data, int priority){
 
         final Node<PriorityObject<T>> newNode = new Node<>(new PriorityObject<>(data, priority));
 
@@ -44,6 +44,7 @@ public class LinkedPriorityQueue<T> {
         }
 
         length++;
+        return newNode;
     }
 
     /**
@@ -83,6 +84,7 @@ public class LinkedPriorityQueue<T> {
         if(index==1){
             Node<PriorityObject<T>> deletedNode = front;
             front=deletedNode.getNext();
+            length--;
 
             deletedNode.setNext(null);
             return deletedNode.getData().getObject();
@@ -94,7 +96,7 @@ public class LinkedPriorityQueue<T> {
             if(index==i){
                 Node<PriorityObject<T>> deletedNode=node.getNext();
                 node.setNext(deletedNode.getNext());
-
+                length--;
                 deletedNode.setNext(null);
                 return deletedNode.getData().getObject();
             }

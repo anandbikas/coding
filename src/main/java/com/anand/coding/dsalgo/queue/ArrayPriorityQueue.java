@@ -33,8 +33,8 @@ public class ArrayPriorityQueue<T> extends BinaryMinHeap<PriorityObject<T>> impl
      *
      * @param data
      */
-    public void insert(T data){
-        insert(data, Integer.MAX_VALUE);
+    public T insert(T data){
+        return insert(data, Integer.MAX_VALUE);
     }
 
     /**
@@ -42,11 +42,12 @@ public class ArrayPriorityQueue<T> extends BinaryMinHeap<PriorityObject<T>> impl
      * @param data
      * @param priority
      */
-    public void insert(T data, int priority){
+    public T insert(T data, int priority){
 //        if(isFull()){
 //            throw new QueueFullException();
 //        }
         super.insert(new PriorityObject<>(data, priority));
+        return data;
     }
 
     /**

@@ -19,15 +19,18 @@ public class LinkedQueue<T extends Comparable<T>> implements Queue<T> {
      *
      * @param data
      */
-    public void insert(T data){
+    public Node<T> insert(T data){
 
         final Node<T> newNode = new Node<>(data);
-        if(front==null){
+        if(rear==null){
             front=rear=newNode;
+        } else {
+            rear.setNext(newNode);
+            rear = newNode;
         }
-        rear.setNext(newNode);
-        rear = newNode;
+
         length++;
+        return newNode;
     }
 
     /**
@@ -39,10 +42,14 @@ public class LinkedQueue<T extends Comparable<T>> implements Queue<T> {
         if(front==null){
             throw new QueueEmptyException();
         }
-        T data = front.getData();
+        Node<T> deletedNode = front;
         front = front.getNext();
+        if(front==null){
+            rear = null;
+        }
         length--;
-        return data;
+
+        return deletedNode.getData();
     }
 
     /**
