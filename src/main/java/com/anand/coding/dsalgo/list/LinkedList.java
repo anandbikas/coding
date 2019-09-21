@@ -13,6 +13,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     private Node<T> start;
 
+    int length=0;
+
     /**
      *
      * @param data
@@ -24,6 +26,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         newNode.setNext(start);
         start = newNode;
 
+        length++;
         return newNode;
     }
 
@@ -37,6 +40,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         final Node<T> newNode = new Node<>(data);
         if(start==null){
             start=newNode;
+            length++;
             return newNode;
         }
 
@@ -44,6 +48,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         for(node=start; node.getNext()!=null; node=node.getNext());
         node.setNext(newNode);
 
+        length++;
         return newNode;
     }
 
@@ -59,6 +64,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         if(index==1){
             newNode.setNext(start);
             start=newNode;
+            length++;
             return newNode;
         }
 
@@ -68,11 +74,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             if(index==i){
                 newNode.setNext(node.getNext());
                 node.setNext(newNode);
+                length++;
                 return newNode;
             }
         }
 
-        return null;
+        throw new IndexOutOfBoundsException();
     }
 
     /**
@@ -87,6 +94,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         if(start==null || start.getData().compareTo(data)>0){
             newNode.setNext(start);
             start=newNode;
+            length++;
             return newNode;
         }
 
@@ -94,6 +102,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         for(node=start; node.getNext()!=null && node.getNext().getData().compareTo(data)<0; node=node.getNext());
         newNode.setNext(node.getNext());
         node.setNext(newNode);
+        length++;
 
         return newNode;
     }
@@ -110,6 +119,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         Node<T> deletedNode = start;
         start=deletedNode.getNext();
+        length--;
 
         deletedNode.setNext(null);
         return deletedNode;
@@ -124,6 +134,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         if(start==null || start.getNext()==null){
             Node<T> deletedNode = start;
             start = null;
+            length--;
             return deletedNode;
         }
 
@@ -132,6 +143,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         Node<T> deletedNode = node.getNext();
         node.setNext(null);
+
+        length--;
         return deletedNode;
     }
 
@@ -146,18 +159,20 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             return null;
         }
 
-        if(start.getData()==data){
+        if(start.getData().equals(data)){
             Node<T> deletedNode = start;
             start=deletedNode.getNext();
+            length--;
 
             deletedNode.setNext(null);
             return deletedNode;
         }
 
         for(Node<T> node=start; node.getNext()!=null; node=node.getNext()){
-            if(node.getNext().getData()==data){
+            if(node.getNext().getData().equals(data)){
                 Node<T> deletedNode=node.getNext();
                 node.setNext(deletedNode.getNext());
+                length--;
 
                 deletedNode.setNext(null);
                 return deletedNode;
@@ -181,6 +196,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         if(index==1){
             Node<T> deletedNode = start;
             start=deletedNode.getNext();
+            length--;
 
             deletedNode.setNext(null);
             return deletedNode;
@@ -192,6 +208,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             if(index==i){
                 Node<T> deletedNode=node.getNext();
                 node.setNext(deletedNode.getNext());
+                length--;
 
                 deletedNode.setNext(null);
                 return deletedNode;
@@ -261,11 +278,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public int length(){
-        int count=0;
-        for(Node node=start; node!=null; node=node.getNext()){
-            count++;
-        }
-        return count;
+       return length;
     }
 
     /**
