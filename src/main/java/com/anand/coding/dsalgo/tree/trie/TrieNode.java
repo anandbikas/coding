@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.tree.trie;
 
-import com.anand.coding.dsalgo.tree.trie.exception.TrieCharacterNotSupportedException;
+
+import java.util.Set;
 
 /**
  * TrieNode for dictionary
@@ -8,7 +9,7 @@ import com.anand.coding.dsalgo.tree.trie.exception.TrieCharacterNotSupportedExce
 public class TrieNode<T> {
 
     private Alphabet alphabet;
-    private TrieNode [] children;
+    private TrieNode<T> [] children;
 
     //if value == null, this is not a dictionary word. Else a corresponding value to the key.
     private T value;
@@ -25,12 +26,21 @@ public class TrieNode<T> {
 
     /**
      *
+     * @return
+     */
+    public Set<Character> getCharSet(){
+        return alphabet.getCharSet();
+    }
+
+
+    /**
+     *
      * @param c
      */
     public void setChild(final char c){
         final int childIndex = alphabet.charToIndex(c);
         if(children[childIndex] == null){
-            children[childIndex] = new TrieNode(alphabet);
+            children[childIndex] = new TrieNode<>(alphabet);
         }
     }
 
@@ -39,7 +49,7 @@ public class TrieNode<T> {
      * @param c
      * @return
      */
-    public TrieNode getChild(final char c){
+    public TrieNode<T> getChild(final char c){
         return children[alphabet.charToIndex(c)];
     }
 

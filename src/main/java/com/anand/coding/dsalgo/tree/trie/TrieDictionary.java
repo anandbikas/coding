@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class TrieDictionary<T> {
 
-    private TrieNode root;
+    private TrieNode<T> root;
 
     /**
      *
      */
     public TrieDictionary() {
         super();
-        root = new TrieNode(new EnglishAlphabet());
+        root = new TrieNode<>(new EnglishAlphabet());
     }
 
     /**
@@ -25,7 +25,7 @@ public class TrieDictionary<T> {
      * @param alphabet
      */
     public TrieDictionary(Alphabet alphabet) {
-        this.root = new TrieNode(alphabet);
+        this.root = new TrieNode<>(alphabet);
     }
 
     /**
@@ -37,7 +37,7 @@ public class TrieDictionary<T> {
 
         final char[] charArray = key.toCharArray();
 
-        TrieNode trieNode = root;
+        TrieNode<T> trieNode = root;
         for(char c: charArray){
             trieNode.setChild(c);
             trieNode = trieNode.getChild(c);
@@ -108,14 +108,14 @@ public class TrieDictionary<T> {
      * @param trieNode
      * @param stack
      */
-    private void display(TrieNode trieNode, ArrayStack<Character> stack) {
+    private void display(TrieNode<T> trieNode, ArrayStack<Character> stack) {
         if(trieNode == null){
             return;
         }
 
-        for(char c='A'; c<'Z'; c++){
+        for(char c: trieNode.getCharSet()){
             if(trieNode.getChild(c)!=null){
-                TrieNode child = trieNode.getChild(c);
+                TrieNode<T> child = trieNode.getChild(c);
                 stack.push(c);
                 if(child.getValue()!=null){
                     System.out.println(
@@ -145,7 +145,7 @@ public class TrieDictionary<T> {
         final char[] charArray = prefix.toUpperCase().toCharArray();
 
         //Put all characters in prefix in the stack.
-        TrieNode trieNode = root;
+        TrieNode<T> trieNode = root;
         for(char c: charArray){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
@@ -165,14 +165,14 @@ public class TrieDictionary<T> {
      * @param stack
      * @param list
      */
-    private void getAllPrefixedWords(TrieNode trieNode, ArrayStack<Character> stack, List<String> list){
+    private void getAllPrefixedWords(TrieNode<T> trieNode, ArrayStack<Character> stack, List<String> list){
         if(trieNode == null){
             return;
         }
 
-        for(char c='A'; c<'Z'; c++){
+        for(char c: trieNode.getCharSet()){
             if(trieNode.getChild(c)!=null){
-                TrieNode child = trieNode.getChild(c);
+                TrieNode<T> child = trieNode.getChild(c);
                 stack.push(c);
                 if(child.getValue()!=null){
                     list.add(stack.getAsWord());
