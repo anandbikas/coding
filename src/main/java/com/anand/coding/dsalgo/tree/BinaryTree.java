@@ -542,6 +542,41 @@ public class BinaryTree <T extends Comparable<T>> {
 
     /**
      *
+     * @param data
+     */
+    public void printPath(T data) {
+        System.out.println("printPath");
+
+        Stack<Node> pathStack = new ArrayStack<>();
+        printPath(root, data, pathStack);
+        System.out.println();
+    }
+
+    /**
+     *
+     * @param root
+     * @param data
+     * @param pathStack
+     */
+    private void printPath(final Node<T> root, T data , final Stack<Node> pathStack){
+        if(root == null){
+            return;
+        }
+        pathStack.push(root);
+        if(root.getData().equals(data)){
+            pathStack.display();
+            return;
+        }
+
+        printPath(root.getLeft(), data, pathStack);
+        printPath(root.getRight(), data, pathStack);
+
+        //Once right subTree is processed, remove its parent
+        pathStack.pop();
+    }
+
+    /**
+     *
      */
     public void printAllPaths() {
         System.out.println("printAllPaths");
@@ -949,6 +984,7 @@ public class BinaryTree <T extends Comparable<T>> {
         binaryTree.levelOrderTraversalBruteForce();
         binaryTree.levelOrderSpiralTraversal();
 
+        binaryTree.printPath(8);
         binaryTree.printAllPaths();
         binaryTree.printLevel(3);
         binaryTree.printLeaves();

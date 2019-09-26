@@ -246,6 +246,43 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
     /**
      *
+     * @param data
+     */
+    public void printPath(T data) {
+        System.out.println("printPath");
+
+        printPath(root, data);
+        System.out.println();
+    }
+
+    /**
+     *
+     * @param node
+     * @param data
+     */
+    private void printPath(final Node<T> node, T data){
+        if(node == null){
+            return;
+        }
+
+        if(node.getData().equals(data)){
+            for(Node<T> n = this.root; !n.getData().equals(data);){
+                System.out.print(n.getData() + "  ");
+                n = n.compareTo(node) > 0 ? n.getLeft() : n.getRight();
+            }
+            System.out.print(data + "  ");
+            System.out.println();
+            return;
+        }
+        if(node.getData().compareTo(data)>0){
+            printPath(node.getLeft(), data);
+        } else {
+            printPath(node.getRight(), data);
+        }
+    }
+
+    /**
+     *
      */
     @Override
     public void printAllPaths() {
@@ -322,6 +359,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         System.out.println(bst);
         bst.inOrderTraversalRec();
         System.out.println(bst.getSortedList());
+        bst.printPath(6);
         bst.printAllPaths();
 
         System.out.println("bst.height(): " + bst.height());
