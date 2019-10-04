@@ -52,7 +52,7 @@ public class Array {
      *
      * @param data
      */
-    public void insertAtEnd(final int data){
+    public void insertEnd(final int data){
         insert(data, size);
     }
 
@@ -60,7 +60,7 @@ public class Array {
      *
      * @param data
      */
-    public void insertAtStart(final int data){
+    public void insertStart(final int data){
         insert(data, 0);
     }
 
@@ -85,6 +85,31 @@ public class Array {
         A[index]= data;
         size++;
     }
+
+    /**
+     *
+     * @param data
+     */
+    public void insertAsSorted(int data) {
+        insertAsSorted(0, size-1, data);
+    }
+
+    /**
+     * Inserts a key in a sorted array in sorted fashion.
+     *
+     * @param left
+     * @param right
+     * @param data
+     */
+    public void insertAsSorted(int left, int right, int data) {
+
+        int j;
+        for(j=right; j >= left && A[j] > data; j--) {
+            A[j+1] = A[j];
+        }
+        A[j+1] = data;
+    }
+
 
     /**
      *
@@ -136,10 +161,13 @@ public class Array {
         int k=1;
         for(int i=1; i<size; i++){
 
-            for(int j=0; j<k; j++){
-                if(A[j]==A[i]){
+            int j=0;
+            for(; j<k; j++) {
+                if (A[j]==A[i]) {
                     break;
                 }
+            }
+            if(j==k){
                 A[k++]=A[i];
             }
         }
@@ -150,7 +178,7 @@ public class Array {
      * Deletes all occurrence of an element. -- Negative thinking. Complexity O(n2)
      * Or, Keep all the elements except the given one -- Positive thinking. Complexity O(n)
      */
-    public void deleteAllOccurence(int valueToDelete){
+    public void deleteAllOccurrence(int valueToDelete){
 
         if(size==0){
             return;
@@ -189,6 +217,8 @@ public class Array {
         System.out.println(toString());
     }
 
+
+    //################################ Searching Algorithms ################################
     /**
      *
      * Complexity: O(lon n)
@@ -202,58 +232,27 @@ public class Array {
 
     /**
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      * @param key
      * @return
      */
-    public int binarySearch(int startIndex, int endIndex, int key) {
+    public int binarySearch(int left, int right, int key) {
 
-        while (startIndex <= endIndex) {
-            int mid = (startIndex + endIndex) / 2;
-            if (key < A[mid]) {
-                endIndex = mid - 1;
-            } else if (key > A[mid]) {
-                startIndex = mid + 1;
-            } else {
+        while (left <= right) {
+            int mid = left + (right-left)/2;
+
+            if(key==A[mid]){
                 return mid;
             }
-        }
 
-        return -1;
-    }
-
-    /**
-     *
-     * @param key
-     * @return
-     */
-    public int binarySearchFirstOccurence(int key) {
-        return binarySearchFirstOccurence(0, size-1, key);
-    }
-
-    /**
-     * *TWISTED* algorithm.
-     *
-     * @param startIndex
-     * @param endIndex
-     * @param key
-     * @return
-     */
-    public int binarySearchFirstOccurence(int startIndex, int endIndex, int key) {
-
-        while (startIndex < endIndex) {
-            int mid = (startIndex + endIndex) / 2;
-            if (key <= A[mid]) {
-                endIndex = mid;
+            if (key < A[mid]) {
+                right = mid - 1;
             } else {
-                startIndex = mid + 1;
+                left = mid + 1;
             }
         }
 
-        if (A[startIndex] == key) {
-            return startIndex;
-        }
         return -1;
     }
 
@@ -262,26 +261,59 @@ public class Array {
      * @param key
      * @return
      */
-    private Integer floor(int left, int right, int key) {
+    public int binarySearchFirstOccurrence(int key) {
+        return binarySearchFirstOccurrence(0, size-1, key);
+    }
 
-        if (A[left] > key) {
-            return null;
-        }
-        if (A[right] <= key) {
-            return A[right];
-        }
+    /**
+     *
+     * @param left
+     * @param right
+     * @param key
+     * @return
+     */
+    public int binarySearchFirstOccurrence(int left, int right, int key) {
 
         while (left < right) {
-            int mid = left + (right - left) / 2;
-
-            if(key<=A[mid]){
+            int mid = left + (right-left) / 2;
+            if (key <= A[mid]) {
                 right = mid;
-            } else{
-                left=mid+1;
+            } else {
+                left = mid + 1;
             }
         }
 
-        return (A[left] == key) ? A[left] : A[left-1];
+        return (A[left] == key) ? left : -1;
+    }
+
+    /**
+     *
+     * @param key
+     * @return
+     */
+    public int binarySearchLastOccurrence(int key) {
+        return binarySearchLastOccurrence(0, size-1, key);
+    }
+
+    /**
+     *
+     * @param left
+     * @param right
+     * @param key
+     * @return
+     */
+    public int binarySearchLastOccurrence(int left, int right, int key) {
+
+        while (left < right) {
+            int mid = (int)Math.ceil(left + (right-left) / 2.0);
+            if (key >= A[mid]) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return (A[left] == key) ? left : -1;
     }
 
     /**
@@ -295,25 +327,27 @@ public class Array {
 
     /**
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      * @param key
      * @return
      */
-    public int binarySearchRec(int startIndex, int endIndex, int key) {
+    public int binarySearchRec(int left, int right, int key) {
 
-        if (startIndex > endIndex) {
+        if (left > right) {
             return -1;
         }
 
-        int mid = (startIndex + endIndex) / 2;
+        int mid = left + (right-left)/2;
+
         if (key < A[mid]) {
-            return binarySearchRec(startIndex, mid - 1, key);
-        } else if (key > A[mid]) {
-            return binarySearchRec(mid + 1, endIndex, key);
-        } else {
-            return mid;
+            return binarySearchRec(left, mid - 1, key);
         }
+        if (key > A[mid]) {
+            return binarySearchRec(mid + 1, right, key);
+        }
+
+        return mid;
     }
 
     /**
@@ -330,52 +364,75 @@ public class Array {
         if(n<0){
             n = n*-1;
             n = size - n%size;
-        }
-        if(n>0){
+        } else {
             n %= size;
         }
 
         int [] tempArr = new int[n];
         System.arraycopy(A, size-n, tempArr, 0, n);
 
-        for(int i=size-1; i>=n; i--){
-            A[i] = A[i-n];
+        int k=size-1;
+        for(int i=size-n-1; i>=0; i--){
+            A[k--] = A[i];
         }
 
         System.arraycopy(tempArr, 0, A, 0, n);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRotatedArrayPivotElementIndex() {
         return getRotatedArrayPivotElementIndex(0, size-1);
     }
 
     /**
      * Find the left most element which is less than the first element.
-     * If the array is not rotated, pivot element index will be endIndex+1.
-     * Works only for unique element array
+     * If the array is not rotated, pivot element index will be right+1.
      *
-     * Complexity: O(lon n)
+     * Complexity:
+     *      O(lon n) if elements are unique or firstElement>lastElement
+     *      O(n) if elements are not unique
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      * @return
      */
-    public int getRotatedArrayPivotElementIndex(int startIndex, int endIndex) {
+    public int getRotatedArrayPivotElementIndex(int left, int right) {
 
-        int firstElementIndex = startIndex;
-        while (startIndex <= endIndex) {
-            int mid = (startIndex + endIndex) / 2;
-            if (A[mid] < A[firstElementIndex]) {
-                endIndex = mid-1;
+        /**
+         * For duplicate elements:
+         *      3 3 3 3 4 3 ==> pivotIndex = 5
+         *      3 4 3 3 3 3 ==> pivotIndex = 2
+         *      3 3 3 3 3 3 ==> pivotIndex = 6 (not found)
+         *
+         * To make this algorithm work for duplicate elements, we ensure A[left]>A[right] by adjusting right index.
+         * which may take O(n) in worst case.
+         */
+
+        //Workaround for duplicate elements starts.
+        int newRightIndex = right;
+        for (; left<newRightIndex && A[newRightIndex] == A[left]; newRightIndex--);
+        if(left<newRightIndex){
+            right = newRightIndex;
+        }
+        //Workaround for duplicate elements ends.
+
+        //Binary search operation
+        int firstElement = A[left];
+        while (left <= right) {
+            int mid = left + (right-left)/2;
+            if (firstElement<=A[mid]) {
+                left = mid+1;
             } else {
-                startIndex = mid+1;
+                right = mid-1;
             }
         }
-        return startIndex;
+        return left;
     }
 
     /**
-     * *TWISTED* algorithm
      *
      * @param key
      * @return
@@ -387,18 +444,18 @@ public class Array {
     /**
      * Complexity: O(lon n)
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      * @param key
      * @return
      */
-    public int binarySearchInRotatedArray(final int startIndex, final int endIndex, final int key) {
+    public int binarySearchInRotatedArray(final int left, final int right, final int key) {
 
-        final int pivotElementIndex = getRotatedArrayPivotElementIndex(startIndex, endIndex);
+        final int pivotElementIndex = getRotatedArrayPivotElementIndex(left, right);
 
-        return key>=A[startIndex] ?
-                binarySearch(startIndex, pivotElementIndex-1, key):
-                    binarySearch(pivotElementIndex, endIndex, key);
+        return key>=A[left] ?
+                binarySearch(left, pivotElementIndex-1, key):
+                    binarySearch(pivotElementIndex, right, key);
     }
 
     /**
@@ -411,31 +468,39 @@ public class Array {
     }
     /**
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      * @param key
      * @return
      */
-    public int binarySearchInRotatedArrayWithoutPivot(int startIndex, int endIndex, final int key){
+    public int binarySearchInRotatedArrayWithoutPivot(int left, int right, final int key){
 
-        while(startIndex<=endIndex){
-            int mid = (startIndex + endIndex) / 2;
+        //Workaround for duplicate elements starts.
+        int newRightIndex = right;
+        for (; left<newRightIndex && A[newRightIndex] == A[left]; newRightIndex--);
+        if(left<newRightIndex){
+            right = newRightIndex;
+        }
+        //Workaround for duplicate elements ends.
+
+        while(left<=right){
+            int mid = left + (right-left)/2;
 
             if(A[mid]==key){
                 return mid;
             }
 
-            if(A[startIndex]<=A[mid]){
-                if (key>=A[startIndex] && key<A[mid] ){
-                    endIndex = mid-1;
+            if(A[left]<=A[mid]){
+                if (key>=A[left] && key<A[mid] ){
+                    right = mid-1;
                 } else {
-                    startIndex = mid+1;
+                    left = mid+1;
                 }
             } else {
-                if(key>A[mid] && key<=A[endIndex]){
-                    startIndex = mid +1;
+                if(key>A[mid] && key<=A[right]){
+                    left = mid +1;
                 } else {
-                    endIndex = mid -1;
+                    right = mid -1;
                 }
             }
         }
@@ -443,29 +508,83 @@ public class Array {
     }
 
     /**
-     * 
-     * @param data
-     */
-    private void insertAsSorted(int data) {
-        insertAsSorted(0, size-1, data);
-    }
-    
-    /**
-     * Inserts a key in a sorted array in sorted fashion.
      *
-     * @param startIndex
-     * @param endIndex
-     * @param data
+     * @param key
+     * @return
      */
-    public void insertAsSorted(int startIndex, int endIndex, int data) {
-
-        int j;
-        for(j=endIndex; j >= startIndex && A[j] > data; j--) {
-            A[j+1] = A[j];
-        }
-        A[j+1] = data;
+    public Integer floor(int key) {
+        return floor(0, size-1, key);
     }
 
+    /**
+     * Floor in unsorted array
+     *
+     * @param key
+     * @return
+     */
+    public Integer floor(int left, int right, int key) {
+
+        Integer floor = null;
+
+        for(int x: A){
+            if(x==key){
+                return x;
+            }
+            if(x>key){
+                continue;
+            }
+            if(floor==null || floor<x){
+                floor = x;
+            }
+        }
+
+        return floor;
+    }
+
+    /**
+     *
+     * @param key
+     * @return
+     */
+    public Integer floorSortedArray(int key) {
+        return floorSortedArray(0, size-1, key);
+    }
+
+    /**
+     * Floor in sorted array
+     *
+     * @param key
+     * @return
+     */
+    public Integer floorSortedArray(int left, int right, int key) {
+
+        if (key < A[left]) {
+            return null;
+        }
+        if (key >= A[right]) {
+            return A[right];
+        }
+
+        //Operate as binarySearchFirstOccurrence
+        while (left <= right) {
+            int mid = left + (right-left)/2;
+
+            if(key==A[mid]){
+                return A[mid];
+            }
+
+            if (key < A[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return A[right];
+    }
+
+
+
+    //################################ Sorting Algorithms ################################
     /**
      * Array of 1 element is sorted.
      * Insert all other elements in this sorted array one by one.
@@ -500,28 +619,56 @@ public class Array {
     }
 
     /**
+     *
+     */
+    public void selectionSort() {
+        selectionSort(0, size-1);
+    }
+
+    /**
+     *
+     * @param left
+     * @param right
+     */
+    public void selectionSort(final int left, final int right){
+
+        for(int i=left; i<right; i++){
+
+            int indexOfSmallestElement=i;
+            for(int j=i+1; j<=right; j++){
+                if (A[j] <A[indexOfSmallestElement]){
+                    indexOfSmallestElement = j;
+                }
+            }
+            int temp = A[i];
+            A[i] = A[indexOfSmallestElement];
+            A[indexOfSmallestElement] = temp;
+        }
+    }
+
+    /**
      * Array has two parts each sorted.
      * Merge the two sub arrays into one in a sorted fashion.
      *
-     * @param startIndex
+     * @param left
      * @param midIndex
-     * @param endIndex
+     * @param right
      */
-    private void mergeAsSorted(int startIndex, int midIndex, int endIndex){
+    private void mergeAsSorted(int left, int midIndex, int right){
 
-        int A1[] = Arrays.copyOfRange(A,startIndex, midIndex);
-        int A2[] = Arrays.copyOfRange(A, midIndex+1, endIndex);
+        int A1[] = Arrays.copyOfRange(A,left, midIndex);
+        int A2[] = Arrays.copyOfRange(A, midIndex+1, right);
 
         int i = 0;
         int j = midIndex+1;
         while(i<A1.length && j<A2.length){
-            A[startIndex++] = (A1[i] < A2[j]) ? A1[i++] : A2[j++];
+            A[left++] = (A1[i] < A2[j]) ? A1[i++] : A2[j++];
         }
         while(i<A1.length){
-            A[startIndex++] = A1[i++];
+            A[left++] = A1[i++];
         }
         while(j<A2.length){
-            A[startIndex++] = A2[j++];
+            A[left++] = A2[j++];
         }
     }
 
@@ -552,18 +699,18 @@ public class Array {
      *      = O(nLog n)         ~~~In Big O notation we leave the lower terms.
      *
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      */
-    public void mergeSort(final int startIndex, final int endIndex){
-        if(startIndex>=endIndex){
+    public void mergeSort(final int left, final int right){
+        if(left>=right){
             return;
         }
 
-        int midIndex = (startIndex + endIndex) / 2;
-        mergeSort(startIndex, midIndex);
-        mergeSort(midIndex+1, endIndex);
-        mergeAsSorted(startIndex, midIndex, endIndex);
+        int midIndex = (left + right) / 2;
+        mergeSort(left, midIndex);
+        mergeSort(midIndex+1, right);
+        mergeAsSorted(left, midIndex, right);
     }
 
     /**
@@ -608,76 +755,46 @@ public class Array {
      *  2. MergeSort is preferred over QuickSort for linked list due to linked data structure.
      *     No extra space is required for linked list and it is always is O(nlog n)
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      */
-    public void quickSort(final int startIndex, final int endIndex){
-        if(startIndex>=endIndex){
+    public void quickSort(final int left, final int right){
+        if(left>=right){
             return;
         }
 
-        int partitionIndex = partition(startIndex, endIndex);
-        quickSort(startIndex, partitionIndex-1);
-        quickSort(partitionIndex+1, endIndex);
+        int partitionIndex = partition(left, right);
+        quickSort(left, partitionIndex-1);
+        quickSort(partitionIndex+1, right);
     }
 
     /**
      * T
      *
-     * @param startIndex
-     * @param endIndex
+     * @param left
+     * @param right
      * @return
      */
-    private int partition(int startIndex, int endIndex){
+    private int partition(int left, int right){
 
         //Smaller array index
-        int i = startIndex-1;
+        int i = left;
+        for(int j=left; j<right; j++){
+            if(A[j]<=A[right]){
 
-        int j;
-        for(j=startIndex; j<endIndex; j++){
-            if(A[j]<=A[endIndex]){
-
-                //Swap i+1 and j;
-                i++;
+                //Swap i and j;
                 int temp = A[i];
                 A[i]=A[j];
                 A[j] = temp;
+
+                i++;
             }
         }
-        i++;
         int temp = A[i];
-        A[i]=A[endIndex];
-        A[endIndex]=temp;
+        A[i]=A[right];
+        A[right]=temp;
 
         return i;
-    }
-
-    /**
-     *
-     */
-    public void selectionSort() {
-        selectionSort(0, size-1);
-    }
-
-    /**
-     *
-     * @param startIndex
-     * @param endIndex
-     */
-    public void selectionSort(final int startIndex, final int endIndex){
-
-        for(int i=startIndex; i<endIndex; i++){
-
-            int indexOfSmallestElement=i;
-            for(int j=i+1; j<=endIndex; j++){
-                if (A[j] <A[indexOfSmallestElement]){
-                    indexOfSmallestElement = j;
-                }
-            }
-            int temp = A[i];
-            A[i] = A[indexOfSmallestElement];
-            A[indexOfSmallestElement] = temp;
-        }
     }
 
     /**
@@ -747,68 +864,6 @@ public class Array {
         }
     }
 
-    /**
-     *
-     * @param sum
-     * @return
-     */
-    public List<int []> findAllPairsWithMatchingSum(final int sum) {
-        return findAllPairsWithMatchingSum(0, size-1, sum);
-    }
-
-    /**
-     * Complexity O(n2)
-     *
-     * @param startIndex
-     * @param endIndex
-     * @param sum
-     * @return
-     */
-    public List<int []> findAllPairsWithMatchingSum(final int startIndex, final int endIndex, final int sum){
-
-        List<int []> list = new ArrayList<>();
-
-        for(int i=startIndex; i<=endIndex; i++){
-            for(int j=i+1; j<=endIndex; j++){
-                if(A[i]+A[j] == sum){
-                    list.add(new int[]{A[i],A[j]});
-                }
-            }
-        }
-        return list;
-    }
-
-    /**
-     *
-     * @param sum
-     * @return
-     */
-    public List<int []> findAllPairsWithMatchingSumNLogN(final int sum) {
-        return findAllPairsWithMatchingSumNLogN(0, size-1, sum);
-    }
-
-    /**
-     * Complexity O(n log n) using binarySearch
-     *
-     * @param startIndex
-     * @param endIndex
-     * @param sum
-     * @return
-     */
-    public List<int []> findAllPairsWithMatchingSumNLogN(final int startIndex, final int endIndex, final int sum){
-
-        Arrays.sort(A);
-        List<int []> list = new ArrayList<>();
-
-        for(int i=startIndex; i<=endIndex-1; i++){
-            int j = Arrays.binarySearch(A, i+1, endIndex, sum-A[i]);
-            if( j >= 0){
-                list.add(new int[]{A[i],A[j]});
-            }
-        }
-        return list;
-    }
-
 
     /**
      * Main function to test Array
@@ -823,49 +878,58 @@ public class Array {
         int D[] = new int[10];
         System.arraycopy(A,2, D, 0, 2);
 
-        int B[] = new int[]{7, 3, 2, 5, 1, 6, 4};
+        int B[] = new int[]{7, 3, 2, 5, 3, 1, 6, 4};
         Array array = new Array(B);
-        array.insertionSort();
-        System.out.println(array);
+        System.out.println("Array: " + array);
+        System.out.println("floor 8: " + array.floor(8));
         System.out.println();
+
+
+        array.insertionSort();
+        array.bubbleSort();
+        array.selectionSort();
+        array.mergeSort();
+        array.quickSort();
+        array.bstSort();
+
+        System.out.println("Sorted array: " + array);
+        System.out.println("floor 8: " + array.floor(8));
+        System.out.println("floorSortedArray 8: " + array.floorSortedArray(8));
+        System.out.println("binarySearch 3: " + array.binarySearch(3));
+        System.out.println("binarySearchFirstOccurence 3: " + array.binarySearchFirstOccurrence(3));
+        System.out.println("binarySearchLastOccurrence 3: " + array.binarySearchLastOccurrence(3));
+        System.out.println();
+
 
         array.rotateByNElements(-2);
-        System.out.println(array);
-
-        System.out.println(array.getRotatedArrayPivotElementIndex());
-        System.out.println();
-
+        System.out.println("Array rotated by -2 elements: " + array);
+        System.out.println("getRotatedArrayPivotElementIndex: " + array.getRotatedArrayPivotElementIndex());
+        System.out.print("binarySearchInRotatedArray: ");
         for (int number : B) {
-            System.out.println(array.binarySearchInRotatedArray(number));
+            System.out.print(array.binarySearchInRotatedArray(number) + " ");
         }
         System.out.println();
+        System.out.print("binarySearchInRotatedArrayWithoutPivot: ");
         for (int number : B) {
-            System.out.println(array.binarySearchInRotatedArrayWithoutPivot(number));
+            System.out.print(array.binarySearchInRotatedArrayWithoutPivot(number) + " ");
         }
+        System.out.println();
+        System.out.println();
 
 
-        final int matchingSum =9;
-        final List<int []> matchingSumPairs = array.findAllPairsWithMatchingSumNLogN(matchingSum);
-        System.out.println("matchingSumPairs for sum  = " + matchingSum);
-        matchingSumPairs.forEach(Array::display);
+        int [] E = {7, 3, 2, 5, 1, 6, 4, 3, 5, 2, 1};
+        Array array3 = new Array(E);
+        System.out.println("Array3: " + array3);
 
-        array.mergeSort();
-        System.out.println(array);
-        System.out.println(array.binarySearch(5));
+        array3.deleteDuplicates();
+        System.out.println("array3.deleteDuplicates() : " + array3);
 
-        Array array1 = new Array(new int[]{1, 2, 3, 3, 7, 7, 8});
-
-        array1.display();
-        System.out.println(array1.binarySearchFirstOccurence(8));
-        System.out.println(array1.floor(0,array1.size-1,4));
-
-        Array array2 = new Array(new int[]{7, 3, 2, 5, 1, 6, 4, 3, 5, 2, 1});
-        array2.bstSort();
-        System.out.println(array2);
-
+        array3 = new Array(E);
+        array3.deleteAllOccurrence(3);
+        System.out.println("array3.deleteAllOccurrence() : " + array3);
     }
 
-    public static void display(int A[]){
+    public static void display(int []A){
         System.out.println(Arrays.toString(A));
     }
 }
