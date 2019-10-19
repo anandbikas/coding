@@ -50,7 +50,7 @@ public class DuplicateFiles {
      * @param currentDepth
      */
     private void processDirectory(File file, int currentDepth){
-
+		
 
         File childFile = null;
         try {
@@ -69,6 +69,8 @@ public class DuplicateFiles {
             if (directoryListing == null) {
                 return;
             }
+			
+			System.out.println("Processing directory: " + file.getAbsolutePath() + "...");
             for (String name : directoryListing) {
 
                 childFile = new File(String.format("%s/%s", file.getAbsolutePath(),name));
