@@ -2,31 +2,27 @@ package com.anand.coding.dsalgo.tree.quad;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.anand.coding.dsalgo.tree.quad.Entry.Point;
 
 /**
- * Quad Node with dataList and four children t1, t2, t3 and t4 nodes.
+ * Quad Node with entryList and four children t1, t2, t3 and t4 nodes.
  */
 public class QuadNode<T extends Comparable<T>>{
 
-    private List<QuadData<T>> dataList = new ArrayList<>();
-    private Integer threshold;
+    public List<Entry<T>> entryList = new ArrayList<>();
+    public Integer threshold;
 
-    private Point ll;
-    private Point ur;
+    public Point ll;
+    public Point ur;
 
-    private QuadNode<T> t1;
-    private QuadNode<T> t2;
-    private QuadNode<T> t3;
-    private QuadNode<T> t4;
-
-    private QuadNode<T> parent;
+    public QuadNode<T> t1,t2,t3,t4;
+    public QuadNode<T> parent;
 
     /**
      *
      */
     public QuadNode(Point ll, Point ur , int threshold){
         super();
-
         this.ll = ll;
         this.ur = ur;
         this.threshold = threshold;
@@ -45,17 +41,17 @@ public class QuadNode<T extends Comparable<T>>{
      * @return
      */
     public boolean isLeafNode(){
-        return dataList != null;
+        return entryList != null;
     }
 
     /**
      *
-     * @param quadData
+     * @param entry
      */
-    public void addQuadData(QuadData<T> quadData) {
-        this.dataList.add(quadData);
+    public void addEntry(Entry<T> entry) {
+        this.entryList.add(entry);
 
-        if(dataList.size()>threshold){
+        if(entryList.size()>threshold){
             divide();
         }
     }
@@ -80,96 +76,32 @@ public class QuadNode<T extends Comparable<T>>{
         t2 = new QuadNode<>(new Point(midX, ll.y), new Point(ur.x, midY), threshold, this);
         t4 = new QuadNode<>(new Point(ll.x, midY), new Point(midX, ur.y), threshold, this);
 
-        for(QuadData<T> quadData: dataList){
-            if(quadData.getLocation().x <=t1.ur.x){
-                if(quadData.getLocation().y <=t1.ur.y){
-                    t1.addQuadData(quadData);
+        for(Entry<T> entry : entryList){
+            if(entry.location.x <=t1.ur.x){
+                if(entry.location.y <=t1.ur.y){
+                    t1.addEntry(entry);
                 } else {
-                    t4.addQuadData(quadData);
+                    t4.addEntry(entry);
                 }
             } else {
-                if(quadData.getLocation().y <=t2.ur.y){
-                    t2.addQuadData(quadData);
+                if(entry.location.y <=t2.ur.y){
+                    t2.addEntry(entry);
                 } else {
-                    t3.addQuadData(quadData);
+                    t3.addEntry(entry);
                 }
             }
         }
         //Clear this nodes data
         this.threshold=null;
-        this.dataList=null;
+        this.entryList=null;
     }
-
-    /**
-     *
-     * @return
-     */
-    public QuadNode<T> getT1() {
-        return t1;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public QuadNode<T> getT2() {
-        return t2;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public QuadNode<T> getT3() {
-        return t3;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public QuadNode<T> getT4() {
-        return t4;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Point getLl() {
-        return ll;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Point getUr() {
-        return ur;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public QuadNode<T> getParent() {
-        return parent;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<QuadData<T>> getDataList() {
-        return dataList;
-    }
-
+    
     /**
      *
      * @return
      */
     @Override
     public String toString() {
-        return String.valueOf(dataList) + String.format(" {%s/%s}",ll,ur);
+        return entryList + String.format(" {%s/%s}",ll,ur);
     }
 }
