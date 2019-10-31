@@ -49,17 +49,31 @@ public class Triplets {
 
         Arrays.sort(A);
 
-        for(int i=0; i<A.length; i++){
-            for(int j=i+1; j<A.length; j++){
-                for(int k=j+1; k<A.length && A[i]+A[j]>=A[k]; k++){
+        for(int i=A.length-1; i>1; i--) {
 
-                    if(A[i]+A[j]==A[k]){
-                        triplets.add(new int[]{A[i],A[j],A[k]});
-                    }
+            //Duplicate numbers bypass
+            while(i>1 && A[i]==A[i-1]){
+                i--;
+            }
+            int l = 0;
+            int r = i - 1;
+
+            while (l < r){
+                //Duplicate numbers bypass
+                while(r>l && A[r]==A[r-1]){
+                    r--;
+                }
+                if (A[l] + A[r] < A[i]) {
+                    l++;
+                } else if (A[l] + A[r] > A[i]) {
+                    r--;
+                } else {
+                    triplets.add(new int[]{A[l], A[r], A[i]});
+                    r--;
+                    l++;
                 }
             }
         }
-
         return triplets;
     }
 
@@ -69,7 +83,7 @@ public class Triplets {
      */
     public static void main(String [] args){
 
-        int [] A = {1,5,3,2};
+        int [] A = {1,5,3,2,2,3,3,5,5,4};
 
         List<int[]> triplets = triplets1(A);
 
