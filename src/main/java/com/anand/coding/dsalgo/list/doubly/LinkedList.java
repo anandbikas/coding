@@ -9,6 +9,7 @@ public class LinkedList<T extends Comparable<T>> {
     private Node<T> start;
     private Node<T> end;
 
+    int length=0;
 
     /**
      *
@@ -21,12 +22,12 @@ public class LinkedList<T extends Comparable<T>> {
         newNode.setNext(start);
         start = newNode;
 
-        if(start.getNext()==null){
+        if(end==null){
             end = newNode;
         } else{
             newNode.getNext().setPrev(newNode);
         }
-
+        length++;
         return newNode;
     }
 
@@ -41,12 +42,13 @@ public class LinkedList<T extends Comparable<T>> {
         newNode.setPrev(end);
         end = newNode;
 
-        if(end.getPrev()==null){
-            start = newNode;
+        if(start==null){
+            start=newNode;
         } else{
             newNode.getPrev().setNext(newNode);
         }
 
+        length++;
         return newNode;
     }
 
@@ -87,6 +89,8 @@ public class LinkedList<T extends Comparable<T>> {
             newNode.setPrev(node==null? end : node.getPrev());
 
             fixNextAndPrevInsertion(newNode);
+
+            length++;
             return newNode;
         }
 
@@ -110,6 +114,8 @@ public class LinkedList<T extends Comparable<T>> {
         newNode.setPrev(node==null? end : node.getPrev());
 
         fixNextAndPrevInsertion(newNode);
+        length++;
+
         return newNode;
     }
 
@@ -130,6 +136,7 @@ public class LinkedList<T extends Comparable<T>> {
         if(start==null){
             end = null;
         }
+        length--;
 
         deletedNode.setNext(null);
         return deletedNode;
@@ -154,6 +161,8 @@ public class LinkedList<T extends Comparable<T>> {
         }
 
         deletedNode.setPrev(null);
+
+        length--;
         return deletedNode;
     }
 
@@ -193,6 +202,7 @@ public class LinkedList<T extends Comparable<T>> {
                 Node<T> deletedNode=node;
                 fixNextAndPrevDeletion(deletedNode);
 
+                length--;
                 return deletedNode;
             }
         }
@@ -210,11 +220,11 @@ public class LinkedList<T extends Comparable<T>> {
         Node<T> node;
         for(node=start, i=1; node!=null && i<index; node=node.getNext(), i++);
 
-
         if(node!=null){
             Node<T> deletedNode=node;
             fixNextAndPrevDeletion(deletedNode);
 
+            length--;
             return deletedNode;
         }
         return null;
@@ -323,11 +333,7 @@ public class LinkedList<T extends Comparable<T>> {
      * @return
      */
     public int length(){
-        int count=0;
-        for(Node node=start; node!=null; node=node.getNext()){
-            count++;
-        }
-        return count;
+        return length;
     }
 
     /**
