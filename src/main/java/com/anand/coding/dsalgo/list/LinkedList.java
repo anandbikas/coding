@@ -2,8 +2,12 @@ package com.anand.coding.dsalgo.list;
 
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
+import com.anand.coding.dsalgo.tree.arraybased.BinaryMinHeap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Generic Linked List implementation
@@ -746,5 +750,70 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public boolean isEmpty(){
         return(start==null);
+    }
+
+
+    /**
+     * Merges k sorted lists into a new list.
+     *
+     * @param listOfLists
+     * @return
+     */
+    public void mergeKSortedLists(List<LinkedList<T>> listOfLists){
+
+        BinaryMinHeap<Node<T>> binaryMinHeap = new BinaryMinHeap<>(listOfLists.size());
+
+        for(LinkedList<T> list: listOfLists){
+            if(list.start !=null){
+                binaryMinHeap.insert(list.start);
+            }
+            list.start=null;
+        }
+
+        if(binaryMinHeap.isEmpty()){
+            return;
+        }
+
+        start = binaryMinHeap.extractMin();
+        if(start.getNext()!=null) {
+            binaryMinHeap.insert(start.getNext());
+        }
+
+        Node<T> temp = start;
+        while (!binaryMinHeap.isEmpty()){
+            temp.setNext(binaryMinHeap.extractMin());
+            temp = temp.getNext();
+
+            if(temp.getNext()!=null){
+                binaryMinHeap.insert(temp.getNext());
+            }
+        }
+        temp.setNext(null);
+    }
+
+    /**
+     *
+     * @param args
+     */
+    public static void main(String [] args){
+
+        List<LinkedList<Integer>> list = new ArrayList<>();
+
+        LinkedList<Integer> l1 = new LinkedList<>();
+        LinkedList<Integer> l2 = new LinkedList<>();
+        LinkedList<Integer> l3 = new LinkedList<>();
+
+        Arrays.stream(new int[]{4,10,15,24}).forEach(l1::insertEnd);
+        Arrays.stream(new int[]{0,9,12,20}).forEach(l2::insertEnd);;
+        Arrays.stream(new int[]{5,18,22,30}).forEach(l3::insertEnd);;
+
+        list.add(l1);
+        list.add(l2);
+        list.add(l3);
+
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        linkedList.mergeKSortedLists(list);
+        linkedList.display();
+
     }
 }
