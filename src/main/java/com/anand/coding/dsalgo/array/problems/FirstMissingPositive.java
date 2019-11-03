@@ -29,7 +29,6 @@ public class FirstMissingPositive {
                 return i;
             }
         }
-
         return 1;
     }
 
@@ -51,9 +50,7 @@ public class FirstMissingPositive {
                 int temp = A[A[i]-1];
                 A[A[i]-1] = A[i];
                 A[i] = temp;
-            }
-
-            if(A[A[i]-1] == A[i]){
+            } else {
                 i++;
             }
         }
@@ -62,7 +59,6 @@ public class FirstMissingPositive {
             if(A[i] != i+1)
                 return i+1;
         }
-
         return n+1;
     }
 
@@ -73,8 +69,8 @@ public class FirstMissingPositive {
      */
     public static void main(String [] args){
 
-        System.out.println(firstMissingPositive(new int[]{1,2,3}));
-        System.out.println(firstMissingPositiveO1Space(new int[]{1,2,3}));
+        System.out.println(firstMissingPositive(new int[]{1,2,5}));
+        System.out.println(firstMissingPositiveO1Space(new int[]{1,2,5}));
 
     }
 }
