@@ -30,13 +30,14 @@ public class PairSumUnsortedArray {
         Integer j = list1.size()-1;
 
         while(i<j){
-            if(list1.get(i)+list1.get(j) == sum){
+            int pairSum = list1.get(i)+list1.get(j);
+            if( pairSum == sum){
                 indexList.add(list.indexOf(list1.get(i)));
                 indexList.add(list.indexOf(list1.get(j)));
                 break;
             }
 
-            if (list1.get(i)+list1.get(j) < sum){
+            if (pairSum < sum){
                 i++;
             } else {
                 j--;
@@ -60,25 +61,36 @@ public class PairSumUnsortedArray {
 
         List<Integer> indexList = new ArrayList<>();
 
-        Map<Integer, Integer> valueIndexMap = new HashMap<>();
+        //list takes care for duplicate values
+        Map<Integer, ArrayList<Integer>> valueIndexesMap = new HashMap<>();
 
         for(int i=0; i<list.size(); i++){
-            valueIndexMap.put(list.get(i), i);
+            int value = list.get(i);
+            if(!valueIndexesMap.containsKey(value)){
+                valueIndexesMap.put(value, new ArrayList<>());
+            }
+            valueIndexesMap.get(value).add(i);
         }
 
         for(int i=0; i<list.size(); i++){
-            Integer delta = sum-list.get(i);
+            int n1= list.get(i);
+            int n2 = sum-list.get(i);
 
-            if(valueIndexMap.containsKey(delta) && valueIndexMap.get(delta)!=i){
+            if(valueIndexesMap.containsKey(n2) && valueIndexesMap.get(n2)!=null){
+
+                // Skip if same index is found.
+                if(valueIndexesMap.get(n2).size()==1 && valueIndexesMap.get(n2).get(0)==i){
+                    continue;
+                }
 
                 if(indexList.size()==0 ||
                         Math.max(list.get(indexList.get(0)), list.get(indexList.get(1)))
-                            < Math.max(list.get(i), list.get(valueIndexMap.get(delta)))
-
+                            < Math.max(n1, n2)
                 ) {
-                    indexList = Arrays.asList(i, valueIndexMap.get(delta));
-                    valueIndexMap.remove(i);
-                    valueIndexMap.remove(list.get(i));
+                    indexList = Arrays.asList(i, valueIndexesMap.get(n2).get(0));
+                    valueIndexesMap.remove(n1);
+                    valueIndexesMap.remove(n2);
+
                 }
             }
         }
