@@ -356,6 +356,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             bst.insertRec(x);
         }
 
+        Integer [] preOrder = {5, 3, 2, 4, 7, 6, 8};
+        final BinarySearchTree<Integer> bst1 = new BinarySearchTree<Integer>(preOrder);
+        System.out.println("bst.isCopy(bst1)" + bst.isCopy(bst1));
+
         System.out.println(bst);
         bst.inOrderTraversalRec();
         System.out.println(bst.getSortedList());
@@ -380,5 +384,40 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         bst.inOrderTraversalRec();
         System.out.println("bst.search(4): " + bst.search(4));
         System.out.println("bst.delete(4): " + bst.delete(4));
+    }
+
+    /**
+     * Construct a tree using preOrder
+     *
+     * @param preOrder
+     */
+    public BinarySearchTree(T [] preOrder){
+        this.root = bstFromPreOrder(preOrder);
+    }
+
+    private Node<T> bstFromPreOrder(T [] preOrder) {
+
+        if (preOrder.length == 0) {
+            return null;
+        }
+        Node<T> rootNode = new Node<>(preOrder[0]);
+
+        Stack<Node<T>> stack = new ArrayStack<>();
+        stack.push(rootNode);
+
+        for (int i = 1; i < preOrder.length; i++) {
+            Node<T> newNode = new Node<>(preOrder[i]);
+
+            if (preOrder[i].compareTo(stack.peek().getData()) < 0) {
+                stack.peek().setLeft(newNode);
+            } else {
+                Node<T> node=stack.pop();
+                for (;!stack.isEmpty() && preOrder[i].compareTo(stack.peek().getData()) > 0; node = stack.pop());
+                node.setRight(newNode);
+            }
+
+            stack.push(newNode);
+        }
+        return rootNode;
     }
 }
