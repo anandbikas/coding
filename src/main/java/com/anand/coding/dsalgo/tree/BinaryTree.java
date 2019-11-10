@@ -796,23 +796,30 @@ public class BinaryTree <T extends Comparable<T>> {
      * @return
      */
     public boolean isBinarySearchTree(){
-        return isBinarySearchTree(root);
+        return isBinarySearchTree(root, new Node<>());
     }
 
     /**
      * Checks if the tree is a binary search tree
-     * @param root
+     * using Inorder Traversal.
+     *
+     * @param node
      * @return
      */
-    private boolean isBinarySearchTree(Node<T> root){
-        if(root == null){
+    private boolean isBinarySearchTree(Node<T> node, Node<T> prevVisitedNode){
+        if(node == null){
             return true;
         }
 
-        return (root.getLeft()==null || root.getLeft().compareTo(root) < 0)
-                    && (root.getRight()==null || root.getRight().compareTo(root) > 0)
-                        && isBinarySearchTree(root.getLeft())
-                            && isBinarySearchTree(root.getRight());
+        if(!isBinarySearchTree(node.getLeft(), prevVisitedNode)){
+            return false;
+        }
+
+        if(prevVisitedNode.getData()!=null && prevVisitedNode.getData().compareTo(node.getData())>0){
+            return false;
+        }
+        prevVisitedNode.setData(node.getData());
+        return isBinarySearchTree(node.getRight(), prevVisitedNode);
     }
 
     /**
@@ -993,6 +1000,8 @@ public class BinaryTree <T extends Comparable<T>> {
 
         System.out.println("binaryTree.heightBalanceFactor(3): " + binaryTree.heightBalanceFactor(binaryTree.searchRec(3)));
         System.out.println("binaryTree.heightBalanceFactor(1): " + binaryTree.heightBalanceFactor(binaryTree.searchRec(1)));
+
+        System.out.println("binaryTree.isBinarySearchTree(): " + binaryTree.isBinarySearchTree());
 
         binaryTree.toMirrorImage();
 
