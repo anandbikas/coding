@@ -14,10 +14,15 @@ package com.anand.coding.dsalgo.tree.btree;
  * 6. All leaves are at same level.
  * 7. B trees grows/shrinks from the upward/root, while BST from downward/leaf.
  *
+ *
+ * Degree vs Order:
+ * B-Tree is a m-way tree:
+ * 1. order = m, means a node can have at most m children and m-1 keys.
+ *
  */
-public class BTree<K extends Comparable<K>> {
+public class BTree<K extends Comparable<K>,V> {
 
-    private BNode<K> root;
+    private BNode<K,V> root;
 
     // BTree degree.
     private int t;
@@ -35,9 +40,10 @@ public class BTree<K extends Comparable<K>> {
      * @param key
      * @return
      */
-    public BNode<K> findNodeForKey(K key) {
+    public BNode<K,V> findNodeForKey(K key) {
         return findNodeForKey(root, key);
     }
+
 
     /**
      * Find a BTree node which contains the key, null if not found
@@ -46,35 +52,25 @@ public class BTree<K extends Comparable<K>> {
      * @param key
      * @return
      */
-    private BNode<K> findNodeForKey(BNode<K> node, K key) {
+    private BNode<K,V> findNodeForKey(BNode<K,V> node, K key) {
 
         if(node==null){
             return null;
         }
 
-        //Binary Search
-        int left=0, right = node.n-1;
-        while (left <= right) {
-            int mid = left + (right-left)/2;
+        int keyIndex = node.getKeyIndex(key);
 
-            if(key.compareTo(node.keys[mid])==0){
-                return node;
-            }
-
-            if (key.compareTo(node.keys[mid])<0) {
-                right = mid - 1;
-            } else {
-                left = mid + 1;
-            }
+        if(keyIndex!=-1 && key.compareTo(node.keyValueList[keyIndex].getKey())==0){
+            return node;
         }
 
         // If not found, traverse down the children
         if(node.isLeaf()){
             return null;
         }
-        return findNodeForKey(node.children[right+1], key);
-    }
 
+        return findNodeForKey(node.children[keyIndex + 1], key);
+    }
 
     /**
      *
@@ -88,7 +84,7 @@ public class BTree<K extends Comparable<K>> {
      *
      * @param node
      */
-    private void display(BNode<K> node){
+    private void display(BNode<K,V> node){
 
         if(node==null){
             return;
@@ -101,12 +97,12 @@ public class BTree<K extends Comparable<K>> {
         int i;
         if(node.isLeaf()) {
             for (i = 0; i < node.n; i++) {
-                System.out.print(node.keys[i] + ", ");
+                System.out.print(node.keyValueList[i] + ", ");
             }
         } else {
             for (i = 0; i < node.n; i++) {
                 display(node.children[i]);
-                System.out.print(node.keys[i] + ", ");
+                System.out.print(node.keyValueList[i] + ", ");
             }
             display(node.children[i]);
         }
@@ -117,16 +113,16 @@ public class BTree<K extends Comparable<K>> {
      * @param key
      * @return
      */
-    public void insert(K key) {
+    public void insert(K key, V value) {
 
         if (root == null) {
             root = new BNode<>(t);
-            root.insertAsSorted(key);
+            root.insertAsSorted(key,value);
             return;
         }
 
-        BNode<K> parent = null;
-        BNode<K> node = root;
+        BNode<K,V> parent = null;
+        BNode<K,V> node = root;
         int childIndex = 0;
 
         while (true) {
@@ -139,34 +135,25 @@ public class BTree<K extends Comparable<K>> {
                 }
                 parent.splitChild(childIndex, node);
 
-                if(key.compareTo(parent.keys[childIndex])==0){
+                if(key.compareTo(parent.keyValueList[childIndex].getKey())==0){
                     //Duplicate Data rejected
                     return;
                 }
 
-                if (key.compareTo(parent.keys[childIndex]) < 0) {
+                if (key.compareTo(parent.keyValueList[childIndex].getKey()) < 0) {
                     node = parent.children[childIndex];
                 } else {
                     node = parent.children[childIndex+1];
                 }
             }
 
-            //Binary Search
-            int left = 0, right = node.n - 1;
-            while (left <= right) {
-                int mid = left + (right - left) / 2;
 
-                if (key.compareTo(node.keys[mid]) == 0) {
-                    //Duplicate Data rejected
-                    //For upsert, we can update the value of the key.
-                    return;
-                }
+            int keyIndex = node.getKeyIndex(key);
 
-                if (key.compareTo(node.keys[mid]) < 0) {
-                    right = mid - 1;
-                } else {
-                    left = mid + 1;
-                }
+            if (key.compareTo(node.keyValueList[keyIndex].getKey()) == 0) {
+                //Duplicate Data rejected
+                //For upsert, we can update the value of the key.
+                return;
             }
 
             // If not found, traverse down the children
@@ -174,12 +161,12 @@ public class BTree<K extends Comparable<K>> {
                 break;
             }
             parent = node;
-            childIndex = right+1;
+            childIndex = keyIndex+1;
             node = node.children[childIndex];
         }
 
         //Insert into the leaf node.
-        node.insertAsSorted(key);
+        node.insertAsSorted(key, value);
     }
 
     /**
@@ -196,13 +183,12 @@ public class BTree<K extends Comparable<K>> {
      */
     public static void main(String [] args){
 
-        BTree<Integer> bTree = new BTree<>(3);
+        BTree<Integer, String> bTree = new BTree<>(3);
 
         int A[] = {10,20,30,40,50,60,70,80,90,40,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108};
-        //int A[] = {10,20,30,40,50,60,70,80,90,45, 51,52};
 
         for(int x: A){
-            bTree.insert(x);
+            bTree.insert(x, String.format("v-%s",x));
         }
 
         bTree.display();
@@ -210,5 +196,7 @@ public class BTree<K extends Comparable<K>> {
         for(int x: A){
             System.out.println(bTree.findNodeForKey(x) + "\n");
         }
+        System.out.println(bTree.findNodeForKey(13) + "\n");
+
     }
 }

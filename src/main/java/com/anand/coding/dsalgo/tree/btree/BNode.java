@@ -1,21 +1,24 @@
 package com.anand.coding.dsalgo.tree.btree;
 
+import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
+
 import java.util.Arrays;
 
 /**
  * B-Tree Node
  */
-public class BNode<K extends Comparable<K>> {
+public class BNode<K extends Comparable<K>, V> {
 
-    // This can be extended to store key->value.
-    // Pair type can be used to store key value pair.     //public T[] values;
-    public K[] keys;
+    // public K[] keyValueList;
+    public Pair<K,V>[] keyValueList;
 
-    // Number of keys
+    // Number of keyValue's
     public int n;
 
-    public BNode<K>[] children;
+    // Degree
     public int t;
+
+    public BNode<K,V>[] children;
 
 
     /**
@@ -24,7 +27,7 @@ public class BNode<K extends Comparable<K>> {
      */
     public BNode(int t) {
         this.t = t;
-        keys = (K [])new Comparable[2*t-1];
+        keyValueList = new Pair[2*t-1];
     }
 
     /**
@@ -48,14 +51,37 @@ public class BNode<K extends Comparable<K>> {
      *
      * @param key
      */
-    public void insertAsSorted(K key) {
+    public void insertAsSorted(K key, V value) {
 
         int j;
-        for(j=n-1; j >= 0 && keys[j].compareTo(key) > 0; j--) {
-            keys[j+1] = keys[j];
+        for(j=n-1; j >= 0 && keyValueList[j].getKey().compareTo(key) > 0; j--) {
+            keyValueList[j+1] = keyValueList[j];
         }
-        keys[j+1] = key;
+        keyValueList[j+1] = new Pair<>(key,value);
         n++;
+    }
+
+    /**
+     * Get index of the largest key <= given key, -1 if not found.
+     */
+    public int getKeyIndex(K key){
+        //Binary Search
+        int left = 0, right = n - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (key.compareTo(keyValueList[mid].getKey()) == 0) {
+                return mid;
+            }
+
+            if (key.compareTo(keyValueList[mid].getKey()) < 0) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return right;
     }
 
     /**
@@ -63,16 +89,16 @@ public class BNode<K extends Comparable<K>> {
      * @param childIndex
      * @param childNode
      */
-    public void splitChild(int childIndex, BNode<K> childNode){
+    public void splitChild(int childIndex, BNode<K,V> childNode){
 
         //Split childNode into two
-        BNode<K> rightChild = new BNode<>(t);
+        BNode<K,V> rightChild = new BNode<>(t);
         int middleIndex = childNode.n/2;
 
         int j=0; int i;
         for(i=middleIndex+1; i<childNode.n; i++, j++){
-            rightChild.keys[j] = childNode.keys[i];
-            childNode.keys[i]=null;
+            rightChild.keyValueList[j] = childNode.keyValueList[i];
+            childNode.keyValueList[i]=null;
         }
 
         if(!childNode.isLeaf()) {
@@ -97,16 +123,16 @@ public class BNode<K extends Comparable<K>> {
         }
         children[n+1] = children[n];
         for(i=n; i>childIndex; i--){
-            keys[i] = keys[i-1];
+            keyValueList[i] = keyValueList[i-1];
             children[i] = children[i-1];
         }
 
-        keys[childIndex] = childNode.keys[middleIndex];
+        keyValueList[childIndex] = childNode.keyValueList[middleIndex];
         children[childIndex] = childNode;
         children[childIndex+1] = rightChild;
         this.n++;
 
-        childNode.keys[middleIndex] = null;
+        childNode.keyValueList[middleIndex] = null;
     }
 
     /**
@@ -115,7 +141,7 @@ public class BNode<K extends Comparable<K>> {
     @Override
     public String toString() {
         return "BNode{" +
-                "keys=" + Arrays.toString(keys) +
+                "keyValueList=" + Arrays.toString(keyValueList) +
                 ", n=" + n +
                 ", children=" + Arrays.toString(children) +
                 ", t=" + t +
