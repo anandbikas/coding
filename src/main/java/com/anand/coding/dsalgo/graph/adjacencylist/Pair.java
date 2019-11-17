@@ -56,7 +56,7 @@ public class Pair<K extends Comparable<K>, V> implements Comparable<Pair<K,V>> {
      */
     @Override
     public String toString() {
-        return key + "=" + value;
+        return key + (value==null ? "" : "=" + value);
     }
 
 
