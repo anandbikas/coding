@@ -1,5 +1,8 @@
 package com.anand.coding.dsalgo.tree.btree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * B-Tree (Self Balancing Search Tree): It is a fat and dwarf tree. The height of a B-Tree is kept low by putting
  * maximum possible keys in a B-Tree node.
@@ -245,5 +248,29 @@ public class BTree<K extends Comparable<K>,V> {
 
         System.out.println(bTree.get(90) + "\n");
         System.out.println(bTree.contains(90) + "\n");
+
+
+        //Multi-value example
+        BTree<Integer, List<String>> bTree1 = new BTree<>(3);
+
+        int B[] = {10,20,30,40,50};
+
+        for(int i=0; i<3; i++) {
+            for (int x : B) {
+                if (!bTree1.contains(x)) {
+                    bTree1.insert(x, new ArrayList<>());
+                }
+                bTree1.get(x).add(String.format("v%d-%s",i, x));
+            }
+        }
+        bTree1.display();
+
+        for(int x: B){
+            System.out.println(bTree1.findNodeForKey(x) + "\n");
+        }
+        System.out.println(bTree1.findNodeForKey(13) + "\n");
+
+        System.out.println(bTree1.get(40) + "\n");
+        System.out.println(bTree1.contains(40) + "\n");
     }
 }

@@ -1,5 +1,8 @@
 package com.anand.coding.dsalgo.tree.bplustree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * BPlusTree:
  *
@@ -234,5 +237,28 @@ public class BPlusTree<K extends Comparable<K>, V> {
 
         System.out.println(bPlusTree.get(90) + "\n");
         System.out.println(bPlusTree.contains(90) + "\n");
+
+        //Multi-value example
+        BPlusTree<Integer, List<String>> bPlusTree1 = new BPlusTree<>(3);
+
+        int B[] = {10,20,30,40,50};
+
+        for(int i=0; i<3; i++) {
+            for (int x : B) {
+                if (!bPlusTree1.contains(x)) {
+                    bPlusTree1.insert(x, new ArrayList<>());
+                }
+                bPlusTree1.get(x).add(String.format("v%d-%s",i, x));
+            }
+        }
+        bPlusTree1.display();
+
+        for(int x: B){
+            System.out.println(bPlusTree1.findNodeForKey(x) + "\n");
+        }
+        System.out.println(bPlusTree1.findNodeForKey(13) + "\n");
+
+        System.out.println(bPlusTree1.get(40) + "\n");
+        System.out.println(bPlusTree1.contains(40) + "\n");
     }
 }
