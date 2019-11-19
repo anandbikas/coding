@@ -67,6 +67,63 @@ public class BPlusTree<K extends Comparable<K>, V> {
         return findNodeForKey(((BPlusNodeInternal<K, V>) node).getChildren(keyIndex + 1), key);
     }
 
+    /**
+     *
+     * @param key
+     * @return
+     */
+    private V get(K key) {
+        return get(root,key);
+    }
+
+    /**
+     * Find value for a given key, null if not found
+     *
+     * @param node
+     * @param key
+     * @return
+     */
+    private V get(BPlusNode<K,V> node, K key) {
+
+        if(node==null){
+            return null;
+        }
+
+        int keyIndex = node.getKeyIndex(key);
+
+        if(keyIndex!=-1 && key.compareTo(node.getKey(keyIndex))==0){
+
+            //If this is the leaf node, get the value
+            if(node instanceof BPlusNodeLeaf){
+                return (V)((BPlusNodeLeaf) node).keyValueList[keyIndex].getValue();
+            }
+            //Else, we need to traverse down to the leftmost leaf node (of its right child) and get the first element.
+            else {
+                node = ((BPlusNodeInternal<K, V>) node).getChildren(keyIndex+1);
+                while(node instanceof BPlusNodeInternal){
+                    node = ((BPlusNodeInternal<K, V>) node).getChildren(0);
+                }
+                return (V)((BPlusNodeLeaf) node).keyValueList[0].getValue();
+            }
+        }
+
+        // If not found, traverse down the children
+        if(node instanceof BPlusNodeLeaf){
+            return null;
+        }
+
+        return get(((BPlusNodeInternal<K, V>) node).getChildren(keyIndex + 1), key);
+    }
+
+    /**
+     *
+     * @param key
+     * @return
+     */
+    public boolean contains(K key){
+        return get(key)!=null;
+    }
+
 
     /**
      *
@@ -174,5 +231,8 @@ public class BPlusTree<K extends Comparable<K>, V> {
         }
 
         System.out.println(bPlusTree.findNodeForKey(13) + "\n");
+
+        System.out.println(bPlusTree.get(90) + "\n");
+        System.out.println(bPlusTree.contains(90) + "\n");
     }
 }

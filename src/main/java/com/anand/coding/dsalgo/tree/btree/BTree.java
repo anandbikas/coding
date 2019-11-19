@@ -74,6 +74,51 @@ public class BTree<K extends Comparable<K>,V> {
 
     /**
      *
+     * @param key
+     * @return
+     */
+    private V get(K key) {
+        return get(root,key);
+    }
+
+    /**
+     * Find value for a given key, null if not found
+     *
+     * @param node
+     * @param key
+     * @return
+     */
+    private V get(BNode<K,V> node, K key) {
+
+        if(node==null){
+            return null;
+        }
+
+        int keyIndex = node.getKeyIndex(key);
+
+        if(keyIndex!=-1 && key.compareTo(node.keyValueList[keyIndex].getKey())==0){
+            return node.keyValueList[keyIndex].getValue();
+        }
+
+        // If not found, traverse down the children
+        if(node.isLeaf()){
+            return null;
+        }
+
+        return get(node.children[keyIndex + 1], key);
+    }
+
+    /**
+     *
+     * @param key
+     * @return
+     */
+    public boolean contains(K key){
+        return get(key)!=null;
+    }
+
+    /**
+     *
      */
     public void display(){
         display(root);
@@ -198,5 +243,7 @@ public class BTree<K extends Comparable<K>,V> {
         }
         System.out.println(bTree.findNodeForKey(13) + "\n");
 
+        System.out.println(bTree.get(90) + "\n");
+        System.out.println(bTree.contains(90) + "\n");
     }
 }
