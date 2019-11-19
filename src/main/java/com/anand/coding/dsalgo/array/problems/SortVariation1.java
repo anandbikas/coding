@@ -1,8 +1,8 @@
 package com.anand.coding.dsalgo.array.problems;
 
-import com.anand.coding.dsalgo.tree.multivalue.map.BSTMap;
+import com.anand.coding.dsalgo.tree.map.BSTMap;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Sort an array according to absolute difference with a given value diff.
@@ -31,12 +31,31 @@ public class SortVariation1 {
         int arr[] = {10, 5, 3, 9, 2};
         int diff = 7;
 
-        BSTMap<Integer, Integer> bstMap = new BSTMap<>();
+        BSTMap<Integer, List<Integer>> bstMap = new BSTMap<>();
 
         Arrays.stream(arr).forEach(num -> {
-            bstMap.insert(Math.abs(num-diff), num);
+            int key = Math.abs(num-diff);
+            if(!bstMap.contains(key)){
+                bstMap.put(key, new ArrayList<>());
+            }
+            bstMap.get(key).add(num);
         });
 
-        System.out.println(bstMap.getSortedList());
+        System.out.println(bstMap.values());
+        System.out.println();
+
+
+        //Using HashMap
+        Map<Integer, List<Integer>> hashMap = new HashMap<>();
+
+        Arrays.stream(arr).forEach(num -> {
+            int key = Math.abs(num-diff);
+            if(!hashMap.containsKey(key)){
+                hashMap.put(key, new ArrayList<>());
+            }
+            hashMap.get(key).add(num);
+        });
+
+        System.out.println(hashMap.values());
     }
 }
