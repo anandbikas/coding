@@ -333,6 +333,54 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     }
 
     /**
+     * Floor value: largest value <= x
+     *
+     * @param x
+     * @return
+     */
+    public T floor(T x){
+        Node<T> node = root;
+        while(node != null){
+            if(node.getData().compareTo(x) > 0){
+                node = node.getLeft();
+
+            } else {
+                if(node.getRight() == null
+                        || node.getRight().getData().compareTo(x)>0){
+                    break;
+                } else {
+                    node = node.getRight();
+                }
+            }
+        }
+        return node == null ? null : node.getData();
+    }
+
+    /**
+     * Ceil value: smallest value >= x
+     *
+     * @param x
+     * @return
+     */
+    public T ceil(T x){
+        Node<T> node = root;
+        while(node != null){
+            if(node.getData().compareTo(x) < 0){
+                node = node.getRight();
+
+            } else {
+                if(node.getLeft() == null
+                        || node.getLeft().getData().compareTo(x)<0){
+                    break;
+                } else {
+                    node = node.getLeft();
+                }
+            }
+        }
+        return node == null ? null : node.getData();
+    }
+
+    /**
      * Main function to test the code.
      *
      * @param args
@@ -353,6 +401,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         Integer [] preOrder = {5, 3, 2, 4, 7, 6, 8};
         final BinarySearchTree<Integer> bst1 = new BinarySearchTree<Integer>(preOrder);
         System.out.println("bst.isCopy(bst1)" + bst.isCopy(bst1));
+
+
+        System.out.println(bst.floor(7));
+        System.out.println(bst.ceil(1));
 
         System.out.println(bst);
         bst.inOrderTraversalRec();
