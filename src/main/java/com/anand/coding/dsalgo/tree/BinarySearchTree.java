@@ -56,23 +56,23 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
     /**
      *
-     * @param root
+     * @param node
      * @param data
      * @return
      */
-    private Node<T> insertRec(Node<T> root, T data){
+    private Node<T> insertRec(Node<T> node, T data){
 
-        if(root==null){
-            root = new Node<>(data);
-            return root;
+        if(node==null){
+            node = new Node<>(data);
+            return node;
         }
 
-        if(root.getData().compareTo(data)>0) {
-            root.setLeft(insertRec(root.getLeft(), data));
-        } else if(root.getData().compareTo(data)<0){
-            root.setRight(insertRec(root.getRight(), data));
+        if(node.getData().compareTo(data)>0) {
+            node.setLeft(insertRec(node.getLeft(), data));
+        } else if(node.getData().compareTo(data)<0){
+            node.setRight(insertRec(node.getRight(), data));
         }
-        return root;
+        return node;
     }
 
     /**
@@ -94,14 +94,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param data
      * @return
      */
-    public boolean containsData(T data){
-
-        Node<T> pivotNode=root;
-        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
-            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
-        }
-
-        return pivotNode!=null && pivotNode.getData().equals(data);
+    public boolean contains(T data){
+        return search(data)!=null;
     }
 
     /**
@@ -116,16 +110,16 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
     /**
      *
-     * @param root
+     * @param node
      * @param data
      * @return
      */
-    private Node<T> searchRec(Node<T> root, T data){
+    private Node<T> searchRec(Node<T> node, T data){
 
-        if(root==null || root.getData().compareTo(data)==0){
-            return root;
+        if(node==null || node.getData().compareTo(data)==0){
+            return node;
         }
-        return searchRec(root.getData().compareTo(data)>0 ? root.getLeft() : root.getRight(), data);
+        return searchRec(node.getData().compareTo(data)>0 ? node.getLeft() : node.getRight(), data);
     }
 
     /**
@@ -368,7 +362,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         System.out.println("bst.height(): " + bst.height());
         System.out.println("bst.search(8): " + bst.search(8));
-        System.out.println("bst.containsData(8): " + bst.containsData(8));
+        System.out.println("bst.containsData(8): " + bst.contains(8));
 
         System.out.println("bst.searchRec(8): " + bst.searchRec(8));
 

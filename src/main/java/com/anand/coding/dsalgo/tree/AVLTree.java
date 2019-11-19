@@ -83,12 +83,12 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      *
      * @return
      */
-    public boolean isAVLTree(Node root){
-        if(root == null){
+    public boolean isAVLTree(Node node){
+        if(node == null){
             return true;
         }
-        if(isAVLTree(root.getLeft()) && isAVLTree(root.getRight())){
-            return Math.abs(heightBalanceFactor(root))<2;
+        if(isAVLTree(node.getLeft()) && isAVLTree(node.getRight())){
+            return Math.abs(heightBalanceFactor(node))<2;
         }
         return false;
     }
@@ -105,12 +105,12 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      *
      * @return
      */
-    public boolean isHeightCorrectForAllNodes(Node root){
-        if(root == null){
+    public boolean isHeightCorrectForAllNodes(Node node){
+        if(node == null){
             return true;
         }
-        if(isHeightCorrectForAllNodes(root.getLeft()) && isHeightCorrectForAllNodes(root.getRight())){
-            return Math.max(height(root.getLeft()), height(root.getRight()))+1 == root.getHeight();
+        if(isHeightCorrectForAllNodes(node.getLeft()) && isHeightCorrectForAllNodes(node.getRight())){
+            return Math.max(height(node.getLeft()), height(node.getRight()))+1 == node.getHeight();
         }
         return false;
     }
