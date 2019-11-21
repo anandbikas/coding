@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.dp;
+package com.anand.coding.problems.dp;
 
 /**
  * Example: Given 3 numbers {1, 3, 5}, find total number of ways to form 'N'
@@ -37,8 +37,9 @@ package com.anand.coding.dsalgo.dp;
  *     s(0)
  * --------------------------------
  *
+ * Note: If different arrangements not allowed, see CoinChange problem.
  */
-public class DifferentWaysToFindASum {
+public class _03_DifferentWaysToFindASum {
 
 
     /**
@@ -48,7 +49,8 @@ public class DifferentWaysToFindASum {
      * @return
      */
     public static long solveRec(int []A, int sum) {
-        long []DP = new long[sum+1];
+
+        long []DP = new long[sum+1];    //Sum
         DP[0] = 1;
 
         long result = solveRec(A, sum, DP);
@@ -88,7 +90,7 @@ public class DifferentWaysToFindASum {
      * @return
      */
     public static long solveIterative(int []A, int sum) {
-        long []DP = new long[sum+1];
+        long []DP = new long[sum+1];    //Sum
         DP[0]=1;
 
         for(int i=1; i<=sum; i++) {

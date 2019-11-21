@@ -1,10 +1,12 @@
-package com.anand.coding.dsalgo.dp;
+package com.anand.coding.problems.dp;
 
 /**
  * Given weights and values of n items, put these items in a knapsack of capacity W to get the maximum total value
  *
+ * Note: This can be solved using greedy as well.
+ *
  */
-public class Knapsack_0_1 {
+public class _01_Knapsack_0_1 {
 
     /**
      * Recursive solution with memoization
@@ -17,7 +19,7 @@ public class Knapsack_0_1 {
      */
     public static int knapsackRec(int [] wt, int [] val, int n, int weight) {
 
-        int [][] DP =  new int[n+1][weight+1];
+        int [][] DP =  new int[n+1][weight+1];  //Item-Weight
         int finalResult = knapsackRec(wt, val, n, weight, DP);
         printDPArray(DP, n, weight);
 
@@ -39,8 +41,8 @@ public class Knapsack_0_1 {
             return DP[n][w] = knapsackRec(wt, val, n-1, w, DP);
         }
 
-        return DP[n][w] = Math.max(val[itemIndex] + knapsackRec(wt, val, n-1, w-wt[itemIndex], DP),
-                                knapsackRec(wt, val, n-1, w, DP));
+        return DP[n][w] = Math.max(knapsackRec(wt, val, n-1, w, DP),
+                                        val[itemIndex] + knapsackRec(wt, val, n-1, w-wt[itemIndex], DP));
     }
 
     /**
@@ -57,17 +59,10 @@ public class Knapsack_0_1 {
             return 0;
         }
 
-        int [][] DP = new int[n+1][weight+1];
+        int [][] DP = new int[n+1][weight+1];   //Item-Weight
 
-        //Populate DP for first element
-        if(wt[0] <= weight) {
-            for (int w = wt[0]; w<=weight; w++){
-                DP[1][w] = val[0];
-            }
-        }
-
-        //Populate DP from 2nd element onwards
-        for(int i=2; i<=n; i++){
+        //Populate DP from 1st element onwards
+        for(int i=1; i<=n; i++){
 
             int itemIndex = i-1;
             for(int w=1; w<=weight; w++){
@@ -77,7 +72,7 @@ public class Knapsack_0_1 {
                     DP[i][w] = DP[i-1][w];
                 }
                 else{
-                    DP[i][w] = Math.max(val[itemIndex] + DP[i-1][w-wt[itemIndex]], DP[i-1][w]);
+                    DP[i][w] = Math.max( DP[i-1][w], val[itemIndex] + DP[i-1][w-wt[itemIndex]]);
                 }
             }
         }
@@ -98,6 +93,7 @@ public class Knapsack_0_1 {
 
         /* Recursive Solution DP Array:
          *
+         *    0   0   0   0   0   0   0   0   0   0
          *    0   0   0  10  10   0   0   0   0  10
          *    0   0   0  10   0   0   0   0   0  30
          *    0   0   0   0   0   0   0   0   0  40
@@ -106,6 +102,7 @@ public class Knapsack_0_1 {
 
         /* Tapulation Solution DP Array:
          *
+         *    0   0   0   0   0   0   0   0   0   0
          *    0   0  10  10  10  10  10  10  10  10
          *    0   0  10  10  10  20  20  30  30  30
          *    0   0  10  10  10  20  30  30  40  40

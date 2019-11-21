@@ -1,9 +1,9 @@
-package com.anand.coding.dsalgo.dp;
+package com.anand.coding.problems.dp;
 
 /**
  * Given two strings A and B, find the longest common sub-string in the two strings.
  */
-public class LongestCommonSubString {
+public class _07_LongestCommonSubString {
 
     /**
      * DP Tabulation solution
@@ -39,6 +39,7 @@ public class LongestCommonSubString {
     }
 
     /**
+     * Recursive Top Down with memoization
      *
      * @param A
      * @param n
@@ -48,7 +49,7 @@ public class LongestCommonSubString {
      */
     public static String lcsRec(char[] A, int n, char[] B, int m) {
 
-        int DP[][] = new int[n+1][m+1];
+        int [][]DP = new int[n+1][m+1];
 
         lcsRec(A, n, B, m, DP);
         printDPArray(DP, n, m);
@@ -68,17 +69,7 @@ public class LongestCommonSubString {
 
         return (new String(A, maxI-maxLength, maxLength));
     }
-
-    /**
-     *
-     * @param A
-     * @param n
-     * @param B
-     * @param m
-     * @param DP
-     * @return
-     */
-    public static int lcsRec(char[] A, int n, char[] B, int m, int [][]DP) {
+    private static int lcsRec(char[] A, int n, char[] B, int m, int [][]DP) {
 
         if (n == 0 || m == 0) {
             return 0;
@@ -86,15 +77,17 @@ public class LongestCommonSubString {
 
         //Already calculated?
         //TODO: how to handle the calculated elements with value =0?
+        //Integer array can be used in place of int.
         if(DP[n][m] > 0){
             return DP[n][m];
         }
 
-        DP[n][m] = (A[n-1] == B[m-1]) ?
-                        1 + lcsRec(A, n-1, B, m-1, DP) : 0;
-
-        lcsRec(A, n, B, m-1, DP);
-        lcsRec(A, n-1, B, m, DP);
+        if(A[n-1] == B[m-1]) {
+            DP[n][m] = 1 + lcsRec(A, n-1, B, m-1, DP);
+        } else {
+            lcsRec(A, n, B, m - 1, DP);
+            lcsRec(A, n - 1, B, m, DP);
+        }
 
         return DP[n][m];
     }
@@ -122,6 +115,21 @@ public class LongestCommonSubString {
          * java
          */
         System.out.println(lcs(A, A.length, B, B.length));
+
+
+        /**
+         *    0   0   0   0   0   0   0   0   0   0
+         *    0   1   0   0   0   0   0   0   0   0
+         *    0   0   2   0   0   0   0   0   0   0
+         *    0   0   0   3   0   0   0   0   0   0
+         *    0   0   0   0   0   0   0   0   0   0
+         *    0   0   0   0   0   0   0   0   0   0
+         *    0   0   0   0   0   0   1   0   0   0
+         *    0   0   0   0   0   0   0   2   0   0
+         *    0   0   0   0   0   0   0   0   3   0
+         *    0   0   0   0   0   0   0   0   0   4
+         * java
+         */
         System.out.println(lcsRec(A, A.length, B, B.length));
 
     }

@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.dp;
+package com.anand.coding.problems.dp;
 
 /**
  * CoinChange is like DifferentWaysToFindASum where different arrangements are not allowed.
@@ -11,7 +11,7 @@ package com.anand.coding.dsalgo.dp;
  * using the sum of the given three numbers(repetitions allowed but different arrangements not allowed).
  *
  */
-public class DifferentWaysToFindASumCoinChange {
+public class _04_CoinChange {
 
 
     /**
@@ -24,7 +24,7 @@ public class DifferentWaysToFindASumCoinChange {
 
         int n = A.length;
 
-        long [][]DP = new long[n+1][sum+1];
+        long [][]DP = new long[n+1][sum+1];     //Item(coin)-Sum
 
         // For sum == 0, the result is 1
         for(int i=1; i<=n; i++) {
@@ -55,7 +55,7 @@ public class DifferentWaysToFindASumCoinChange {
             return DP[n][sum];
         }
 
-        return DP[n][sum] = coinChangeRec(A,n-1, sum, DP) + coinChangeRec(A, n, sum - A[n-1], DP);
+        return DP[n][sum] = coinChangeRec(A,n-1, sum, DP) + coinChangeRec(A, n, sum-A[n-1], DP);
     }
 
     /**
@@ -68,13 +68,12 @@ public class DifferentWaysToFindASumCoinChange {
 
         int n = A.length;
 
-        long [][]DP = new long[n+1][sum+1];
+        long [][]DP = new long[n+1][sum+1];     //Item(coin)-Sum
 
         // For sum == 0, the result is 1
         for(int i=1; i<=n; i++) {
             DP[i][0] = 1;
         }
-
 
         //Populate DP from 1st element onwards
         for(int i=1; i<=n; i++) {
@@ -83,9 +82,17 @@ public class DifferentWaysToFindASumCoinChange {
             for (int s = 1; s <= sum; s++) {
 
                 if(A[itemIndex]>s){
-                    DP[i][s] = DP[itemIndex][s];
+                    DP[i][s] = DP[i-1][s];
                 } else {
-                    DP[i][s] = DP[itemIndex][s] + DP[i][s - A[itemIndex]];
+                    DP[i][s] = DP[i-1][s] + DP[i][s-A[itemIndex]];
+
+                    // ^^^^
+                    // Note: coinChange solution is similar to Knapsack_0_1
+                    // except quantity is infinite for each item(coin),
+                    //
+                    // Hence:
+                    // CoinChange:  DP[i][s-A[itemIndex]];       here, i'th coin is repeatedly included in this expression
+                    // Knapsack:    DP[i-1][w-wt[itemIndex]];    here, i'th coin not included, taking value upto i-1 only to prevent multiple quantity.
                 }
             }
         }
@@ -103,9 +110,19 @@ public class DifferentWaysToFindASumCoinChange {
      * @return
      */
     public static long coinChangeIterativeEfficient(int []A, int sum) {
-        long []DP = new long[sum+1];
+        long []DP = new long[sum+1];    //Sum
         DP[0]=1;
 
+//      for(int i=1; i<=sum; i++) {
+//            for (int x : A) {
+//                if(x<=i){
+//                    DP[i] += DP[i-x];
+//                }
+//            }
+//        }
+
+        //Modified differentWaysToFindASum logic to consider coins first rather than sum.
+        //This ensures, the coin is not repeated again.
         for(int x: A){
             for(int i=x; i<=sum; i++){
                 DP[i] += DP[i-x];

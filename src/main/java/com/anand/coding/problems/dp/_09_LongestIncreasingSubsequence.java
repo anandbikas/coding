@@ -1,10 +1,10 @@
-package com.anand.coding.dsalgo.dp;
+package com.anand.coding.problems.dp;
 
 /**
  * Find longest increasing sub sequence from an array of integers.
  *
  */
-public class LongestIncreasingSubsequence {
+public class _09_LongestIncreasingSubsequence {
 
 
     public static int lis(int []A){

@@ -1,17 +1,25 @@
-package com.anand.coding.dsalgo.dp;
+package com.anand.coding.problems.dp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Given coin denominations set {1,5,6,8}, Find minimum number of coins required to make a given sum.
+ * Given coin denominations set {1,5,6,8},
  *
- * CoinChangeMinimumCoins: Print the coins comprising the sum.
+ * 1. Find minimum number of coins required to make a given sum.
+ * 2. Print those coins comprising the sum.
+ *
+ * Note: This can be solved using Greedy algorithm as well by sorting the denominations.
+ *       But this may not always work.
+ *       Eg:
+ *        coins= {9, 6, 5, 1} and V = 11.
+ *        Greedy: {9,1,1}.
+ *        DP    : {5,6}
  */
-public class CoinChangeMinimumCoins {
+public class _05_CoinChangeMinimumCoins {
 
-    public static int INF = Integer.MAX_VALUE-1;
+    public static int INF = Integer.MAX_VALUE-1;   // decrease by 1 to support addition of 1.
 
     /**
      * DP Tabulation solution
@@ -29,7 +37,7 @@ public class CoinChangeMinimumCoins {
         for(int x: coins){
             for(int i=x; i<=sum; i++){
                 if(1+DP[i-x] < DP[i]) {
-                    DP[i] = 1 + DP[i - x];
+                    DP[i] = 1 + DP[i-x];
                     COINS_TRACK[i] = x;
                 }
             }
@@ -67,7 +75,7 @@ public class CoinChangeMinimumCoins {
 
         // Example 1:
         int []coins1 = {5, 6, 8};
-        int sum1 = 11;
+        int sum1 = 7;
         System.out.println(coinChangeIterative(coins1, sum1));
 
         // Example 2:

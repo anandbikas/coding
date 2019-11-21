@@ -1,11 +1,38 @@
-package com.anand.coding.dsalgo.dp;
+package com.anand.coding.problems.dp;
 
 /**
  * Given two strings A and B, find the longest common sub-sequence in the two strings.
  */
-public class LongestCommonSubSequence {
+public class _08_LongestCommonSubSequence {
 
     //TODO: print the lcs string
+    /**
+     * DP Tabulation solution
+     *
+     * @param A
+     * @param n
+     * @param B
+     * @param m
+     * @return
+     */
+    public static int lcs(char[] A, int n, char[] B, int m) {
+        int DP[][] = new int[n+1][m+1];
+
+        for(int i=1; i<=n; i++){
+            for(int j=1; j<=m; j++){
+
+                if(A[i-1] == B[j-1]) {
+                    DP[i][j] = 1 + DP[i-1][j-1];
+                } else {
+                    DP[i][j] = Math.max(DP[i-1][j], DP[i][j-1]);
+                }
+            }
+        }
+
+        printDPArray(DP,n,m);
+        return DP[n][m];
+    }
+
     /**
      * Recursive Top Down with memoization
      *
@@ -16,6 +43,7 @@ public class LongestCommonSubSequence {
      * @return
      */
     public static int lcsRec(char[] A, int n, char[] B, int m) {
+
         int [][]DP = new int[n+1][m+1];
 
         int lcsLength = lcsRec(A, n, B, m, DP);
@@ -30,43 +58,16 @@ public class LongestCommonSubSequence {
         }
 
         //Already calculated?
-        if(DP[n][m] >0){
-             return DP[n][m];
+        if(DP[n][m] > 0){
+            return DP[n][m];
         }
 
-        if (A[n-1] == B[m-1]) {
-            return DP[n][m] = 1 + lcsRec(A, n-1, B, m-1, DP);
+        if(A[n-1] == B[m-1]) {
+            DP[n][m] = 1 + lcsRec(A, n-1, B, m-1, DP);
+        } else {
+            DP[n][m] = Math.max(lcsRec(A, n, B, m - 1, DP), lcsRec(A, n - 1, B, m, DP));
         }
 
-        return DP[n][m] = Math.max(lcsRec(A, n, B, m - 1, DP), lcsRec(A, n - 1, B, m, DP));
-    }
-
-    /**
-     * DP Tabulation solution
-     *
-     * @param A
-     * @param n
-     * @param B
-     * @param m
-     * @return
-     */
-    public static int lcs(char[] A, int n, char[] B, int m) {
-        int DP[][] = new int[n+1][m+1];
-
-        for(int i=1; i<=n; i++){
-
-            for(int j=1; j<=m; j++){
-
-                if(A[i-1] == B[j-1]) {
-                    DP[i][j] = 1 + DP[i-1][j-1];
-                }
-                else {
-                    DP[i][j] =  Math.max(DP[i-1][j], DP[i][j-1]);
-                }
-            }
-        }
-
-        printDPArray(DP,n,m);
         return DP[n][m];
     }
 
