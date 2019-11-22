@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.problems;
+package com.anand.coding.problems.dp;
 
 /**
  * For a n stairs ladder, count the number of ways to reach the nth stair
@@ -26,7 +26,7 @@ package com.anand.coding.dsalgo.problems;
  *   ways(4) = 7
  *
  */
-public class WaysToReachNthStair {
+public class _12_WaysToReachNthStair {
 
     /**
      *
@@ -36,7 +36,7 @@ public class WaysToReachNthStair {
     public static int ways(int n, int k){
 
         if(n<=1){
-            return 1;
+            return n;
         }
         /**
          * 1. Instead of taking k variables as in fibonacci series, take a circular queue of k elements
@@ -54,11 +54,11 @@ public class WaysToReachNthStair {
         int sumOfKTerms = 2;
 
         for(int i=2; i<=k-1; i++){
-            Q[i%k] = sumOfKTerms;
-            sumOfKTerms += Q[i%k];
+            Q[i] = sumOfKTerms;
+            sumOfKTerms += Q[i];
 
             if(i==n){
-                return Q[i%k];
+                return Q[i];
             }
         }
 
