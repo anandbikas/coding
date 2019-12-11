@@ -33,7 +33,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * 1. Multiply by -1 (binary multiplication by 11(base-2))
  * 2. Divide by -2 (left shift)
  */
-public class _05_BinarySystemBaseMinus2 {
+public class _05_BinarySystemBaseMinus2DivideBy2 {
 
     /**
      * Binary addition base -2
@@ -56,6 +56,10 @@ public class _05_BinarySystemBaseMinus2 {
 
         if(x==1 && y==11 || x==11 && y==1){
             return 0;
+        }
+
+        if(x==110 && y==1 || x==1 && y==110){
+            return 111;
         }
 
         if(x==110 && y==11 || x==11 && y==110){
