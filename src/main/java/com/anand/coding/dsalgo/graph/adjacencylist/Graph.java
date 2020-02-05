@@ -666,13 +666,13 @@ public class Graph<T> {
                 break;
             }
 
-            int leftEnd = dus.find(edge.getU());
-            int rightEnd = dus.find(edge.getV());
+            int leftEnd = dus.find(edge.u);
+            int rightEnd = dus.find(edge.v);
 
             // If u,v does not create loop add it to mstGraph.
             if(leftEnd!=rightEnd){
                 edgeCount++;
-                mstGraph.addEdge(edge.getU(), edge.getV(), edge.getWeight());
+                mstGraph.addEdge(edge.u, edge.v, edge.weight);
                 dus.union(leftEnd, rightEnd);
             }
         }

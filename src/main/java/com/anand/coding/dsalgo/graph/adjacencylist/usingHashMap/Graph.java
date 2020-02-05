@@ -692,13 +692,13 @@ public class Graph<T extends Comparable<T>> {
                 break;
             }
 
-            T leftEnd = dus.find(edge.getU());
-            T rightEnd = dus.find(edge.getV());
+            T leftEnd = dus.find(edge.u);
+            T rightEnd = dus.find(edge.v);
 
             // If u,v does not create loop add it to mstGraph.
             if(leftEnd!=rightEnd){
                 edgeCount++;
-                mstGraph.addEdge(edge.getU(), edge.getV(), edge.getWeight());
+                mstGraph.addEdge(edge.u, edge.v, edge.weight);
                 dus.union(leftEnd, rightEnd);
             }
         }
