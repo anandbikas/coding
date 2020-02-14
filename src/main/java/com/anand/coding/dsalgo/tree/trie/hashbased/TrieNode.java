@@ -15,6 +15,9 @@ public class TrieNode<T> {
     //if value == null, this is not a dictionary word. Else a corresponding value to the key.
     private T value;
 
+    //Optional count to indicate how many words contain this character at a particular level.
+    private int count=0;
+
     /**
      *
      * @return
@@ -32,6 +35,17 @@ public class TrieNode<T> {
         c = Character.toUpperCase(c);
         if(!charMap.containsKey(c)){
             charMap.put(c,  new TrieNode<>());
+        }
+    }
+
+    /**
+     *
+     * @param c
+     */
+    public void deleteChild(char c){
+        c = Character.toUpperCase(c);
+        if(!charMap.containsKey(c)){
+            charMap.remove(c);
         }
     }
 
@@ -58,6 +72,28 @@ public class TrieNode<T> {
      */
     public void setValue(T value) {
         this.value = value;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     *
+     */
+    public void incrementCounter(){
+        count++;
+    }
+
+    /**
+     *
+     */
+    public void decrementCounter(){
+        count--;
     }
 
     /**

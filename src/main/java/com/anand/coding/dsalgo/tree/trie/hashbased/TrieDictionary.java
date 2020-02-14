@@ -33,6 +33,7 @@ public class TrieDictionary<T> {
         for(char c: charArray){
             trieNode.setChild(c);
             trieNode = trieNode.getChild(c);
+            trieNode.incrementCounter();
         }
         trieNode.setValue(value);
     }
@@ -79,6 +80,19 @@ public class TrieDictionary<T> {
             }
         }
         trieNode.setValue(null);
+
+        //Decrease counter and detach the node from where count becomes 0.
+        TrieNode<T> trieNodeParent = null;
+        trieNode = root;
+        for(char c: charArray){
+            trieNodeParent = trieNode;
+            trieNode = trieNode.getChild(c);
+            trieNode.decrementCounter();
+            if(trieNode.getCount()==0){
+                trieNodeParent.deleteChild(c);
+                return;
+            }
+        }
     }
 
     /**
@@ -114,6 +128,44 @@ public class TrieDictionary<T> {
                             String.format("%-18s%s", stack.getAsWord(), child.getValue()));
                 }
                 display(child, stack);
+                stack.pop();
+            }
+        }
+    }
+
+    /**
+     * Its like
+     * printAllWords
+     * printAllPaths
+     */
+    public void displayAllUniquePrefix() {
+        System.out.println("All Unique Prefixes");
+        System.out.println(             "--------------------------------");
+
+        ArrayStack<Character> stack = new ArrayStack<>();
+        displayAllUniquePrefix(root, stack);
+        System.out.println();
+    }
+
+    /**
+     *
+     * @param trieNode
+     * @param stack
+     */
+    private void displayAllUniquePrefix(TrieNode<T> trieNode, ArrayStack<Character> stack) {
+        if(trieNode == null){
+            return;
+        }
+
+        for(char c: trieNode.getCharSet()){
+            if(trieNode.getChild(c)!=null){
+                TrieNode<T> child = trieNode.getChild(c);
+                stack.push(c);
+                if(child.getCount()==1){
+                    System.out.println(String.format("%s", stack.getAsWord()));
+                } else {
+                    displayAllUniquePrefix(child, stack);
+                }
                 stack.pop();
             }
         }
@@ -190,6 +242,7 @@ public class TrieDictionary<T> {
         trieDictionary.insert("hippopotamus","dariyayi ghoda");
 
         trieDictionary.display();
+        trieDictionary.displayAllUniquePrefix();
 
         String prefix = "bo";
 
