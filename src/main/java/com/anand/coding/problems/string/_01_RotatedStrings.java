@@ -15,7 +15,7 @@ public class _01_RotatedStrings {
     public static boolean isRotation(String s1, String s2){
 
         return s1.length()==s2.length()
-                    && (s1+s2).contains(s1);
+                    && (s1+s1).contains(s2);
     }
 
     /**
@@ -28,6 +28,5 @@ public class _01_RotatedStrings {
         String s2 = "anandbikas";
 
         System.out.println(isRotation(s1,s2));
-
     }
 }
