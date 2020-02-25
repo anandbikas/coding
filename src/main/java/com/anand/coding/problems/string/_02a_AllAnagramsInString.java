@@ -1,7 +1,6 @@
 package com.anand.coding.problems.string;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Find starting indexes of all the anagrams of string p in string s.
@@ -33,14 +32,14 @@ public class _02a_AllAnagramsInString {
             A[c-'a']++;
         }
 
-        int B[] = new int[26];
         for(char c: s.substring(0,keyLength).toCharArray()){
-            B[c-'a']++;
+            A[c-'a']--;
         }
 
+        //boolean isEqual = !Arrays.stream(A).filter(x -> x!=0).findFirst().isPresent();
         boolean isEqual = true;
         for (int i=0; i<26; i++) {
-            if (A[i] != B[i]) {
+            if (A[i] != 0) {
                 isEqual=false;
                 break;
             }
@@ -55,15 +54,16 @@ public class _02a_AllAnagramsInString {
             char rc = s.charAt(r);
 
             //Sliding window technique
-            B[lc-'a']--;
-            B[rc-'a']++;
+            A[lc-'a']++;
+            A[rc-'a']--;
 
-            if(isEqual) {
-                isEqual = lc == rc;
+            //isEqual = isEqual ? (lc==rc) : !Arrays.stream(A).filter(x -> x!=0).findFirst().isPresent();
+            if(isEqual){
+                isEqual = (lc==rc);
             } else {
                 isEqual = true;
                 for (int i=0; i<26; i++) {
-                    if (A[i] != B[i]) {
+                    if (A[i] != 0) {
                         isEqual=false;
                         break;
                     }
