@@ -20,7 +20,7 @@ public class _03_PairMatchingSumUnsortedArray {
      */
     public static List<Integer> pairSum(int sum, ArrayList<Integer> list){
 
-        ArrayList<Integer> indexList = new ArrayList<>();
+        int index1=-1,index2=-1;
 
         ArrayList<Integer> list1 = (ArrayList<Integer>) list.clone();
         Collections.sort(list1);
@@ -32,8 +32,8 @@ public class _03_PairMatchingSumUnsortedArray {
         while(i<j){
             int pairSum = list1.get(i)+list1.get(j);
             if( pairSum == sum){
-                indexList.add(list.indexOf(list1.get(i)));
-                indexList.add(list.indexOf(list1.get(j)));
+                index1 = list.indexOf(list1.get(i));
+                index2 = list.indexOf(list1.get(j));
                 break;
             }
 
@@ -44,8 +44,9 @@ public class _03_PairMatchingSumUnsortedArray {
             }
         }
 
-        Collections.sort(indexList);
-        return indexList;
+        List<Integer> resList = Arrays.asList(index1, index2);
+        Collections.sort(resList);
+        return resList;
     }
 
     /**
@@ -59,43 +60,41 @@ public class _03_PairMatchingSumUnsortedArray {
      */
     public static List<Integer> pairSumUsingHashMap(int sum, ArrayList<Integer> list){
 
-        List<Integer> indexList = new ArrayList<>();
+        int index1=-1,index2=-1;
 
         //list takes care for duplicate values
-        Map<Integer, ArrayList<Integer>> valueIndexesMap = new HashMap<>();
+        Map<Integer, ArrayList<Integer>> indexMap = new HashMap<>();
 
         for(int i=0; i<list.size(); i++){
             int value = list.get(i);
-            if(!valueIndexesMap.containsKey(value)){
-                valueIndexesMap.put(value, new ArrayList<>());
+            if(!indexMap.containsKey(value)){
+                indexMap.put(value, new ArrayList<>());
             }
-            valueIndexesMap.get(value).add(i);
+            indexMap.get(value).add(i);
         }
 
-        for(int i=0; i<list.size(); i++){
-            int n1= list.get(i);
-            int n2 = sum-list.get(i);
+        // Workaround for n1==n2
+        if(sum%2==0){
+            int n=sum/2;
+            if(indexMap.containsKey(n) && indexMap.get(n).size()>1) {
+                index1 = indexMap.get(n).get(0);
+                index2 = indexMap.get(n).get(1);
+                indexMap.remove(n);
+            }
+        }
 
-            if(valueIndexesMap.containsKey(n2) && valueIndexesMap.get(n2)!=null){
+        for(int n1: indexMap.keySet()){
+            int n2 = sum-n1;
 
-                // Skip if same index is found.
-                if(valueIndexesMap.get(n2).size()==1 && valueIndexesMap.get(n2).get(0)==i){
-                    continue;
-                }
-
-                if(indexList.size()==0 ||
-                        Math.max(list.get(indexList.get(0)), list.get(indexList.get(1)))
-                            < Math.max(n1, n2)
-                ) {
-                    indexList = Arrays.asList(i, valueIndexesMap.get(n2).get(0));
-                    valueIndexesMap.remove(n1);
-                    valueIndexesMap.remove(n2);
-
+            if(indexMap.containsKey(n2)){
+                if(index1==-1 || Math.max(list.get(index1), list.get(index2))< Math.max(n1, n2)){
+                    index1 = indexMap.get(n1).get(0);
+                    index2=indexMap.get(n2).get(0);
                 }
             }
         }
 
-        return indexList;
+        return Arrays.asList(index1, index2);
     }
 
     /**
