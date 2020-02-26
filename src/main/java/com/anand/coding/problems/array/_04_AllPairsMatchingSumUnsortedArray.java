@@ -10,27 +10,6 @@ import java.util.*;
 public class _04_AllPairsMatchingSumUnsortedArray {
 
     /**
-     * Complexity O(n2)
-     *
-     * @param A
-     * @param sum
-     * @return
-     */
-    public static List<int []> findAllPairsWithMatchingSum(int A[], final int sum){
-
-        List<int []> list = new ArrayList<>();
-
-        for(int i=0; i<A.length; i++){
-            for(int j=i+1; j<A.length; j++){
-                if(A[i]+A[j] == sum){
-                    list.add(new int[]{A[i],A[j]});
-                }
-            }
-        }
-        return list;
-    }
-
-    /**
      * Complexity O(n log n) using binarySearch
      *
      * @param A
@@ -65,24 +44,24 @@ public class _04_AllPairsMatchingSumUnsortedArray {
         List<int []> list = new ArrayList<>();
 
         //list takes care for duplicate values
-        Map<Integer, ArrayList<Integer>> valueIndexesMap = new HashMap<>();
+        Map<Integer, ArrayList<Integer>> indexMap = new HashMap<>();
 
         for(int i=0; i<A.length; i++){
             int value = A[i];
-            if(!valueIndexesMap.containsKey(value)){
-                valueIndexesMap.put(value, new ArrayList<>());
+            if(!indexMap.containsKey(value)){
+                indexMap.put(value, new ArrayList<>());
             }
-            valueIndexesMap.get(value).add(i);
+            indexMap.get(value).add(i);
         }
 
         for(int i=0; i<A.length; i++){
             int n1 = A[i];
             int n2 = sum-A[i];
 
-            if(valueIndexesMap.containsKey(n2) && valueIndexesMap.get(n2)!=null){
+            if(indexMap.containsKey(n2)){
 
-                for(int n1Index: valueIndexesMap.get(n1)) {
-                    for (int n2Index : valueIndexesMap.get(n2)) {
+                for(int n1Index: indexMap.get(n1)) {
+                    for (int n2Index : indexMap.get(n2)) {
                         // Skip if same index is found.
                         if (n1Index == n2Index) {
                             continue;
@@ -91,24 +70,23 @@ public class _04_AllPairsMatchingSumUnsortedArray {
                         list.add(new int[]{n1, n2});
                     }
                 }
-                valueIndexesMap.remove(n1);
-                valueIndexesMap.remove(n2);
+                indexMap.remove(n1);
+                indexMap.remove(n2);
             }
         }
         return list;
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String [] args){
 
         int A[] = new int[]{7, 3, 2, 5, 3, 1, 6, 4};
 
         int matchingSum =9;
         List<int []> matchingSumPairs = findAllPairsWithMatchingSumNLogN(A, matchingSum);
-        System.out.println("matchingSumPairs for sum  = " + matchingSum);
-        matchingSumPairs.forEach(Array::display);
-        System.out.println();
-
-        matchingSumPairs = findAllPairsWithMatchingSum(A, matchingSum);
         System.out.println("matchingSumPairs for sum  = " + matchingSum);
         matchingSumPairs.forEach(Array::display);
         System.out.println();
