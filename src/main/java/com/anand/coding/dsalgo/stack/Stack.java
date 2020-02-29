@@ -15,6 +15,6 @@ public interface Stack<T> {
     public void display();
     public int size();
 
-    public String getAsWord();
-    public T[] getAsList();
+    public String toWord();
+    public T[] toArray();
 }

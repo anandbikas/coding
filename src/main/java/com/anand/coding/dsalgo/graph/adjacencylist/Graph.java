@@ -516,7 +516,7 @@ public class Graph<T> {
      * @param destIndex
      * @param
      */
-    public List<T[]> findPathDFSRec(int sourceIndex, int destIndex){
+    public List<List<T>> findAllPathsDFSRec(int sourceIndex, int destIndex){
         if(sourceIndex>=size || destIndex >=size){
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -524,9 +524,9 @@ public class Graph<T> {
         boolean []visited = new boolean[size];
         Stack<T> pathStack = new ArrayStack<>(size);
 
-        List<T[]> pathList= new ArrayList<>();
+        List<List<T>> pathList= new ArrayList<>();
 
-        findPathDFSRec(sourceIndex, destIndex, visited, pathStack, pathList);
+        findAllPathsDFSRec(sourceIndex, destIndex, visited, pathStack, pathList);
         return pathList;
     }
 
@@ -536,7 +536,7 @@ public class Graph<T> {
      * @param destIndex
      * @param visited
      */
-    private void findPathDFSRec(int nodeIndex, int destIndex, boolean []visited, Stack<T> pathStack, List<T[]> pathList){
+    private void findAllPathsDFSRec(int nodeIndex, int destIndex, boolean []visited, Stack<T> pathStack, List<List<T>> pathList){
 
         if(visited[nodeIndex]) {
             return;
@@ -545,7 +545,7 @@ public class Graph<T> {
         pathStack.push(vertices.get(nodeIndex));
 
         if(nodeIndex == destIndex){
-            pathList.add(pathStack.getAsList());
+            pathList.add(Arrays.asList(pathStack.toArray()));
 
             pathStack.pop();
             return;
@@ -555,7 +555,7 @@ public class Graph<T> {
 
         for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
             if(!visited[childIndex.getKey()]){
-                 findPathDFSRec(childIndex.getKey(), destIndex, visited, pathStack, pathList);
+                findAllPathsDFSRec(childIndex.getKey(), destIndex, visited, pathStack, pathList);
             }
         }
 
@@ -569,7 +569,7 @@ public class Graph<T> {
      * @param destIndex
      * @param
      */
-    public List<T[]> findPathDFS(int sourceIndex, int destIndex) {
+    public List<List<T>> findAllPathsDFS(int sourceIndex, int destIndex) {
         if (sourceIndex >= size || destIndex >= size) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -579,7 +579,7 @@ public class Graph<T> {
 
         Stack<T> pathStack = new ArrayStack<>(size);
 
-        List<T[]> pathList = new ArrayList<>();
+        List<List<T>> pathList = new ArrayList<>();
 
         stack.push(sourceIndex);
 
@@ -595,7 +595,7 @@ public class Graph<T> {
             pathStack.push(vertices.get(nodeIndex));
 
             if (nodeIndex == destIndex) {
-                pathList.add(pathStack.getAsList());
+                pathList.add(Arrays.asList(pathStack.toArray()));
                 pathStack.pop();
                 continue;
             }

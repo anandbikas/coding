@@ -539,7 +539,7 @@ public class Graph<T extends Comparable<T>> {
      * @param v
      * @param
      */
-    public List<T[]> findPathDFSRec(T u, T v){
+    public List<List<T>> findAllPathsDFSRec(T u, T v){
         if (!(vertices.containsKey(u) || vertices.containsKey(v))) {
             throw new IllegalArgumentException();
         }
@@ -547,9 +547,9 @@ public class Graph<T extends Comparable<T>> {
         Map<T, Boolean> visited = new HashMap<>();
         Stack<T> pathStack = new ArrayStack<>(size);
 
-        List<T[]> pathList= new ArrayList<>();
+        List<List<T>> pathList= new ArrayList<>();
 
-        findPathDFSRec(u, v, visited, pathStack, pathList);
+        findAllPathsDFSRec(u, v, visited, pathStack, pathList);
         return pathList;
     }
 
@@ -559,7 +559,7 @@ public class Graph<T extends Comparable<T>> {
      * @param v
      * @param visited
      */
-    private void findPathDFSRec(T u, T v, Map<T, Boolean> visited, Stack<T> pathStack, List<T[]> pathList){
+    private void findAllPathsDFSRec(T u, T v, Map<T, Boolean> visited, Stack<T> pathStack, List<List<T>> pathList){
 
         if(visited.containsKey(u)) {
             return;
@@ -568,7 +568,7 @@ public class Graph<T extends Comparable<T>> {
         pathStack.push(u);
 
         if(u.equals(v)){
-            pathList.add(pathStack.getAsList());
+            pathList.add(Arrays.asList(pathStack.toArray()));
 
             pathStack.pop();
             return;
@@ -578,7 +578,7 @@ public class Graph<T extends Comparable<T>> {
 
         for(Pair<T, Integer> child: vertices.get(u)){
             if(!visited.containsKey(child.getKey())){
-                findPathDFSRec(child.getKey(), v, visited, pathStack, pathList);
+                findAllPathsDFSRec(child.getKey(), v, visited, pathStack, pathList);
             }
         }
 
@@ -592,17 +592,17 @@ public class Graph<T extends Comparable<T>> {
      * @param v
      * @param
      */
-    public List<T[]> findPathDFS(T u, T v) {
+    public List<List<T>> findAllPathsDFS(T u, T v) {
         if (!(vertices.containsKey(u) || vertices.containsKey(v))) {
             throw new IllegalArgumentException();
         }
 
-        Stack<T> stack = new ArrayStack<>(size);
+        Stack<T> stack = new ArrayStack<>(size*2);
         Map<T, Boolean> visited = new HashMap<>();
 
         Stack<T> pathStack = new ArrayStack<>(size);
 
-        List<T[]> pathList = new ArrayList<>();
+        List<List<T>> pathList = new ArrayList<>();
 
         stack.push(u);
 
@@ -618,7 +618,7 @@ public class Graph<T extends Comparable<T>> {
             pathStack.push(u);
 
             if (u.equals(v)) {
-                pathList.add(pathStack.getAsList());
+                pathList.add(Arrays.asList(pathStack.toArray()));
                 pathStack.pop();
                 continue;
             }

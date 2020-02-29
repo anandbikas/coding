@@ -119,7 +119,7 @@ public class TrieDictionary<T> {
                 stack.push(c);
                 if(child.getValue()!=null){
                     System.out.println(
-                            String.format("%-18s%s", stack.getAsWord(), child.getValue()));
+                            String.format("%-18s%s", stack.toWord(), child.getValue()));
                 }
                 display(child, stack);
                 stack.pop();
@@ -175,7 +175,7 @@ public class TrieDictionary<T> {
                 TrieNode<T> child = trieNode.getChild(c);
                 stack.push(c);
                 if(child.getValue()!=null){
-                    list.add(stack.getAsWord());
+                    list.add(stack.toWord());
                 }
                 getAllPrefixedWords(child, stack, list);
                 stack.pop();

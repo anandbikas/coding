@@ -85,32 +85,32 @@ public class DirectedGraphTest {
     @Test
     private void testPathDFSRec(){
 
-        Assert.assertTrue(directedGraph.findPathDFSRec("node1","node3").isEmpty());
+        Assert.assertTrue(directedGraph.findAllPathsDFSRec("node1","node3").isEmpty());
 
         directedGraph.addEdge("node5","node3");
         String[] path5To3_1 =  {"node5", "node2", "node3"};
         String[] path5To3_2 =  {"node5", "node3"};
 
-        List<String[]> pathList5To3 = directedGraph.findPathDFSRec("node5", "node3");
+        List<List<String>> pathList5To3 = directedGraph.findAllPathsDFSRec("node5", "node3");
 
-        Assert.assertEquals(pathList5To3.get(0), path5To3_1);
-        Assert.assertEquals(pathList5To3.get(1), path5To3_2);
+        Assert.assertEquals(pathList5To3.get(0).toArray(), path5To3_1);
+        Assert.assertEquals(pathList5To3.get(1).toArray(), path5To3_2);
     }
 
     @Test
     private void testPathDFS(){
 
-        Assert.assertTrue(directedGraph.findPathDFS("node1","node3").isEmpty());
+        Assert.assertTrue(directedGraph.findAllPathsDFS("node1","node3").isEmpty());
 
         directedGraph.addEdge("node5","node3");
         String[] path5To3_1 =  {"node5", "node2", "node3"};
         String[] path5To3_2 =  {"node5", "node3"};
 
 
-        List<String[]> pathList5To3 = directedGraph.findPathDFS("node5", "node3");
+        List<List<String>> pathList5To3 = directedGraph.findAllPathsDFS("node5", "node3");
 
-        Assert.assertEquals(pathList5To3.get(0), path5To3_1);
-        Assert.assertEquals(pathList5To3.get(1), path5To3_2);
+        Assert.assertEquals(pathList5To3.get(0).toArray(), path5To3_1);
+        Assert.assertEquals(pathList5To3.get(1).toArray(), path5To3_2);
     }
 }
 

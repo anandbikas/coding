@@ -105,20 +105,20 @@ public class ArrayStack<T> implements Stack<T> {
      *
      * @return
      */
-    public String getAsWord(){
-        String word = "";
+    public String toWord(){
 
-        for(int i=0; i<=top; i++){
-            word += stackArr[i];
+        StringBuilder sb = new StringBuilder();
+        for( T item: stackArr){
+            sb.append(item);
         }
-        return word;
+        return sb.toString();
     }
 
     /**
      *
      * @return
      */
-    public T[] getAsList(){
+    public T[] toArray(){
         return Arrays.copyOfRange(stackArr, 0, size());
     }
 
@@ -135,7 +135,7 @@ public class ArrayStack<T> implements Stack<T> {
         stack.push(4);
 
         stack.display();
-        System.out.println(((ArrayStack<Integer>) stack).getAsWord());
+        System.out.println(stack.toWord());
 
         System.out.println(stack.pop());
         System.out.println(stack.pop());
