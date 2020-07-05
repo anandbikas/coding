@@ -16,7 +16,6 @@ import java.util.List;
 public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     private Node<T> start;
-
     int length=0;
 
     /**
@@ -333,17 +332,17 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             return;
         }
 
-        Node<T> nodeSave=null;
-        Node<T> node=start;
-        for(int i=1; node.getNext()!=null; i++, nodeSave=node, node=node.getNext()){
+        Node<T> prevOfA=null;
+        Node<T> a=start;
+        for(int i=1; a.getNext()!=null; i++, prevOfA=a, a=a.getNext()){
             if(k==i){
-                Node<T> temp = node.getNext();
-                node.setNext(temp.getNext());
-                temp.setNext(node);
-                if(nodeSave==null){
-                    start = temp;
+                Node<T> b = a.getNext();
+                a.setNext(b.getNext());
+                b.setNext(a);
+                if(prevOfA==null){
+                    start = b;
                 } else {
-                    nodeSave.setNext(temp);
+                    prevOfA.setNext(b);
                 }
             }
         }
@@ -355,25 +354,25 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void bubbleSort() {
 
-        final int length = length();
         for (int i=0; i < length; i++) {
-            Node<T> nodeSave = null;
-            Node<T> node = start;
-            for(int j=0; j < length-1-i; j++){
-                if(node.compareTo(node.getNext())>0){
+            Node<T> prevOfA = null;
+            Node<T> a = start;
 
-                    Node<T> temp = node.getNext();
-                    node.setNext(temp.getNext());
-                    temp.setNext(node);
-                    if(nodeSave==null){
-                        start = temp;
+            for(int j=0; j < length-1-i; j++){
+                Node<T> b = a.getNext();
+
+                if(a.compareTo(b)>0){
+                    a.setNext(b.getNext());
+                    b.setNext(a);
+                    if(prevOfA==null){
+                        start = b;
                     } else {
-                        nodeSave.setNext(temp);
+                        prevOfA.setNext(b);
                     }
-                    nodeSave=temp;
+                    prevOfA=b;
                 } else {
-                    nodeSave=node;
-                    node=node.getNext();
+                    prevOfA=a;
+                    a=b;
                 }
             }
         }
