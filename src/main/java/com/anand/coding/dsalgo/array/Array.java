@@ -2,7 +2,6 @@ package com.anand.coding.dsalgo.array;
 
 import com.anand.coding.dsalgo.exception.ArrayEmptyException;
 import com.anand.coding.dsalgo.exception.ArrayFullException;
-import com.anand.coding.dsalgo.tree.BinarySearchTree;
 
 import java.util.*;
 

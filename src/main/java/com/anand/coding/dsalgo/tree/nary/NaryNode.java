@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.tree;
+package com.anand.coding.dsalgo.tree.nary;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -8,47 +8,22 @@ import java.util.Objects;
  */
 public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T>>{
 
-    private T data;
-    private NaryNode<T> [] children;
+    public T data;
+    public NaryNode<T> [] children;
 
     // height is used in AVLTree
-    private int height;
+    public int height;
 
-    /**
-     *
-     * @param N
-     */
     public NaryNode(int N){
         super();
         children = new NaryNode[N];
 
     }
 
-    /**
-     *
-     * @param data
-     * @param N
-     */
     public NaryNode(T data, int N){
         this.data = data;
         children = new NaryNode[N];
         height=1;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public T getData() {
-        return data;
-    }
-
-    /**
-     *
-     * @param data
-     */
-    public void setData(T data) {
-        this.data = data;
     }
 
     /**
@@ -66,22 +41,6 @@ public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T
      */
     public void setChild(int i, NaryNode<T> child) {
         children[i] = child;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     *
-     * @param height
-     */
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     /**
@@ -112,6 +71,6 @@ public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T
      */
     @Override
     public int compareTo(NaryNode<T> node) {
-        return node.getData().compareTo(node.data);
+        return data.compareTo(node.data);
     }
 }

@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.tree;
+package com.anand.coding.dsalgo.tree.binary;
 
 import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
@@ -50,9 +50,9 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node == null){
             return;
         }
-        System.out.print(node.getData() + "  ");
-        preOrderTraversalRec(node.getLeft());
-        preOrderTraversalRec(node.getRight());
+        System.out.print(node.data + "  ");
+        preOrderTraversalRec(node.left);
+        preOrderTraversalRec(node.right);
     }
 
     /**
@@ -72,9 +72,9 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node == null){
             return;
         }
-        inOrderTraversalRec(node.getLeft());
-        System.out.print(node.getData() + "  ");
-        inOrderTraversalRec(node.getRight());
+        inOrderTraversalRec(node.left);
+        System.out.print(node.data + "  ");
+        inOrderTraversalRec(node.right);
     }
 
     /**
@@ -94,9 +94,9 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node == null){
             return;
         }
-        postOrderTraversalRec(node.getLeft());
-        postOrderTraversalRec(node.getRight());
-        System.out.print(node.getData() + "  ");
+        postOrderTraversalRec(node.left);
+        postOrderTraversalRec(node.right);
+        System.out.print(node.data + "  ");
     }
 
     /**
@@ -113,13 +113,13 @@ public class BinaryTree <T extends Comparable<T>> {
         }
         while(!stack.isEmpty()) {
             Node node = stack.pop();
-            System.out.print(node.getData() + "  ");
+            System.out.print(node.data + "  ");
 
-            if (node.getRight() != null) {
-                stack.push(node.getRight());
+            if (node.right != null) {
+                stack.push(node.right);
             }
-            if (node.getLeft() != null) {
-                stack.push(node.getLeft());
+            if (node.left != null) {
+                stack.push(node.left);
             }
         }
         System.out.println();
@@ -134,14 +134,14 @@ public class BinaryTree <T extends Comparable<T>> {
 
         Stack<Node> stack = new ArrayStack<>();
 
-        for(Node node = root; node!= null; node=node.getLeft()){
+        for(Node node = root; node!= null; node=node.left){
             stack.push(node);
         }
         while(!stack.isEmpty()){
             Node node = stack.pop();
-            System.out.print(node.getData() + "  ");
+            System.out.print(node.data + "  ");
 
-            for(node=node.getRight(); node!= null; node = node.getLeft()){
+            for(node=node.right; node!= null; node = node.left){
                 stack.push(node);
             }
         }
@@ -169,18 +169,18 @@ public class BinaryTree <T extends Comparable<T>> {
 
             if(node==null){
                 //Process root node
-                System.out.print(rootStack.pop().getData() + "  ");
+                System.out.print(rootStack.pop().data + "  ");
 
             } else {
                 //Push null to indicate a root needs to be processed from rootStack
                 stack.push(null);
                 rootStack.push(node);
 
-                if (node.getRight() != null) {
-                    stack.push(node.getRight());
+                if (node.right != null) {
+                    stack.push(node.right);
                 }
-                if (node.getLeft() != null) {
-                    stack.push(node.getLeft());
+                if (node.left != null) {
+                    stack.push(node.left);
                 }
             }
         }
@@ -203,12 +203,12 @@ public class BinaryTree <T extends Comparable<T>> {
 
         while(!queue.isEmpty()){
             Node node = queue.delete();
-            System.out.print(node.getData() + "  ");
-            if(node.getLeft()!=null){
-                queue.insert(node.getLeft());
+            System.out.print(node.data + "  ");
+            if(node.left!=null){
+                queue.insert(node.left);
             }
-            if(node.getRight()!=null){
-                queue.insert(node.getRight());
+            if(node.right!=null){
+                queue.insert(node.right);
             }
         }
         System.out.println();
@@ -233,21 +233,21 @@ public class BinaryTree <T extends Comparable<T>> {
 
             while (!queue.isEmpty()) {
                 Node node = queue.delete();
-                System.out.print(node.getData() + "  ");
+                System.out.print(node.data + "  ");
 
                 if(level%2==1) {
-                    if (node.getLeft() != null) {
-                        stack.push(node.getLeft());
+                    if (node.left != null) {
+                        stack.push(node.left);
                     }
-                    if (node.getRight() != null) {
-                        stack.push(node.getRight());
+                    if (node.right != null) {
+                        stack.push(node.right);
                     }
                 } else {
-                    if (node.getRight() != null) {
-                        stack.push(node.getRight());
+                    if (node.right != null) {
+                        stack.push(node.right);
                     }
-                    if (node.getLeft() != null) {
-                        stack.push(node.getLeft());
+                    if (node.left != null) {
+                        stack.push(node.left);
                     }
                 }
             }
@@ -294,11 +294,11 @@ public class BinaryTree <T extends Comparable<T>> {
             return;
         }
         if(level == currentLevel){
-            System.out.print( node.getData() + " ");
+            System.out.print( node.data + " ");
             return;
         }
-        printLevel(node.getLeft(), level, currentLevel+1);
-        printLevel(node.getRight(), level, currentLevel+1);
+        printLevel(node.left, level, currentLevel+1);
+        printLevel(node.right, level, currentLevel+1);
 
     }
 
@@ -315,7 +315,7 @@ public class BinaryTree <T extends Comparable<T>> {
             System.out.println("printLevel " + level);
 
             nodeMap.get(level).forEach(node -> {
-                System.out.print( node.getData() + " ");
+                System.out.print( node.data + " ");
             });
             System.out.println();
         }
@@ -346,8 +346,8 @@ public class BinaryTree <T extends Comparable<T>> {
         nodeMap.computeIfAbsent(currentLevel, k->new ArrayList<>());
         nodeMap.get(currentLevel).add(node);
 
-        verticalOrderTraversal(node.getLeft(), nodeMap, currentLevel-1, range);
-        verticalOrderTraversal(node.getRight(), nodeMap,currentLevel+1, range);
+        verticalOrderTraversal(node.left, nodeMap, currentLevel-1, range);
+        verticalOrderTraversal(node.right, nodeMap,currentLevel+1, range);
     }
 
     /**
@@ -378,8 +378,8 @@ public class BinaryTree <T extends Comparable<T>> {
             range.right = currentLevel;
         }
 
-        calculateVerticalLevelRange(node.getLeft(), currentLevel-1, range);
-        calculateVerticalLevelRange(node.getRight(), currentLevel+1, range);
+        calculateVerticalLevelRange(node.left, currentLevel-1, range);
+        calculateVerticalLevelRange(node.right, currentLevel+1, range);
     }
 
 
@@ -420,10 +420,10 @@ public class BinaryTree <T extends Comparable<T>> {
             return;
         }
         if(level == currentLevel){
-            System.out.print( node.getData() + " ");
+            System.out.print( node.data + " ");
         }
-        printVerticalLevel(node.getLeft(), level, currentLevel-1);
-        printVerticalLevel(node.getRight(), level, currentLevel+1);
+        printVerticalLevel(node.left, level, currentLevel-1);
+        printVerticalLevel(node.right, level, currentLevel+1);
     }
 
     /**
@@ -444,14 +444,25 @@ public class BinaryTree <T extends Comparable<T>> {
      */
     private Node<T> searchRec(Node<T> node, T data){
 
-        if(node==null || node.getData().equals(data)){
+        if(node==null || node.data.equals(data)){
             return node;
         }
-        Node<T> foundNode = searchRec(node.getLeft(), data);
+        Node<T> foundNode = searchRec(node.left, data);
         if(foundNode != null){
             return foundNode;
         }
-        return searchRec(node.getRight(), data);
+        return searchRec(node.right, data);
+    }
+
+    /**
+     * Find the lowest common ancestor node of the two given nodes
+     *
+     * @return
+     */
+    public Node<T> lowestCommonAncestor(T data1, T data2){
+
+        //TODO: implementation: find path for both the element and find common node.
+        return null;
     }
 
     /**
@@ -475,11 +486,11 @@ public class BinaryTree <T extends Comparable<T>> {
             return processingLevel;
         }
         if(processingLevel == currentLevel) {
-            System.out.println(node.getData());
+            System.out.println(node.data);
             processingLevel++;
         }
-        processingLevel = leftSideView(node.getLeft(), currentLevel+1, processingLevel);
-        processingLevel = leftSideView(node.getRight(), currentLevel+1, processingLevel);
+        processingLevel = leftSideView(node.left, currentLevel+1, processingLevel);
+        processingLevel = leftSideView(node.right, currentLevel+1, processingLevel);
 
         return processingLevel;
     }
@@ -505,11 +516,11 @@ public class BinaryTree <T extends Comparable<T>> {
             return processingLevel;
         }
         if(processingLevel == currentLevel) {
-            System.out.println(node.getData());
+            System.out.println(node.data);
             processingLevel++;
         }
-        processingLevel = rightSideView(node.getRight(), currentLevel+1, processingLevel);
-        processingLevel = rightSideView(node.getLeft(), currentLevel+1, processingLevel);
+        processingLevel = rightSideView(node.right, currentLevel+1, processingLevel);
+        processingLevel = rightSideView(node.left, currentLevel+1, processingLevel);
 
         return processingLevel;
     }
@@ -532,12 +543,12 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node == null){
             return;
         }
-        if(node.getLeft()==null && node.getRight()==null){
-            System.out.print(node.getData() + "  ");
+        if(node.left==null && node.right==null){
+            System.out.print(node.data + "  ");
             return;
         }
-        printLeaves(node.getLeft());
-        printLeaves(node.getRight());
+        printLeaves(node.left);
+        printLeaves(node.right);
     }
 
     /**
@@ -563,13 +574,13 @@ public class BinaryTree <T extends Comparable<T>> {
             return;
         }
         pathStack.push(node);
-        if(node.getData().equals(data)){
+        if(node.data.equals(data)){
             pathStack.display();
             return;
         }
 
-        printPath(node.getLeft(), data, pathStack);
-        printPath(node.getRight(), data, pathStack);
+        printPath(node.left, data, pathStack);
+        printPath(node.right, data, pathStack);
 
         //Once right subTree is processed, remove its parent
         pathStack.pop();
@@ -600,14 +611,14 @@ public class BinaryTree <T extends Comparable<T>> {
             return;
         }
         pathStack.push(node);
-        if(node.getLeft()==null && node.getRight()==null){
+        if(node.left==null && node.right==null){
             //TODO: Instead of printing paths we can add the path to pathList provided in function parameter
             pathStack.display();
             pathStack.pop();
             return;
         }
-        printAllPaths(node.getLeft(), pathStack);
-        printAllPaths(node.getRight(), pathStack);
+        printAllPaths(node.left, pathStack);
+        printAllPaths(node.right, pathStack);
 
         //Once right subTree is processed, remove its parent
         pathStack.pop();
@@ -628,7 +639,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @return
      */
     public int height(Node node){
-        return node==null? 0 : Math.max(height(node.getLeft()),height(node.getRight())) + 1;
+        return node==null? 0 : Math.max(height(node.left),height(node.right)) + 1;
     }
 
     /**
@@ -640,7 +651,7 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node == null){
             return 0;
         }
-        return height(node.getLeft()) - height(node.getRight());
+        return height(node.left) - height(node.right);
     }
 
     /**
@@ -665,8 +676,8 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node == null){
             return new int[]{0,0};
         }
-        int [] left = diameterCalculator(node.getLeft());
-        int [] right = diameterCalculator(node.getRight());
+        int [] left = diameterCalculator(node.left);
+        int [] right = diameterCalculator(node.right);
 
         int thisNodeHeight = Math.max(left[0], right[0]) +1;
         int thisNodeDiameter = left[0]+right[0]+1;
@@ -701,7 +712,7 @@ public class BinaryTree <T extends Comparable<T>> {
             return false;
         }
 
-        return isSimilar(node1.getLeft(), node2.getLeft()) && isSimilar(node1.getRight(), node2.getRight());
+        return isSimilar(node1.left, node2.left) && isSimilar(node1.right, node2.right);
     }
 
     /**
@@ -730,9 +741,9 @@ public class BinaryTree <T extends Comparable<T>> {
         }
 
 
-        return node1.getData().equals(node2.getData())
-                && isCopy(node1.getLeft(), node2.getLeft())
-                && isCopy(node1.getRight(), node2.getRight());
+        return node1.data.equals(node2.data)
+                && isCopy(node1.left, node2.left)
+                && isCopy(node1.right, node2.right);
     }
 
     private class NodePair{
@@ -780,10 +791,10 @@ public class BinaryTree <T extends Comparable<T>> {
                 continue;
             }
 
-            result = pair.node1.getData().equals(pair.node2.getData());
+            result = pair.node1.data.equals(pair.node2.data);
 
-            stack.push(new NodePair(pair.node1.getLeft(), pair.node2.getLeft()));
-            stack.push(new NodePair(pair.node1.getRight(), pair.node2.getRight()));
+            stack.push(new NodePair(pair.node1.left, pair.node2.left));
+            stack.push(new NodePair(pair.node1.right, pair.node2.right));
         }
 
         return result;
@@ -811,15 +822,15 @@ public class BinaryTree <T extends Comparable<T>> {
             return true;
         }
 
-        if(!isBinarySearchTree(node.getLeft(), prevVisitedNode)){
+        if(!isBinarySearchTree(node.left, prevVisitedNode)){
             return false;
         }
 
-        if(prevVisitedNode.getData()!=null && prevVisitedNode.getData().compareTo(node.getData())>0){
+        if(prevVisitedNode.data!=null && prevVisitedNode.data.compareTo(node.data)>0){
             return false;
         }
-        prevVisitedNode.setData(node.getData());
-        return isBinarySearchTree(node.getRight(), prevVisitedNode);
+        prevVisitedNode.data = node.data;
+        return isBinarySearchTree(node.right, prevVisitedNode);
     }
 
     /**
@@ -840,7 +851,7 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node==null){
             return 0;
         }
-        return 1 + numberOfNodes(node.getLeft()) + numberOfNodes(node.getRight());
+        return 1 + numberOfNodes(node.left) + numberOfNodes(node.right);
     }
 
     /**
@@ -861,12 +872,12 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node==null){
             return;
         }
-        Node<T> temp =  node.getLeft();
-        node.setLeft(node.getRight());
-        node.setRight(temp);
+        Node<T> temp =  node.left;
+        node.left = node.right;
+        node.right = temp;
 
-        toMirrorImage(node.getLeft());
-        toMirrorImage(node.getRight());
+        toMirrorImage(node.left);
+        toMirrorImage(node.right);
     }
 
     /**
@@ -893,14 +904,14 @@ public class BinaryTree <T extends Comparable<T>> {
         if(null == root){
             return false;
         }
-        if(root.getData().equals(nodeData)){
+        if(root.data.equals(nodeData)){
             final Node<T> newNode = new Node<>(data);
-            newNode.setLeft(root.getLeft());
-            root.setLeft(newNode);
+            newNode.left = root.left;
+            root.left = newNode;
             return true;
         } else{
-            return insertAsLeftChild(root.getLeft(), data, nodeData)
-                    || insertAsLeftChild(root.getRight(), data, nodeData);
+            return insertAsLeftChild(root.left, data, nodeData)
+                    || insertAsLeftChild(root.right, data, nodeData);
         }
     }
 
@@ -929,14 +940,14 @@ public class BinaryTree <T extends Comparable<T>> {
         if(null == root){
             return false;
         }
-        if(root.getData().equals(nodeData)){
+        if(root.data.equals(nodeData)){
             final Node<T> newNode = new Node<>(data);
-            newNode.setRight(root.getRight());
-            root.setRight(newNode);
+            newNode.right = root.right;
+            root.right = newNode;
             return true;
         } else{
-            return insertAsRightChild(root.getLeft(), data, nodeData)
-                    || insertAsRightChild(root.getRight(), data, nodeData);
+            return insertAsRightChild(root.left, data, nodeData)
+                    || insertAsRightChild(root.right, data, nodeData);
         }
     }
 
@@ -1091,12 +1102,12 @@ public class BinaryTree <T extends Comparable<T>> {
         }
 
         Node<T> node = new Node<>(preOrder[i]);
-        node.setLeft(treeFromPreAndInOrder(preOrder, i+1, inOrder, left, inOrderNodeIndex-1));
+        node.left = treeFromPreAndInOrder(preOrder, i+1, inOrder, left, inOrderNodeIndex-1);
 
         //Rewind i to the element which lies in the right side of the node in inOrder traversal.
         i += (inOrderNodeIndex)-left + 1;
 
-        node.setRight(treeFromPreAndInOrder(preOrder, i, inOrder, inOrderNodeIndex+1, right));
+        node.right = treeFromPreAndInOrder(preOrder, i, inOrder, inOrderNodeIndex+1, right);
 
         return node;
     }

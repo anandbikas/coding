@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.tree;
+package com.anand.coding.dsalgo.tree.nary;
 
 import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
@@ -54,7 +54,7 @@ public class NaryTree <T extends Comparable<T>>{
         if(root == null){
             return;
         }
-        System.out.print(root.getData() + "  ");
+        System.out.print(root.data + "  ");
 
         for(int i=0; i<N; i++){
             preOrderTraversalRec(root.getChild(i));
@@ -81,7 +81,7 @@ public class NaryTree <T extends Comparable<T>>{
         for(int i=0; i<N; i++){
             postOrderTraversalRec(root.getChild(i));
         }
-        System.out.print(root.getData() + "  ");
+        System.out.print(root.data + "  ");
     }
 
     /**
@@ -98,7 +98,7 @@ public class NaryTree <T extends Comparable<T>>{
         }
         while(!stack.isEmpty()) {
             NaryNode node = stack.pop();
-            System.out.print(node.getData() + "  ");
+            System.out.print(node.data + "  ");
 
             for(int i=N-1; i>=0; i--){
                 if(node.getChild(i) != null) {
@@ -130,7 +130,7 @@ public class NaryTree <T extends Comparable<T>>{
 
             if(node==null){
                 //Process root node
-                System.out.print(rootStack.pop().getData() + "  ");
+                System.out.print(rootStack.pop().data + "  ");
 
             } else {
                 //Push null to indicate a root needs to be processed from rootStack
@@ -163,7 +163,7 @@ public class NaryTree <T extends Comparable<T>>{
 
         while(!queue.isEmpty()){
             NaryNode node = queue.delete();
-            System.out.print(node.getData() + "  ");
+            System.out.print(node.data + "  ");
 
             for(int i=0; i<N; i++){
                 if(node.getChild(i) != null) {
@@ -208,7 +208,7 @@ public class NaryTree <T extends Comparable<T>>{
             return;
         }
         if(level == currentLevel){
-            System.out.print( root.getData() + " ");
+            System.out.print( root.data + " ");
             return;
         }
 
@@ -235,7 +235,7 @@ public class NaryTree <T extends Comparable<T>>{
      */
     private NaryNode<T> searchRec(NaryNode<T> root, T data){
 
-        if(root==null || root.getData().equals(data)){
+        if(root==null || root.data.equals(data)){
             return root;
         }
 
@@ -269,7 +269,7 @@ public class NaryTree <T extends Comparable<T>>{
             return processingLevel;
         }
         if(processingLevel == currentLevel) {
-            System.out.println(root.getData());
+            System.out.println(root.data);
             processingLevel++;
         }
 
@@ -301,7 +301,7 @@ public class NaryTree <T extends Comparable<T>>{
             return processingLevel;
         }
         if(processingLevel == currentLevel) {
-            System.out.println(root.getData());
+            System.out.println(root.data);
             processingLevel++;
         }
 
@@ -331,7 +331,7 @@ public class NaryTree <T extends Comparable<T>>{
             return;
         }
         if(root.isLeafNode()){
-            System.out.print(root.getData() + "  ");
+            System.out.print(root.data + "  ");
             return;
         }
         for(int i=0; i<N; i++){
@@ -509,7 +509,7 @@ public class NaryTree <T extends Comparable<T>>{
         }
 
 
-        boolean isCopy = root1.getData().equals(root2.getData());
+        boolean isCopy = root1.data.equals(root2.data);
         for(int i=0; i<N && isCopy; i++) {
             isCopy = isCopy(root1.getChild(i), root2.getChild(i));
         }
@@ -568,7 +568,7 @@ public class NaryTree <T extends Comparable<T>>{
         if(null == root){
             return false;
         }
-        if(root.getData().equals(nodeData)){
+        if(root.data.equals(nodeData)){
             final NaryNode<T> newNode = new NaryNode<>(data, N);
             newNode.setChild(childIndex, root.getChild(childIndex));
             root.setChild(childIndex, newNode);

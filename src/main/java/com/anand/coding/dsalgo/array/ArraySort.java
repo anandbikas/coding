@@ -1,6 +1,6 @@
 package com.anand.coding.dsalgo.array;
 
-import com.anand.coding.dsalgo.tree.BinarySearchTree;
+import com.anand.coding.dsalgo.tree.binary.BinarySearchTree;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.tree;
+package com.anand.coding.dsalgo.tree.binary;
 
 import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
 import com.anand.coding.dsalgo.queue.Queue;
@@ -36,7 +36,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         if(node==null){
             return 0;
         }
-        return node.getHeight();
+        return node.height;
     }
 
     /**
@@ -47,7 +47,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         if(node == null){
             return;
         }
-        node.setHeight(Math.max(height(node.getLeft()), height(node.getRight()))+1);
+        node.height = Math.max(height(node.left), height(node.right))+1;
     }
 
     /**
@@ -68,7 +68,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         if(node == null){
             return 0;
         }
-        return height(node.getLeft()) - height(node.getRight());
+        return height(node.left) - height(node.right);
     }
 
     /**
@@ -87,7 +87,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         if(node == null){
             return true;
         }
-        if(isAVLTree(node.getLeft()) && isAVLTree(node.getRight())){
+        if(isAVLTree(node.left) && isAVLTree(node.right)){
             return Math.abs(heightBalanceFactor(node))<2;
         }
         return false;
@@ -109,8 +109,8 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         if(node == null){
             return true;
         }
-        if(isHeightCorrectForAllNodes(node.getLeft()) && isHeightCorrectForAllNodes(node.getRight())){
-            return Math.max(height(node.getLeft()), height(node.getRight()))+1 == node.getHeight();
+        if(isHeightCorrectForAllNodes(node.left) && isHeightCorrectForAllNodes(node.right)){
+            return Math.max(height(node.left), height(node.right))+1 == node.height;
         }
         return false;
     }
@@ -122,20 +122,20 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      */
     private void leftRotate(Node<T> pivotNode, Node<T> parent){
 
-        if(pivotNode == null || pivotNode.getRight() == null){
+        if(pivotNode == null || pivotNode.right == null){
             return;
         }
 
-        Node<T> tmpNode = pivotNode.getRight();
-        pivotNode.setRight(tmpNode.getLeft());
-        tmpNode.setLeft(pivotNode);
+        Node<T> tmpNode = pivotNode.right;
+        pivotNode.right = tmpNode.left;
+        tmpNode.left = pivotNode;
 
         if(parent == null){
             this.root = tmpNode;
-        } else if(parent.getLeft()==pivotNode){
-            parent.setLeft(tmpNode);
+        } else if(parent.left==pivotNode){
+            parent.left = tmpNode;
         } else {
-            parent.setRight(tmpNode);
+            parent.right = tmpNode;
         }
         calculateHeight(pivotNode);
         calculateHeight(tmpNode);
@@ -148,20 +148,20 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      */
     private void rightRotate(Node<T> pivotNode, Node<T> parent) {
 
-        if (pivotNode == null || pivotNode.getLeft() == null) {
+        if (pivotNode == null || pivotNode.left == null) {
             return;
         }
 
-        Node<T> tmpNode = pivotNode.getLeft();
-        pivotNode.setLeft(tmpNode.getRight());
-        tmpNode.setRight(pivotNode);
+        Node<T> tmpNode = pivotNode.left;
+        pivotNode.left = tmpNode.right;
+        tmpNode.right = pivotNode;
 
         if (parent == null) {
             this.root = tmpNode;
-        } else if (parent.getLeft() == pivotNode) {
-            parent.setLeft(tmpNode);
+        } else if (parent.left == pivotNode) {
+            parent.left = tmpNode;
         } else {
-            parent.setRight(tmpNode);
+            parent.right = tmpNode;
         }
         calculateHeight(pivotNode);
         calculateHeight(tmpNode);
@@ -183,10 +183,10 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         Node<T> pivotNode = root;
 
         // Simple BST insertion
-        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
+        while(!(pivotNode == null || pivotNode.data.compareTo(data)==0)){
             pathStack.push(parent);
             parent = pivotNode;
-            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.data.compareTo(data) > 0 ? pivotNode.left : pivotNode.right;
         }
 
         if(pivotNode!=null) {
@@ -197,10 +197,10 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         pivotNode = new Node<>(data);
         if(parent == null){
             this.root = pivotNode;
-        } else if(parent.getData().compareTo(data)>0){
-            parent.setLeft(pivotNode);
+        } else if(parent.data.compareTo(data)>0){
+            parent.left = pivotNode;
         } else {
-            parent.setRight(pivotNode);
+            parent.right = pivotNode;
         }
 
 
@@ -216,7 +216,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
             final int heightBalanceFactor = heightBalanceFactor(grandParent);
             if(heightBalanceFactor>1) {
                 //Insertion is in left subTree
-                if (parent.getLeft() == child) {
+                if (parent.left == child) {
                     //Left To Left Case
                     rightRotate(grandParent, pathStack.peek());
                 } else {
@@ -227,7 +227,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
                 break;
             } else if(heightBalanceFactor<-1){
                 //Insertion is in right subTree
-                if(parent.getRight()==child){
+                if(parent.right==child){
                     //Right To Right case
                     leftRotate(grandParent, pathStack.peek());
                 } else {
@@ -261,10 +261,10 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         Node<T> pivotNode = root;
 
         //Find the pivotNode and its parent.
-        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
+        while(!(pivotNode == null || pivotNode.data.compareTo(data)==0)){
             pathStack.push(parent);
             parent = pivotNode;
-            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.data.compareTo(data) > 0 ? pivotNode.left : pivotNode.right;
         }
         pathStack.push(parent);
 
@@ -277,37 +277,37 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
         Node<T> nodeToShift;
 
-        if(pivotNode.getRight() == null) {
+        if(pivotNode.right == null) {
             //If pivot node has no inOrder successor, replace pivot with its left node.
-            nodeToShift = pivotNode.getLeft();
+            nodeToShift = pivotNode.left;
 
         } else {
             // Replace pivot with its inorder successor
             // 1. update left of inOrderSuccessor's parent with inOrderSuccessor's right node.
             // 2. update left and right of inOrderSuccessor node with those of pivot node.
             Node<T> parentOfNodeToShift = pivotNode;
-            nodeToShift = pivotNode.getRight();
+            nodeToShift = pivotNode.right;
 
-            while(nodeToShift.getLeft()!= null){
+            while(nodeToShift.left!= null){
                 queue.insert(parentOfNodeToShift);
                 parentOfNodeToShift = nodeToShift;
-                nodeToShift = nodeToShift.getLeft();
+                nodeToShift = nodeToShift.left;
             }
             queue.insert(parentOfNodeToShift);
 
             if(parentOfNodeToShift != pivotNode) {
-                parentOfNodeToShift.setLeft(nodeToShift.getRight());
-                nodeToShift.setRight(pivotNode.getRight());
+                parentOfNodeToShift.left = nodeToShift.right;
+                nodeToShift.right = pivotNode.right;
             }
-            nodeToShift.setLeft(pivotNode.getLeft());
+            nodeToShift.left = pivotNode.left;
         }
 
         if(parent == null){
             root = nodeToShift;
-        } else if(parent.getLeft() == pivotNode){
-            parent.setLeft(nodeToShift);
+        } else if(parent.left == pivotNode){
+            parent.left = nodeToShift;
         } else {
-            parent.setRight(nodeToShift);
+            parent.right = nodeToShift;
         }
 
         // Add nodeToShift along with all nodes in the queue to stack.
@@ -329,29 +329,29 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
             //Check if this node is unbalanced, then four cases are there
             if(heightBalanceFactor>1) {
                 //left subTree heavy
-                if (heightBalanceFactor(node.getLeft())>=0) {
+                if (heightBalanceFactor(node.left)>=0) {
                     //Left To Left Case
                     rightRotate(node, pathStack.peek());
                 } else {
                     //Left To Right Case
-                    leftRotate(node.getLeft(), node);
+                    leftRotate(node.left, node);
                     rightRotate(node, pathStack.peek());
                 }
             } else if(heightBalanceFactor<-1){
                 //right subTree heavy
-                if(heightBalanceFactor(node.getRight())<=0){
+                if(heightBalanceFactor(node.right)<=0){
                     //Right To Right case
                     leftRotate(node, pathStack.peek());
                 } else {
                     //Right To Left case
-                    rightRotate(node.getRight(), node);
+                    rightRotate(node.right, node);
                     leftRotate(node, pathStack.peek());
                 }
             }
         }
 
-        pivotNode.setLeft(null);
-        pivotNode.setRight(null);
+        pivotNode.left = null;
+        pivotNode.right = null;
         return pivotNode;
     }
 

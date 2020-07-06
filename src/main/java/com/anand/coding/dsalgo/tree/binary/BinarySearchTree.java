@@ -1,4 +1,4 @@
-package com.anand.coding.dsalgo.tree;
+package com.anand.coding.dsalgo.tree.binary;
 
 import com.anand.coding.dsalgo.stack.ArrayStack;
 import com.anand.coding.dsalgo.stack.Stack;
@@ -25,9 +25,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         Node<T> parent = null;
         Node<T> pivotNode = root;
 
-        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
+        while(!(pivotNode == null || pivotNode.data.compareTo(data)==0)){
             parent = pivotNode;
-            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.data.compareTo(data) > 0 ? pivotNode.left : pivotNode.right;
         }
 
         if(pivotNode!=null) {
@@ -38,10 +38,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         pivotNode = new Node<>(data);
         if(parent == null){
             this.root = pivotNode;
-        } else if(parent.getData().compareTo(data)>0){
-            parent.setLeft(pivotNode);
+        } else if(parent.data.compareTo(data)>0){
+            parent.left = pivotNode;
         } else {
-            parent.setRight(pivotNode);
+            parent.right = pivotNode;
         }
         return pivotNode;
     }
@@ -67,10 +67,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return node;
         }
 
-        if(node.getData().compareTo(data)>0) {
-            node.setLeft(insertRec(node.getLeft(), data));
-        } else if(node.getData().compareTo(data)<0){
-            node.setRight(insertRec(node.getRight(), data));
+        if(node.data.compareTo(data)>0) {
+            node.left = insertRec(node.left, data);
+        } else if(node.data.compareTo(data)<0){
+            node.right = insertRec(node.right, data);
         }
         return node;
     }
@@ -83,8 +83,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     public Node<T> search(T data){
 
         Node<T> pivotNode=root;
-        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
-            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
+        while(!(pivotNode == null || pivotNode.data.compareTo(data)==0)){
+            pivotNode = pivotNode.data.compareTo(data) > 0 ? pivotNode.left : pivotNode.right;
         }
         return pivotNode;
     }
@@ -116,10 +116,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      */
     private Node<T> searchRec(Node<T> node, T data){
 
-        if(node==null || node.getData().compareTo(data)==0){
+        if(node==null || node.data.compareTo(data)==0){
             return node;
         }
-        return searchRec(node.getData().compareTo(data)>0 ? node.getLeft() : node.getRight(), data);
+        return searchRec(node.data.compareTo(data)>0 ? node.left : node.right, data);
     }
 
     /**
@@ -134,9 +134,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         Node<T> pivotNode = root;
 
         //Find the pivotNode and its parent.
-        while(!(pivotNode == null || pivotNode.getData().compareTo(data)==0)){
+        while(!(pivotNode == null || pivotNode.data.compareTo(data)==0)){
             parent = pivotNode;
-            pivotNode = pivotNode.getData().compareTo(data) > 0 ? pivotNode.getLeft() : pivotNode.getRight();
+            pivotNode = pivotNode.data.compareTo(data) > 0 ? pivotNode.left : pivotNode.right;
         }
 
         // if pivotNode not found, return
@@ -146,39 +146,39 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         Node<T> nodeToShift;
 
-        if(pivotNode.getRight() == null) {
+        if(pivotNode.right == null) {
             //If pivot node has no inOrder successor, replace pivot with its left node.
-            nodeToShift = pivotNode.getLeft();
+            nodeToShift = pivotNode.left;
 
         } else {
             // Replace pivot with its inorder successor
             // 1. update left of inOrderSuccessor's parent with inOrderSuccessor's right node.
             // 2. update left and right of inOrderSuccessor node with those of pivot node.
             Node<T> parentOfNodeToShift = pivotNode;
-            nodeToShift = pivotNode.getRight();
+            nodeToShift = pivotNode.right;
 
-            while(nodeToShift.getLeft()!= null){
+            while(nodeToShift.left!= null){
                 parentOfNodeToShift = nodeToShift;
-                nodeToShift = nodeToShift.getLeft();
+                nodeToShift = nodeToShift.left;
             }
 
             if(parentOfNodeToShift != pivotNode) {
-                parentOfNodeToShift.setLeft(nodeToShift.getRight());
-                nodeToShift.setRight(pivotNode.getRight());
+                parentOfNodeToShift.left = nodeToShift.right;
+                nodeToShift.right = pivotNode.right;
             }
-            nodeToShift.setLeft(pivotNode.getLeft());
+            nodeToShift.left = pivotNode.left;
         }
 
         if(parent == null){
             root = nodeToShift;
-        } else if(parent.getLeft() == pivotNode){
-            parent.setLeft(nodeToShift);
+        } else if(parent.left == pivotNode){
+            parent.left = nodeToShift;
         } else {
-            parent.setRight(nodeToShift);
+            parent.right = nodeToShift;
         }
 
-        pivotNode.setLeft(null);
-        pivotNode.setRight(null);
+        pivotNode.left = null;
+        pivotNode.right = null;
         return pivotNode;
     }
 
@@ -190,7 +190,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return null;
         }
         Node<T> node=root;
-        for(; node.getLeft()!=null; node=node.getLeft());
+        for(; node.left!=null; node=node.left);
         return node;
     }
 
@@ -203,7 +203,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return null;
         }
         Node<T> node=root;
-        for(; node.getRight()!=null; node=node.getRight());
+        for(; node.right!=null; node=node.right);
         return node;
     }
 
@@ -224,10 +224,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         Node<T> node = root;
         while(node != null){
-            if(node.getData().compareTo(data1)<0){
-                node = node.getRight();
-            } else if(node.getData().compareTo(data2)>0){
-                node = node.getLeft();
+            if(node.data.compareTo(data1)<0){
+                node = node.right;
+            } else if(node.data.compareTo(data2)>0){
+                node = node.left;
             } else {
                 break;
             }
@@ -259,19 +259,19 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return;
         }
 
-        if(node.getData().equals(data)){
-            for(Node<T> n = this.root; !n.getData().equals(data);){
-                System.out.print(n.getData() + "  ");
-                n = n.compareTo(node) > 0 ? n.getLeft() : n.getRight();
+        if(node.data.equals(data)){
+            for(Node<T> n = this.root; !n.data.equals(data);){
+                System.out.print(n.data + "  ");
+                n = n.compareTo(node) > 0 ? n.left : n.right;
             }
             System.out.print(data + "  ");
             System.out.println();
             return;
         }
-        if(node.getData().compareTo(data)>0){
-            printPath(node.getLeft(), data);
+        if(node.data.compareTo(data)>0){
+            printPath(node.left, data);
         } else {
-            printPath(node.getRight(), data);
+            printPath(node.right, data);
         }
     }
 
@@ -295,16 +295,16 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         if(node == null){
             return;
         }
-        if(node.getLeft()==null && node.getRight()==null){
+        if(node.left==null && node.right==null){
             for(Node<T> n = this.root; n!=null;){
-                System.out.print(n.getData() + "  ");
-                n = n.compareTo(node) > 0 ? n.getLeft() : n.getRight();
+                System.out.print(n.data + "  ");
+                n = n.compareTo(node) > 0 ? n.left : n.right;
             }
             System.out.println();
             return;
         }
-        printAllPaths(node.getLeft());
-        printAllPaths(node.getRight());
+        printAllPaths(node.left);
+        printAllPaths(node.right);
     }
 
     /**
@@ -317,14 +317,14 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         Stack<Node> stack = new ArrayStack<>();
 
-        for(Node node = root; node!= null; node=node.getLeft()){
+        for(Node node = root; node!= null; node=node.left){
             stack.push(node);
         }
         while(!stack.isEmpty()){
             Node node = stack.pop();
-            sortedList.add((T)node.getData());
+            sortedList.add((T)node.data);
 
-            for(node=node.getRight(); node!= null; node = node.getLeft()){
+            for(node=node.right; node!= null; node = node.left){
                 stack.push(node);
             }
         }
@@ -341,19 +341,19 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     public T floor(T x){
         Node<T> node = root;
         while(node != null){
-            if(node.getData().compareTo(x) > 0){
-                node = node.getLeft();
+            if(node.data.compareTo(x) > 0){
+                node = node.left;
 
             } else {
-                if(node.getRight() == null
-                        || node.getRight().getData().compareTo(x)>0){
+                if(node.right == null
+                        || node.right.data.compareTo(x)>0){
                     break;
                 } else {
-                    node = node.getRight();
+                    node = node.right;
                 }
             }
         }
-        return node == null ? null : node.getData();
+        return node == null ? null : node.data;
     }
 
     /**
@@ -365,19 +365,19 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     public T ceil(T x){
         Node<T> node = root;
         while(node != null){
-            if(node.getData().compareTo(x) < 0){
-                node = node.getRight();
+            if(node.data.compareTo(x) < 0){
+                node = node.right;
 
             } else {
-                if(node.getLeft() == null
-                        || node.getLeft().getData().compareTo(x)<0){
+                if(node.left == null
+                        || node.left.data.compareTo(x)<0){
                     break;
                 } else {
-                    node = node.getLeft();
+                    node = node.left;
                 }
             }
         }
-        return node == null ? null : node.getData();
+        return node == null ? null : node.data;
     }
 
     /**
@@ -454,12 +454,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         for (int i = 1; i < preOrder.length; i++) {
             Node<T> newNode = new Node<>(preOrder[i]);
 
-            if (preOrder[i].compareTo(stack.peek().getData()) < 0) {
-                stack.peek().setLeft(newNode);
+            if (preOrder[i].compareTo(stack.peek().data) < 0) {
+                stack.peek().left = newNode;
             } else {
                 Node<T> node=stack.pop();
-                for (;!stack.isEmpty() && preOrder[i].compareTo(stack.peek().getData()) > 0; node = stack.pop());
-                node.setRight(newNode);
+                for (;!stack.isEmpty() && preOrder[i].compareTo(stack.peek().data) > 0; node = stack.pop());
+                node.right = newNode;
             }
 
             stack.push(newNode);
