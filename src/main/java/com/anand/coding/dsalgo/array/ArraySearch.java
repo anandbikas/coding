@@ -187,26 +187,19 @@ public class ArraySearch extends Array {
          *      3 4 3 3 3 3 ==> pivotIndex = 2
          *      3 3 3 3 3 3 ==> pivotIndex = 6 (not found)
          *
-         * To make this algorithm work for duplicate elements, we ensure A[left]>A[right] by adjusting right index.
+         * To make this algorithm work for duplicate elements, we ensure A[left]>A[right] by adjusting left index.
          * which may take O(n) in worst case.
          */
-
-        //Workaround for duplicate elements starts.
-        int newRightIndex = right;
-        for (; left<newRightIndex && A[newRightIndex] == A[left]; newRightIndex--);
-        if(left<newRightIndex){
-            right = newRightIndex;
-        }
-        //Workaround for duplicate elements ends.
+        for (; left<right && A[right] == A[left]; left++);
 
         //Binary search
         int firstElement = A[left];
         while (left <= right) {
             int mid = left + (right-left)/2;
-            if (firstElement<=A[mid]) {
-                left = mid+1;
-            } else {
+            if(A[mid]<firstElement){
                 right = mid-1;
+            } else {
+                left = mid+1;
             }
         }
         return left;
@@ -217,8 +210,8 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchInRotatedArray(final int key) {
-        return binarySearchInRotatedArray(0, size-1, key);
+    public int binarySearchRotatedArrayPivotBifercation(final int key) {
+        return binarySearchRotatedArrayPivotBifercation(0, size-1, key);
     }
 
     /**
@@ -229,7 +222,7 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchInRotatedArray(final int left, final int right, final int key) {
+    public int binarySearchRotatedArrayPivotBifercation(final int left, final int right, final int key) {
 
         final int pivotElementIndex = getRotatedArrayPivotElementIndex(left, right);
 
@@ -243,8 +236,8 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchInRotatedArrayWithoutPivot(final int key) {
-        return binarySearchInRotatedArrayWithoutPivot(0, size-1, key);
+    public int binarySearchRotatedArray(final int key) {
+        return binarySearchRotatedArray(0, size-1, key);
     }
     /**
      *
@@ -253,15 +246,11 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchInRotatedArrayWithoutPivot(int left, int right, final int key){
+    public int binarySearchRotatedArray(int left, int right, final int key){
 
-        //Workaround for duplicate elements starts.
-        int newRightIndex = right;
-        for (; left<newRightIndex && A[newRightIndex] == A[left]; newRightIndex--);
-        if(left<newRightIndex){
-            right = newRightIndex;
-        }
-        //Workaround for duplicate elements ends.
+        //Workaround for duplicate elements. Say A={4412344}, search 4 results into index 5.
+        //If we want index from a particular side of the pivot, we can truncate duplicates from the other side.
+        for (; left<right && A[right] == A[left]; right--);
 
         while(left<=right){
             int mid = left + (right-left)/2;
@@ -382,15 +371,15 @@ public class ArraySearch extends Array {
         System.out.println("Array rotated by -2 elements: " + array);
         System.out.println("getRotatedArrayPivotElementIndex: " + array.getRotatedArrayPivotElementIndex());
 
-        System.out.print("binarySearchInRotatedArray: ");
+        System.out.print("binarySearchRotatedArrayPivotBifercation: ");
         for (int number : B) {
-            System.out.print(array.binarySearchInRotatedArray(number) + " ");
+            System.out.print(array.binarySearchRotatedArrayPivotBifercation(number) + " ");
         }
         System.out.println();
 
-        System.out.print("binarySearchInRotatedArrayWithoutPivot: ");
+        System.out.print("binarySearchRotatedArray: ");
         for (int number : B) {
-            System.out.print(array.binarySearchInRotatedArrayWithoutPivot(number) + " ");
+            System.out.print(array.binarySearchRotatedArray(number) + " ");
         }
     }
 }
