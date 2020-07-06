@@ -232,11 +232,12 @@ public class Array {
 
         int [] tempArr = new int[n];
         System.arraycopy(A, size-n, tempArr, 0, n);
+        System.arraycopy(A, 0, A, n, size-n);
 
-        int k=size-1;
-        for(int i=size-n-1; i>=0; i--){
-            A[k--] = A[i];
-        }
+//        int k=size-1;
+//        for(int i=size-n-1; i>=0; i--){
+//            A[k--] = A[i];
+//        }
 
         System.arraycopy(tempArr, 0, A, 0, n);
     }
