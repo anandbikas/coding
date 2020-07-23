@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+import java.util.Queue;
+import java.util.ArrayDeque;
 
 /**
  * Binary Tree
@@ -151,37 +154,30 @@ public class BinaryTree <T extends Comparable<T>> {
 
     /**
      * Print in order left, right, root
-     * Use loop with the help of two stacks.
      *
      * Space complexity: O(height)
      */
     public void postOrderTraversal(){
         System.out.println("postOrderTraversal");
 
-        Stack<Node> stack = new ArrayStack<>();
-        Stack<Node> rootStack = new ArrayStack<>();
+        Stack<Node> stack = new Stack<>();
 
-        if(root != null){
-            stack.push(root);
+        for(Node node = root; node!= null; node=node.left){
+            stack.push(node);
         }
         while(!stack.isEmpty()){
-            Node node = stack.pop();
-
+            Node node = stack.peek();
             if(node==null){
                 //Process root node
-                System.out.print(rootStack.pop().data + "  ");
+                stack.pop();
+                System.out.print(stack.pop().data + "  ");
+                continue;
+            }
 
-            } else {
-                //Push null to indicate a root needs to be processed from rootStack
-                stack.push(null);
-                rootStack.push(node);
-
-                if (node.right != null) {
-                    stack.push(node.right);
-                }
-                if (node.left != null) {
-                    stack.push(node.left);
-                }
+            //Push null to indicate a root needs to be processed from the stack as its right child processed.
+            stack.push(null);
+            for(node=node.right; node!= null; node = node.left){
+                stack.push(node);
             }
         }
 
@@ -455,17 +451,6 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
-     * Find the lowest common ancestor node of the two given nodes
-     *
-     * @return
-     */
-    public Node<T> lowestCommonAncestor(T data1, T data2){
-
-        //TODO: implementation: find path for both the element and find common node.
-        return null;
-    }
-
-    /**
      *
      */
     public void leftSideView(){
@@ -552,14 +537,14 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
-     *
+     * Display all paths from root to data
      * @param data
      */
-    public void printPath(T data) {
-        System.out.println("printPath");
+    public void displayPaths(T data) {
+        System.out.println("displayPaths for data: " + data);
 
-        Stack<Node> pathStack = new ArrayStack<>();
-        printPath(root, data, pathStack);
+        Stack<Node> pathStack = new Stack<>();
+        displayPaths(root, data, pathStack);
         System.out.println();
     }
 
@@ -567,61 +552,112 @@ public class BinaryTree <T extends Comparable<T>> {
      *
      * @param node
      * @param data
-     * @param pathStack
+     * @param pathStack keep track of the nodes in the traversed path.
      */
-    private void printPath(final Node<T> node, T data , final Stack<Node> pathStack){
+    private void displayPaths(final Node<T> node, T data , final Stack<Node> pathStack){
         if(node == null){
             return;
         }
         pathStack.push(node);
         if(node.data.equals(data)){
-            pathStack.display();
-            return;
+            //Instead of displaying paths we can add the them to pathList provided in function
+            System.out.println(pathStack.toString());
+        } else {
+            displayPaths(node.left, data, pathStack);
+            displayPaths(node.right, data, pathStack);
         }
 
-        printPath(node.left, data, pathStack);
-        printPath(node.right, data, pathStack);
-
-        //Once right subTree is processed, remove its parent
         pathStack.pop();
     }
 
     /**
      *
      */
-    public void printAllPaths() {
-        System.out.println("printAllPaths");
+    public void displayPaths() {
+        System.out.println("displayPaths");
 
-        Stack<Node> pathStack = new ArrayStack<>();
-        printAllPaths(root, pathStack);
+        Stack<Node> pathStack = new Stack<>();
+        displayPaths(root, pathStack);
         System.out.println();
     }
 
     /**
-     *  Print all the paths of the tree.
-     *  with the help of a stack
+     *  Display all paths in the tree.
      *
      * @param node
-     * @param pathStack used to push the traversed node one by one.
-     *              Pop the node once its path is processed.
-     *              Pop the node once all the paths of its right subTree is processed.
+     * @param pathStack keep track of the nodes in the traversed path.
      */
-    private void printAllPaths(final Node node, final Stack<Node> pathStack){
+    private void displayPaths(final Node node, final Stack<Node> pathStack){
         if(node == null){
             return;
         }
         pathStack.push(node);
         if(node.left==null && node.right==null){
-            //TODO: Instead of printing paths we can add the path to pathList provided in function parameter
-            pathStack.display();
-            pathStack.pop();
-            return;
+            //Instead of displaying paths we can add the them to pathList provided in function
+            System.out.println(pathStack.toString());
+        } else {
+            displayPaths(node.left, pathStack);
+            displayPaths(node.right, pathStack);
         }
-        printAllPaths(node.left, pathStack);
-        printAllPaths(node.right, pathStack);
 
-        //Once right subTree is processed, remove its parent
         pathStack.pop();
+    }
+
+    /**
+     * Find the lowest common ancestor node of the two given nodes
+     * Method 1: find path for both x and y and find the parent by comparing both the paths.
+     * Method 2: Using single traversal with an object (x,y,parent) as the parameter
+     *
+     * @return
+     */
+    public Node findLca(T x, T y){
+
+        LCA lca = findLca(root, x, y);
+        return lca==null ? null : lca.parent;
+    }
+
+    private LCA findLca(Node node, T x, T y){
+
+        if(node==null){
+            return null;
+        }
+
+        LCA leftLca = findLca(node.left, x, y);
+        if(!(leftLca==null || leftLca.parent==null)){
+            return leftLca;
+        }
+
+        LCA rightLca = findLca(node.right, x, y);
+        if(!(rightLca==null || rightLca.parent==null)){
+            return rightLca;
+        }
+
+        LCA lca = leftLca;
+        if(lca == null) {
+            lca = rightLca;
+        } else if(rightLca != null) {
+            if(lca.x==null)
+                lca.x = rightLca.x;
+            if(lca.y==null)
+                lca.y = rightLca.y;
+        }
+
+        if(node.data.equals(x)){
+            if(lca==null) lca = new LCA();
+            lca.x=node;
+        } else if(node.data.equals(y)){
+            if(lca==null) lca = new LCA();
+            lca.y=node;
+        }
+
+        if(!(lca==null || lca.x==null || lca.y==null)) {
+            lca.parent = node;
+        }
+        return lca;
+    }
+
+    private class LCA{
+        Node x,y,parent;
     }
 
     /**
@@ -971,24 +1007,23 @@ public class BinaryTree <T extends Comparable<T>> {
     public static void main(String[] args) {
 
         /*
+         * Build a Binary Tree.
+         *
          *                     1
          *                 2      3
          *               4  5    6  7
          *                     8
          */
         final BinaryTree<Integer> binaryTree = new BinaryTree<>(1);
-
         binaryTree.insertAsLeftChild(2, 1);
         binaryTree.insertAsRightChild(3, 1);
-
         binaryTree.insertAsLeftChild(4,2);
         binaryTree.insertAsRightChild(5,2);
-
         binaryTree.insertAsLeftChild(6,3);
         binaryTree.insertAsRightChild(7, 3);
-
         binaryTree.insertAsLeftChild(8,6);
 
+        // Traversals
         binaryTree.inOrderTraversal();
         binaryTree.inOrderTraversalRec();
 
@@ -1002,35 +1037,47 @@ public class BinaryTree <T extends Comparable<T>> {
         binaryTree.levelOrderTraversalBruteForce();
         binaryTree.levelOrderSpiralTraversal();
 
-        binaryTree.printPath(8);
-        binaryTree.printAllPaths();
+        binaryTree.verticalOrderTraversalBruteForce();
+        binaryTree.verticalOrderTraversal();
+
+        // Searching
+        System.out.println("binaryTree.searchRec(4) " + binaryTree.searchRec(4));
+        System.out.println("binaryTree.searchRec(9) " + binaryTree.searchRec(9));
+
+        // Paths (Selective prints)
+        binaryTree.displayPaths(8);
+        binaryTree.displayPaths();
         binaryTree.printLevel(3);
         binaryTree.printLeaves();
         binaryTree.leftSideView();
         binaryTree.rightSideView();
+        System.out.println("Diameter: "  + binaryTree.diameter());
 
+
+        // LCA
+        System.out.println("binaryTree.findLca(4,5): " + binaryTree.findLca(8,5));
+        System.out.println("binaryTree.findLca(5,8): " + binaryTree.findLca(3,8));
+
+        // Utility
+        System.out.println("binaryTree.numberOfNodes(): " + binaryTree.numberOfNodes());
+        System.out.println("binaryTree.height(): " + binaryTree.height());
         System.out.println("binaryTree.heightBalanceFactor(3): " + binaryTree.heightBalanceFactor(binaryTree.searchRec(3)));
-        System.out.println("binaryTree.heightBalanceFactor(1): " + binaryTree.heightBalanceFactor(binaryTree.searchRec(1)));
 
+        // Comparision
         System.out.println("binaryTree.isBinarySearchTree(): " + binaryTree.isBinarySearchTree());
+        System.out.println("binaryTree.isSimilar(binaryTree): " + binaryTree.isSimilar(binaryTree));
+        System.out.println("binaryTree.isCopy(binaryTree): " + binaryTree.isCopy(binaryTree));
+        System.out.println("binaryTree.isCopyUsingLoop(binaryTree): " + binaryTree.isCopyUsingLoop(binaryTree));
 
+        // Conversion
         binaryTree.toMirrorImage();
-
         System.out.println("After Converting the tree to mirror image");
         binaryTree.leftSideView();
         binaryTree.rightSideView();
 
-        System.out.println("binaryTree.numberOfNodes(): " + binaryTree.numberOfNodes());
-        System.out.println("binaryTree.isSimilar(binaryTree): " + binaryTree.isSimilar(binaryTree));
-        System.out.println("binaryTree.isCopy(binaryTree): " + binaryTree.isCopy(binaryTree));
-        System.out.println("binaryTree.isCopyUsingLoop(binaryTree): " + binaryTree.isCopyUsingLoop(binaryTree));
-        System.out.println("binaryTree.height(): " + binaryTree.height());
-        System.out.println("binaryTree.searchRec(4) " + binaryTree.searchRec(4));
-        System.out.println("binaryTree.searchRec(9) " + binaryTree.searchRec(9));
-
 
         // Construct tree using preOrder and inOrder traversals
-        /**
+        /** 1.
          *                         a
          *                     /       \
          *                  b            c
@@ -1042,18 +1089,13 @@ public class BinaryTree <T extends Comparable<T>> {
          */
         Character [] preOrder = {'a', 'b', 'd', 'e', 'j', 'k', 'c', 'f', 'h', 'i', 'g'};
         Character [] inOrder = {'d', 'b', 'j', 'e', 'k', 'a', 'h', 'f', 'i', 'c', 'g'};
-        BinaryTree<Character> tree1 = new BinaryTree<>(preOrder, inOrder);
 
+        BinaryTree<Character> tree1 = new BinaryTree<>(preOrder, inOrder);
         System.out.println(tree1);
         tree1.preOrderTraversal();
         tree1.inOrderTraversal();
-        tree1.verticalOrderTraversalBruteForce();
-        tree1.verticalOrderTraversal();
 
-        System.out.println("binaryTree.isCopyUsingLoop(tree1): " + binaryTree.isCopyUsingLoop(tree1));
-
-
-        /**
+        /** 2.
          *                x
          *              /
          *            a
@@ -1067,11 +1109,14 @@ public class BinaryTree <T extends Comparable<T>> {
          *        h
          *  Diameter = 6
          */
-        BinaryTree<String> tree2 =
-                new BinaryTree<>("x a b d f h e g".split("\\s+"), "f h d b g e a x".split("\\s+"));
+        BinaryTree<String> tree2 = new BinaryTree<>("x a b d f h e g".split("\\s+"), "f h d b g e a x".split("\\s+"));
+        System.out.println(tree2);
+        tree2.preOrderTraversal();
+        tree2.inOrderTraversal();
 
-        System.out.println(tree2.diameter());
     }
+
+
 
     /**
      * Construct a tree using preOrder and inOrder traversals
