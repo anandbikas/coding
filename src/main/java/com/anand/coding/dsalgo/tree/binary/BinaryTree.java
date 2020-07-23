@@ -696,31 +696,33 @@ public class BinaryTree <T extends Comparable<T>> {
      * @return
      */
     public int diameter(){
-        int[] A = diameterCalculator(root);
-        return A[1];
+        return diameterCalculator(root).diameter;
+    }
+
+    public class HiDi{
+        int height=0,diameter=0;
     }
 
     /**
      * Just like height method. Twist is to calculate diameter as well.
      *
-     * Return array of 2 elements: [height, diameter].
      * @param node
      * @return []
      */
-    private int[] diameterCalculator(Node<T> node){
+    private HiDi diameterCalculator(Node<T> node){
 
-        if(node == null){
-            return new int[]{0,0};
+        if(node==null){
+            return new HiDi();
         }
-        int [] left = diameterCalculator(node.left);
-        int [] right = diameterCalculator(node.right);
 
-        int thisNodeHeight = Math.max(left[0], right[0]) +1;
-        int thisNodeDiameter = left[0]+right[0]+1;
+        HiDi left = diameterCalculator(node.left);
+        HiDi right = diameterCalculator(node.right);
 
-        int maxDiameterInThisTree = Math.max((Math.max(left[1], right[1])), thisNodeDiameter);
-        return new int[]{thisNodeHeight, maxDiameterInThisTree};
+        HiDi hidi = new HiDi();
+        hidi.height = Math.max(left.height,right.height) + 1;
+        hidi.diameter = Math.max((left.height+right.height+1), Math.max(left.diameter,right.diameter));
 
+        return hidi;
     }
 
     /**
