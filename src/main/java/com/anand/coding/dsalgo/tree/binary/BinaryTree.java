@@ -1,10 +1,5 @@
 package com.anand.coding.dsalgo.tree.binary;
 
-import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
-import com.anand.coding.dsalgo.queue.Queue;
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +104,7 @@ public class BinaryTree <T extends Comparable<T>> {
     public void preOrderTraversal(){
         System.out.println("preOrderTraversal");
 
-        Stack<Node> stack = new ArrayStack<>();
+        Stack<Node> stack = new Stack<>();
 
         if(root!=null){
             stack.push(root);
@@ -135,7 +130,7 @@ public class BinaryTree <T extends Comparable<T>> {
     public void inOrderTraversal(){
         System.out.println("inOrderTraversal");
 
-        Stack<Node> stack = new ArrayStack<>();
+        Stack<Node> stack = new Stack<>();
 
         for(Node node = root; node!= null; node=node.left){
             stack.push(node);
@@ -191,20 +186,20 @@ public class BinaryTree <T extends Comparable<T>> {
     public void levelOrderTraversal(){
         System.out.println("levelOrderTraversal");
 
-        Queue<Node> queue = new ArrayCircularQueue<>();
+        Queue<Node> queue = new ArrayDeque<>(); //new LinkedList<>();
 
         if(root!=null){
-            queue.insert(root);
+            queue.add(root);
         }
 
         while(!queue.isEmpty()){
-            Node node = queue.delete();
+            Node node = queue.remove();
             System.out.print(node.data + "  ");
             if(node.left!=null){
-                queue.insert(node.left);
+                queue.add(node.left);
             }
             if(node.right!=null){
-                queue.insert(node.right);
+                queue.add(node.right);
             }
         }
         System.out.println();
@@ -217,18 +212,18 @@ public class BinaryTree <T extends Comparable<T>> {
     public void levelOrderSpiralTraversal(){
         System.out.println("levelOrderSpiralTraversal");
 
-        Queue<Node> queue = new ArrayCircularQueue<>();
-        Stack<Node> stack = new ArrayStack<>();
+        Queue<Node> queue = new ArrayDeque<>();
+        Stack<Node> stack = new Stack<>();
 
         if(root!=null){
-            queue.insert(root);
+            queue.add(root);
         }
 
         int level=1;
-        while (!(queue.isEmpty() && stack.isEmpty())) {
+        while (!queue.isEmpty()) {
 
             while (!queue.isEmpty()) {
-                Node node = queue.delete();
+                Node node = queue.remove();
                 System.out.print(node.data + "  ");
 
                 if(level%2==1) {
@@ -248,7 +243,7 @@ public class BinaryTree <T extends Comparable<T>> {
                 }
             }
             while(!stack.isEmpty()){
-                queue.insert(stack.pop());
+                queue.add(stack.pop());
             }
             level++;
         }
@@ -785,8 +780,7 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     private class NodePair{
-        Node node1;
-        Node node2;
+        Node node1, node2;
 
         public NodePair(Node node1, Node node2){
             this.node1 = node1;
@@ -812,7 +806,7 @@ public class BinaryTree <T extends Comparable<T>> {
      */
     private boolean isCopyUsingLoop(Node node1, Node node2){
 
-        java.util.Stack<NodePair> stack = new java.util.Stack<>();
+        Stack<NodePair> stack = new Stack<>();
 
         stack.push(new NodePair(node1, node2));
 

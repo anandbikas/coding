@@ -1,11 +1,11 @@
 package com.anand.coding.dsalgo.tree.quad;
 
-import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
-import com.anand.coding.dsalgo.queue.Queue;
 import com.anand.coding.dsalgo.tree.quad.Entry.Point;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  *
@@ -122,12 +122,13 @@ public class QuadTree<T extends Comparable<T>> {
         //Find all leaf quad nodes intersecting the squareOfCircle;
         List<QuadNode<T>> intersectingQuadNodes = new ArrayList<>();
 
-        Queue<QuadNode<T>> queue = new ArrayCircularQueue<>();
-        queue.insert(quadNode);
+        Queue<QuadNode<T>> queue = new ArrayDeque<>(); //new LinkedList<>();
+
+        queue.add(quadNode);
 
         while (!queue.isEmpty()) {
 
-            quadNode = queue.delete();
+            quadNode = queue.remove();
             if(quadNode.isLeafNode()){
                 intersectingQuadNodes.add(quadNode);
                 continue;
@@ -145,7 +146,7 @@ public class QuadTree<T extends Comparable<T>> {
                     continue;
                 }
                 //Else
-                queue.insert(child);
+                queue.add(child);
             }
         }
 

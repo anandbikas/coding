@@ -1,10 +1,8 @@
 package com.anand.coding.dsalgo.tree.binary;
 
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Binary Seach Tree
@@ -278,7 +276,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     /**
      *
      */
-    @Override
     public void printAllPaths() {
         System.out.println("printAllPaths");
         printAllPaths(root);
@@ -315,7 +312,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         List<T> sortedList = new ArrayList<>();
 
-        Stack<Node> stack = new ArrayStack<>();
+        Stack<Node> stack = new Stack<>();
 
         for(Node node = root; node!= null; node=node.left){
             stack.push(node);
@@ -448,7 +445,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         }
         Node<T> rootNode = new Node<>(preOrder[0]);
 
-        Stack<Node<T>> stack = new ArrayStack<>();
+        Stack<Node<T>> stack = new Stack<>();
         stack.push(rootNode);
 
         for (int i = 1; i < preOrder.length; i++) {

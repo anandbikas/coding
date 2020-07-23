@@ -1,10 +1,8 @@
 package com.anand.coding.dsalgo.tree.map;
 
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * BSTMap
@@ -104,7 +102,7 @@ public class BSTMap<K extends Comparable<K>, V> {
 
         List<K> sortedList = new ArrayList<>();
 
-        Stack<Node> stack = new ArrayStack<>();
+        Stack<Node> stack = new Stack<>();
 
         for(Node node = root; node!= null; node=node.left){
             stack.push(node);
@@ -130,7 +128,7 @@ public class BSTMap<K extends Comparable<K>, V> {
 
         List<V> sortedList = new ArrayList<>();
 
-        Stack<Node> stack = new ArrayStack<>();
+        Stack<Node> stack = new Stack<>();
 
         for(Node node = root; node!= null; node=node.left){
             stack.push(node);

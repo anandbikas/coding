@@ -1,9 +1,8 @@
 package com.anand.coding.dsalgo.tree.nary;
 
-import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
-import com.anand.coding.dsalgo.queue.Queue;
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.Stack;
+import java.util.Queue;
+import java.util.ArrayDeque;
 
 /**
  * Nary Tree
@@ -91,7 +90,7 @@ public class NaryTree <T extends Comparable<T>>{
     public void preOrderTraversal(){
         System.out.println("preOrderTraversal");
 
-        Stack<NaryNode> stack = new ArrayStack<>();
+        Stack<NaryNode> stack = new Stack<>();
 
         if(root!=null){
             stack.push(root);
@@ -118,8 +117,8 @@ public class NaryTree <T extends Comparable<T>>{
     public void postOrderTraversal(){
         System.out.println("postOrderTraversal");
 
-        Stack<NaryNode> stack = new ArrayStack<>();
-        Stack<NaryNode> rootStack = new ArrayStack<>();
+        Stack<NaryNode> stack = new Stack<>();
+        Stack<NaryNode> rootStack = new Stack<>();
 
 
         if(root != null){
@@ -155,19 +154,19 @@ public class NaryTree <T extends Comparable<T>>{
     public void levelOrderTraversal(){
         System.out.println("levelOrderTraversal");
 
-        Queue<NaryNode> queue = new ArrayCircularQueue<>();
+        Queue<NaryNode> queue = new ArrayDeque<>(); //new LinkedList<>();
 
         if(root!=null){
-            queue.insert(root);
+            queue.add(root);
         }
 
         while(!queue.isEmpty()){
-            NaryNode node = queue.delete();
+            NaryNode node = queue.remove();
             System.out.print(node.data + "  ");
 
             for(int i=0; i<N; i++){
                 if(node.getChild(i) != null) {
-                    queue.insert(node.getChild(i));
+                    queue.add(node.getChild(i));
                 }
             }
         }
@@ -345,7 +344,7 @@ public class NaryTree <T extends Comparable<T>>{
     public void printAllPaths() {
         System.out.println("printAllPaths");
 
-        Stack<NaryNode> stack = new ArrayStack<>();
+        Stack<NaryNode> stack = new Stack<>();
         printAllPaths(root, stack);
         System.out.println();
     }
@@ -365,7 +364,7 @@ public class NaryTree <T extends Comparable<T>>{
         }
         stack.push(root);
         if(root.isLeafNode()){
-            stack.display();
+            System.out.println(stack.toString());
             stack.pop();
             return;
         }

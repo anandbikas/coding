@@ -1,9 +1,8 @@
 package com.anand.coding.dsalgo.tree.binary;
 
-import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
-import com.anand.coding.dsalgo.queue.Queue;
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * AVLTree
@@ -177,7 +176,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
         // Part A: Search and insert if not found, maintain a parent pathStack
         // -------------------------------------------------------------------
-        Stack<Node<T>> pathStack = new ArrayStack<>();
+        Stack<Node<T>> pathStack = new Stack<>();
 
         Node<T> parent = null;
         Node<T> pivotNode = root;
@@ -255,7 +254,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
         // Part A: Search and delete if found, maintain a parent pathStack
         // ---------------------------------------------------------------
-        Stack<Node<T>> pathStack = new ArrayStack<>();
+        Stack<Node<T>> pathStack = new Stack<>();
 
         Node<T> parent = null;
         Node<T> pivotNode = root;
@@ -273,7 +272,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
             return null;
         }
 
-        Queue<Node<T>> queue = new ArrayCircularQueue<>();
+        Queue<Node<T>> queue = new ArrayDeque<>(); //new LinkedList<>();
 
         Node<T> nodeToShift;
 
@@ -289,11 +288,11 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
             nodeToShift = pivotNode.right;
 
             while(nodeToShift.left!= null){
-                queue.insert(parentOfNodeToShift);
+                queue.add(parentOfNodeToShift);
                 parentOfNodeToShift = nodeToShift;
                 nodeToShift = nodeToShift.left;
             }
-            queue.insert(parentOfNodeToShift);
+            queue.add(parentOfNodeToShift);
 
             if(parentOfNodeToShift != pivotNode) {
                 parentOfNodeToShift.left = nodeToShift.right;
@@ -315,7 +314,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
             pathStack.push(nodeToShift);
         }
         while(!queue.isEmpty()){
-            pathStack.push(queue.delete());
+            pathStack.push(queue.remove());
         }
 
         // AVL Tree height recalculation and heightBalanceFactor rotation algorithm
