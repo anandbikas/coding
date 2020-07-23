@@ -1,7 +1,5 @@
 package com.anand.coding.dsalgo.tree.trie;
 
-import com.anand.coding.dsalgo.stack.ArrayStack;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,17 +96,16 @@ public class TrieDictionary<T> {
         System.out.println(String.format("%10s%15s", "Key", "Value"));
         System.out.println(             "--------------------------------");
 
-        ArrayStack<Character> stack = new ArrayStack<>();
-        display(root, stack);
+        display(root, new StringBuilder());
         System.out.println();
     }
 
     /**
      *
      * @param trieNode
-     * @param stack
+     * @param sb
      */
-    private void display(TrieNode<T> trieNode, ArrayStack<Character> stack) {
+    private void display(TrieNode<T> trieNode, StringBuilder sb) {
         if(trieNode == null){
             return;
         }
@@ -116,13 +113,13 @@ public class TrieDictionary<T> {
         for(char c: trieNode.getCharSet()){
             if(trieNode.getChild(c)!=null){
                 TrieNode<T> child = trieNode.getChild(c);
-                stack.push(c);
+                sb.append(c);
                 if(child.getValue()!=null){
                     System.out.println(
-                            String.format("%-18s%s", stack.toWord(), child.getValue()));
+                            String.format("%-18s%s", sb.toString(), child.getValue()));
                 }
-                display(child, stack);
-                stack.pop();
+                display(child, sb);
+                sb.setLength(sb.length()-1);
             }
         }
     }
@@ -140,7 +137,7 @@ public class TrieDictionary<T> {
             return list;
         }
 
-        ArrayStack<Character> stack = new ArrayStack<>();
+        StringBuilder sb = new StringBuilder();
 
         final char[] charArray = prefix.toUpperCase().toCharArray();
 
@@ -151,10 +148,10 @@ public class TrieDictionary<T> {
             if(trieNode==null){
                 return list;
             }
-            stack.push(c);
+            sb.append(c);
         }
 
-        getAllPrefixedWords(trieNode, stack, list);
+        getAllPrefixedWords(trieNode, sb, list);
 
         return list;
     }
@@ -162,10 +159,10 @@ public class TrieDictionary<T> {
     /**
      *
      * @param trieNode
-     * @param stack
+     * @param sb
      * @param list
      */
-    private void getAllPrefixedWords(TrieNode<T> trieNode, ArrayStack<Character> stack, List<String> list){
+    private void getAllPrefixedWords(TrieNode<T> trieNode, StringBuilder sb, List<String> list){
         if(trieNode == null){
             return;
         }
@@ -173,12 +170,12 @@ public class TrieDictionary<T> {
         for(char c: trieNode.getCharSet()){
             if(trieNode.getChild(c)!=null){
                 TrieNode<T> child = trieNode.getChild(c);
-                stack.push(c);
+                sb.append(c);
                 if(child.getValue()!=null){
-                    list.add(stack.toWord());
+                    list.add(sb.toString());
                 }
-                getAllPrefixedWords(child, stack, list);
-                stack.pop();
+                getAllPrefixedWords(child, sb, list);
+                sb.setLength(sb.length()-1);
             }
         }
     }
