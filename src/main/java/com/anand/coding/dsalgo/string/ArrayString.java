@@ -53,9 +53,7 @@ public class ArrayString {
      */
     public boolean isPalindrome(int startIndex, int endIndex){
 
-        while(startIndex<endIndex
-                && strArr[startIndex++] == strArr[endIndex--]);
-
+        for(;startIndex<endIndex && strArr[startIndex] == strArr[endIndex];startIndex++,endIndex--);
         return (startIndex >= endIndex);
     }
 
@@ -126,5 +124,7 @@ public class ArrayString {
         List<String> allLongestPalindromicSubStrings = arrayString.longestPalindromicSubstrings();
 
         allLongestPalindromicSubStrings.forEach(System.out::println);
+
+        System.out.println(new ArrayString("ccb").isPalindrome());
     }
 }
