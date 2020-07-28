@@ -1,7 +1,6 @@
 package com.anand.coding.dsalgo.list;
 
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.Stack;
 import com.anand.coding.dsalgo.tree.arraybased.BinaryMinHeap;
 
 import java.util.ArrayList;
@@ -561,7 +560,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public boolean isPalindromeUsingStack(){
 
-        Stack<Node<T>> stack = new ArrayStack<>();
+        Stack<Node<T>> stack = new Stack<>();
 
         for(Node<T> node=start; node!=null; node=node.getNext()){
             stack.push(node);

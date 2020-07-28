@@ -1,7 +1,6 @@
 package com.anand.coding.problems.stack;
 
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.Stack;
 
 /**
  * Infix: a * (b+c) / d
@@ -26,7 +25,7 @@ public class _02_InfixToPostfixExpression {
 
         final String [] infixExpressionElements = infixExpression.split(SPACE_REGEX);
 
-        Stack<String> stack = new ArrayStack<>();
+        Stack<String> stack = new Stack<>();
 
         String postfixExpression = "";
 

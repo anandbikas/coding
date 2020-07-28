@@ -4,10 +4,9 @@ import com.anand.coding.dsalgo.disjointset.DisjointUnionSetsGeneric;
 import com.anand.coding.dsalgo.graph.Edge;
 import com.anand.coding.dsalgo.graph.GraphType;
 import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
-import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
-import com.anand.coding.dsalgo.queue.Queue;
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.Stack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
@@ -156,20 +155,20 @@ public class Graph<T extends Comparable<T>> {
             throw new IllegalArgumentException();
         }
 
-        Queue<T> queue = new ArrayCircularQueue<>(size);
+        Queue<T> queue = new ArrayDeque<>(size);
         Map<T, Boolean> visited = new HashMap<>();
 
-        queue.insert(u);
+        queue.add(u);
 
         while(!queue.isEmpty()){
 
-            u = queue.delete();
+            u = queue.remove();
             System.out.print(u + "  ");
             visited.put(u,true);
 
             for(Pair<T, Integer> child: vertices.get(u)){
                 if(!visited.containsKey(child.getKey())){
-                    queue.insert(child.getKey());
+                    queue.add(child.getKey());
                 }
             }
         }
@@ -187,7 +186,7 @@ public class Graph<T extends Comparable<T>> {
             throw new IllegalArgumentException();
         }
 
-        Stack<T> stack = new ArrayStack<>(size);
+        Stack<T> stack = new Stack<>();
         Map<T, Boolean> visited = new HashMap<>();
 
         stack.push(u);
@@ -435,7 +434,7 @@ public class Graph<T extends Comparable<T>> {
             return null;
         }
 
-        Queue<T> queue = new ArrayCircularQueue<>(size);
+        Queue<T> queue = new ArrayDeque<>(size);
         List<T> topologicallySortedVertices = new ArrayList<>();
 
         Map<T,Integer> inDegrees = new HashMap<>();
@@ -451,19 +450,19 @@ public class Graph<T extends Comparable<T>> {
 
         for(T u: vertices.keySet()){
             if(inDegrees.get(u)==0){
-                queue.insert(u);
+                queue.add(u);
             }
         }
 
         while(!queue.isEmpty()){
-            T u = queue.delete();
+            T u = queue.remove();
             topologicallySortedVertices.add(u);
 
             for(Pair<T, Integer> child: vertices.get(u)){
                 //Reduce indegree once its parent is processed.
                 inDegrees.put(child.getKey(),inDegrees.get(child.getKey())-1);
                 if(inDegrees.get(child.getKey()) == 0){
-                    queue.insert(child.getKey());
+                    queue.add(child.getKey());
                 }
             }
         }
@@ -493,7 +492,7 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Map<T, Boolean> visited = new HashMap<>();
-        Stack<T> topologicalVertexStack = new ArrayStack<>(size);
+        Stack<T> topologicalVertexStack = new Stack<>();
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
@@ -545,7 +544,7 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Map<T, Boolean> visited = new HashMap<>();
-        Stack<T> pathStack = new ArrayStack<>(size);
+        Stack<T> pathStack = new Stack<>();
 
         List<List<T>> pathList= new ArrayList<>();
 
@@ -568,7 +567,7 @@ public class Graph<T extends Comparable<T>> {
         pathStack.push(u);
 
         if(u.equals(v)){
-            pathList.add(Arrays.asList(pathStack.toArray()));
+            pathList.add(Arrays.asList((T[])pathStack.toArray()));
 
             pathStack.pop();
             return;
@@ -597,10 +596,10 @@ public class Graph<T extends Comparable<T>> {
             throw new IllegalArgumentException();
         }
 
-        Stack<T> stack = new ArrayStack<>(size*2);
+        Stack<T> stack = new Stack<>();
         Map<T, Boolean> visited = new HashMap<>();
 
-        Stack<T> pathStack = new ArrayStack<>(size);
+        Stack<T> pathStack = new Stack<>();
 
         List<List<T>> pathList = new ArrayList<>();
 
@@ -618,7 +617,7 @@ public class Graph<T extends Comparable<T>> {
             pathStack.push(u);
 
             if (u.equals(v)) {
-                pathList.add(Arrays.asList(pathStack.toArray()));
+                pathList.add(Arrays.asList((T[])pathStack.toArray()));
                 pathStack.pop();
                 continue;
             }

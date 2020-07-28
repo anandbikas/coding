@@ -3,10 +3,9 @@ package com.anand.coding.dsalgo.graph.adjacencylist;
 import com.anand.coding.dsalgo.disjointset.DisjointUnionSets;
 import com.anand.coding.dsalgo.graph.Edge;
 import com.anand.coding.dsalgo.graph.GraphType;
-import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
-import com.anand.coding.dsalgo.queue.Queue;
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.Stack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
@@ -140,20 +139,20 @@ public class Graph<T> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        Queue<Integer> queue = new ArrayCircularQueue<>(size);
+        Queue<Integer> queue = new ArrayDeque<>(size);
         boolean []visited = new boolean[size];
 
-        queue.insert(nodeIndex);
+        queue.add(nodeIndex);
 
         while(!queue.isEmpty()){
 
-            nodeIndex = queue.delete();
+            nodeIndex = queue.remove();
             System.out.print(vertices.get(nodeIndex) + "  ");
             visited[nodeIndex] = true;
 
             for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
                 if(!visited[childIndex.getKey()]){
-                    queue.insert(childIndex.getKey());
+                    queue.remove(childIndex.getKey());
                 }
             }
         }
@@ -171,7 +170,7 @@ public class Graph<T> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        Stack<Integer> stack = new ArrayStack<>(size);
+        Stack<Integer> stack = new Stack<>();
         boolean []visited = new boolean[size];
 
         stack.push(nodeIndex);
@@ -416,7 +415,7 @@ public class Graph<T> {
             return null;
         }
 
-        Queue<Integer> queue = new ArrayCircularQueue<>(size);
+        Queue<Integer> queue = new ArrayDeque<>(size);
         List<T> topologicallySortedVertices = new ArrayList<>();
 
         int[] inDegrees = new int[size];
@@ -429,18 +428,18 @@ public class Graph<T> {
 
         for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
             if(inDegrees[nodeIndex]==0){
-                queue.insert(nodeIndex);
+                queue.add(nodeIndex);
             }
         }
 
         while(!queue.isEmpty()){
-            int nodeIndex = queue.delete();
+            int nodeIndex = queue.remove();
             topologicallySortedVertices.add(vertices.get(nodeIndex));
 
             for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
                 //Reduce indegree once its parent is processed.
                 if(--inDegrees[childIndex.getKey()] == 0){
-                    queue.insert(childIndex.getKey());
+                    queue.add(childIndex.getKey());
                 }
             }
         }
@@ -470,7 +469,7 @@ public class Graph<T> {
         }
 
         boolean []visited = new boolean[size];
-        Stack<T> topologicalVertexStack = new ArrayStack<>(size);
+        Stack<T> topologicalVertexStack = new Stack<>();
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
@@ -522,7 +521,7 @@ public class Graph<T> {
         }
 
         boolean []visited = new boolean[size];
-        Stack<T> pathStack = new ArrayStack<>(size);
+        Stack<T> pathStack = new Stack<>();
 
         List<List<T>> pathList= new ArrayList<>();
 
@@ -545,7 +544,7 @@ public class Graph<T> {
         pathStack.push(vertices.get(nodeIndex));
 
         if(nodeIndex == destIndex){
-            pathList.add(Arrays.asList(pathStack.toArray()));
+            pathList.add(Arrays.asList((T[])pathStack.toArray()));
 
             pathStack.pop();
             return;
@@ -574,10 +573,10 @@ public class Graph<T> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        Stack<Integer> stack = new ArrayStack<>(size);
+        Stack<Integer> stack = new Stack<>();
         boolean[] visited = new boolean[size];
 
-        Stack<T> pathStack = new ArrayStack<>(size);
+        Stack<T> pathStack = new Stack<>();
 
         List<List<T>> pathList = new ArrayList<>();
 
@@ -595,7 +594,7 @@ public class Graph<T> {
             pathStack.push(vertices.get(nodeIndex));
 
             if (nodeIndex == destIndex) {
-                pathList.add(Arrays.asList(pathStack.toArray()));
+                pathList.add(Arrays.asList((T[])pathStack.toArray()));
                 pathStack.pop();
                 continue;
             }

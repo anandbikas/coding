@@ -2,10 +2,9 @@ package com.anand.coding.dsalgo.graph.adjacencymatrix;
 
 import com.anand.coding.dsalgo.exception.GraphFullException;
 import com.anand.coding.dsalgo.graph.GraphType;
-import com.anand.coding.dsalgo.queue.ArrayCircularQueue;
-import com.anand.coding.dsalgo.queue.Queue;
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.Stack;
 
 /**
  *
@@ -129,20 +128,20 @@ public class Graph<T> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        Queue<Integer> queue = new ArrayCircularQueue<>(size);
+        Queue<Integer> queue = new ArrayDeque<>(size);
         boolean []visited = new boolean[size];
 
-        queue.insert(nodeIndex);
+        queue.add(nodeIndex);
         visited[nodeIndex] = true;
 
         while(!queue.isEmpty()){
 
-            nodeIndex = queue.delete();
+            nodeIndex = queue.remove();
             System.out.print(vertices[nodeIndex] + "  ");
 
             for(int childIndex=0; childIndex<size; childIndex++){
                 if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
-                    queue.insert(childIndex);
+                    queue.add(childIndex);
                     visited[childIndex] = true;
                 }
             }
@@ -161,7 +160,7 @@ public class Graph<T> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        Stack<Integer> stack = new ArrayStack<>(size);
+        Stack<Integer> stack = new Stack<>();
         boolean []visited = new boolean[size];
 
         stack.push(nodeIndex);

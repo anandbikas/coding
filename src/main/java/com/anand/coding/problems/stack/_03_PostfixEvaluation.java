@@ -1,7 +1,6 @@
 package com.anand.coding.problems.stack;
 
-import com.anand.coding.dsalgo.stack.ArrayStack;
-import com.anand.coding.dsalgo.stack.Stack;
+import java.util.Stack;
 
 /**
  * Infix: a * (b+c) / d
@@ -21,7 +20,7 @@ public class _03_PostfixEvaluation {
 
         final String [] postfixExpressionElements = postfixExpression.split(SPACE_REGEX);
 
-        Stack<String> stack = new ArrayStack<>();
+        Stack<String> stack = new Stack<>();
 
         for(String s : postfixExpressionElements){
             if(OPERATORS.contains(s)){
