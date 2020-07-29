@@ -1,47 +1,32 @@
 package com.anand.coding.dsalgo.tree.trie;
 
-
-import java.util.Set;
-
 /**
  * TrieNode for dictionary
  */
 public class TrieNode<T> {
 
-    private Alphabet alphabet;
+    public final static Alphabet alphabet = new EnglishAlphabet();
     private TrieNode<T> [] children;
 
     //if value == null, this is not a dictionary word. Else a corresponding value to the key.
-    private T value;
-
-    /**
-     *
-     */
-    public TrieNode(Alphabet alphabet){
-        super();
-        this.alphabet = alphabet;
-        this.children = new TrieNode[alphabet.getSize()];
-    }
-
-
-    /**
-     *
-     * @return
-     */
-    public Set<Character> getCharSet(){
-        return alphabet.getCharSet();
-    }
-
+    T value;
 
     /**
      *
      * @param c
      */
-    public void setChild(final char c){
+    public TrieNode<T> setChild(final char c){
         final int childIndex = alphabet.charToIndex(c);
-        if(children[childIndex] == null){
-            children[childIndex] = new TrieNode<>(alphabet);
+
+        if(children==null){
+            this.children = new TrieNode[alphabet.getSize()];
         }
+
+        if(children[childIndex] == null){
+            children[childIndex] = new TrieNode<>();
+        }
+
+        return children[childIndex];
     }
 
     /**
@@ -50,7 +35,7 @@ public class TrieNode<T> {
      * @return
      */
     public TrieNode<T> getChild(final char c){
-        return children[alphabet.charToIndex(c)];
+        return children==null ? null : children[alphabet.charToIndex(c)];
     }
 
     /**

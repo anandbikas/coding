@@ -8,15 +8,7 @@ import java.util.List;
  */
 public class TrieDictionary<T> {
 
-    private TrieNode<T> root;
-
-    /**
-     *
-     */
-    public TrieDictionary() {
-        super();
-        root = new TrieNode<>();
-    }
+    private TrieNode<T> root = new TrieNode<>();
 
     /**
      *
@@ -25,12 +17,9 @@ public class TrieDictionary<T> {
      */
     public void insert(final String key, final T value){
 
-        final char[] charArray = key.toCharArray();
-
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
-            trieNode.setChild(c);
-            trieNode = trieNode.getChild(c);
+        for(char c: key.toCharArray()){
+            trieNode = trieNode.setChild(c);
             trieNode.incrementCounter();
         }
         trieNode.setValue(value);
@@ -46,10 +35,8 @@ public class TrieDictionary<T> {
             return null;
         }
 
-        final char[] charArray = key.toCharArray();
-
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
+        for(char c: key.toCharArray()){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return null;
@@ -68,10 +55,8 @@ public class TrieDictionary<T> {
             return;
         }
 
-        final char[] charArray = key.toCharArray();
-
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
+        for(char c: key.toCharArray()){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return;
@@ -82,7 +67,8 @@ public class TrieDictionary<T> {
         //Decrease counter and detach the node from where count becomes 0.
         TrieNode<T> trieNodeParent = null;
         trieNode = root;
-        for(char c: charArray){
+
+        for(char c: key.toCharArray()){
             trieNodeParent = trieNode;
             trieNode = trieNode.getChild(c);
             trieNode.decrementCounter();
@@ -102,7 +88,9 @@ public class TrieDictionary<T> {
         System.out.println(String.format("%10s%15s", "Key", "Value"));
         System.out.println(             "--------------------------------");
 
-        display(root, new StringBuilder());
+        if(root!=null) {
+            display(root, new StringBuilder());
+        }
         System.out.println();
     }
 
@@ -112,9 +100,6 @@ public class TrieDictionary<T> {
      * @param sb
      */
     private void display(TrieNode<T> trieNode, StringBuilder sb) {
-        if(trieNode == null){
-            return;
-        }
 
         for(char c: trieNode.getCharSet()){
             if(trieNode.getChild(c)!=null){
@@ -139,7 +124,9 @@ public class TrieDictionary<T> {
         System.out.println("All Unique Prefixes");
         System.out.println(             "--------------------------------");
 
-        displayAllUniquePrefix(root, new StringBuilder());
+        if(root!=null) {
+            displayAllUniquePrefix(root, new StringBuilder());
+        }
         System.out.println();
     }
 
@@ -149,9 +136,6 @@ public class TrieDictionary<T> {
      * @param sb
      */
     private void displayAllUniquePrefix(TrieNode<T> trieNode, StringBuilder sb) {
-        if(trieNode == null){
-            return;
-        }
 
         for(char c: trieNode.getCharSet()){
             if(trieNode.getChild(c)!=null){
@@ -176,16 +160,15 @@ public class TrieDictionary<T> {
 
         List<String> list = new ArrayList<>();
 
-        if (prefix == null) {
+        if (root == null || prefix == null) {
             return list;
         }
 
         StringBuilder sb = new StringBuilder();
-        final char[] charArray = prefix.toUpperCase().toCharArray();
 
-        //Put all characters in prefix in the stack.
+        //Put all characters in prefix in the StringBuilder.
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
+        for(char c: prefix.toUpperCase().toCharArray()){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return list;

@@ -31,11 +31,13 @@ public class TrieNode<T> {
      *
      * @param c
      */
-    public void setChild(char c){
+    public TrieNode<T> setChild(char c){
         c = Character.toUpperCase(c);
         if(!charMap.containsKey(c)){
             charMap.put(c,  new TrieNode<>());
         }
+
+        return charMap.get(c);
     }
 
     /**

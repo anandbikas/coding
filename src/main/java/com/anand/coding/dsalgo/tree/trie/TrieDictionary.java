@@ -8,23 +8,7 @@ import java.util.List;
  */
 public class TrieDictionary<T> {
 
-    private TrieNode<T> root;
-
-    /**
-     *
-     */
-    public TrieDictionary() {
-        super();
-        root = new TrieNode<>(new EnglishAlphabet());
-    }
-
-    /**
-     *
-     * @param alphabet
-     */
-    public TrieDictionary(Alphabet alphabet) {
-        this.root = new TrieNode<>(alphabet);
-    }
+    private TrieNode<T> root = new TrieNode<>();
 
     /**
      *
@@ -33,12 +17,9 @@ public class TrieDictionary<T> {
      */
     public void insert(final String key, final T value){
 
-        final char[] charArray = key.toCharArray();
-
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
-            trieNode.setChild(c);
-            trieNode = trieNode.getChild(c);
+        for(char c: key.toCharArray()){
+            trieNode = trieNode.setChild(c);
         }
         trieNode.setValue(value);
     }
@@ -49,14 +30,12 @@ public class TrieDictionary<T> {
      * @return
      */
     public T search(final String key){
-        if(root == null){
+        if(root==null){
             return null;
         }
 
-        final char[] charArray = key.toCharArray();
-
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
+        for(char c: key.toCharArray()){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return null;
@@ -75,10 +54,8 @@ public class TrieDictionary<T> {
             return;
         }
 
-        final char[] charArray = key.toCharArray();
-
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
+        for(char c: key.toCharArray()){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return;
@@ -96,7 +73,9 @@ public class TrieDictionary<T> {
         System.out.println(String.format("%10s%15s", "Key", "Value"));
         System.out.println(             "--------------------------------");
 
-        display(root, new StringBuilder());
+        if(root!=null) {
+            display(root, new StringBuilder());
+        }
         System.out.println();
     }
 
@@ -106,13 +85,11 @@ public class TrieDictionary<T> {
      * @param sb
      */
     private void display(TrieNode<T> trieNode, StringBuilder sb) {
-        if(trieNode == null){
-            return;
-        }
 
-        for(char c: trieNode.getCharSet()){
-            if(trieNode.getChild(c)!=null){
-                TrieNode<T> child = trieNode.getChild(c);
+        for(char c: TrieNode.alphabet.getCharSet()){
+            TrieNode<T> child = trieNode.getChild(c);
+
+            if(child!=null){
                 sb.append(c);
                 if(child.getValue()!=null){
                     System.out.println(
@@ -133,17 +110,15 @@ public class TrieDictionary<T> {
 
         List<String> list = new ArrayList<>();
 
-        if (prefix == null) {
+        if (root == null || prefix == null) {
             return list;
         }
 
         StringBuilder sb = new StringBuilder();
 
-        final char[] charArray = prefix.toUpperCase().toCharArray();
-
-        //Put all characters in prefix in the stack.
+        //Put all characters in prefix in the StringBuilder.
         TrieNode<T> trieNode = root;
-        for(char c: charArray){
+        for(char c: prefix.toUpperCase().toCharArray()){
             trieNode = trieNode.getChild(c);
             if(trieNode==null){
                 return list;
@@ -167,9 +142,10 @@ public class TrieDictionary<T> {
             return;
         }
 
-        for(char c: trieNode.getCharSet()){
-            if(trieNode.getChild(c)!=null){
-                TrieNode<T> child = trieNode.getChild(c);
+        for(char c: TrieNode.alphabet.getCharSet()){
+            TrieNode<T> child = trieNode.getChild(c);
+
+            if(child!=null){
                 sb.append(c);
                 if(child.getValue()!=null){
                     list.add(sb.toString());
