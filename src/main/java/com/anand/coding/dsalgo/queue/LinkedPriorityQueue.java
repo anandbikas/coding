@@ -31,16 +31,16 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
 
         final Node<PriorityObject<T>> newNode = new Node<>(new PriorityObject<>(data, priority));
 
-        if(front==null || front.getData().getPriority()>priority){
-            newNode.setNext(front);
+        if(front==null || front.data.getPriority()>priority){
+            newNode.next = front;
             front=newNode;
 
         } else {
             Node<PriorityObject<T>> node;
-            for (node = front; node.getNext() != null && node.getNext().getData().getPriority() <= priority;
-                        node = node.getNext()) ;
-            newNode.setNext(node.getNext());
-            node.setNext(newNode);
+            for (node = front; node.next != null && node.next.data.getPriority() <= priority;
+                        node = node.next) ;
+            newNode.next = node.next;
+            node.next = newNode;
         }
 
         length++;
@@ -56,8 +56,8 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
         if(front==null){
             throw new QueueEmptyException();
         }
-        T data = front.getData().getObject();
-        front = front.getNext();
+        T data = front.data.getObject();
+        front = front.next;
         length--;
         return data;
     }
@@ -83,22 +83,22 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
 
         if(index==1){
             Node<PriorityObject<T>> deletedNode = front;
-            front=deletedNode.getNext();
+            front=deletedNode.next;
             length--;
 
-            deletedNode.setNext(null);
-            return deletedNode.getData().getObject();
+            deletedNode.next = null;
+            return deletedNode.data.getObject();
         }
 
         int i;
         Node<PriorityObject<T>> node;
-        for(node=front, i=2; node.getNext()!=null; node=node.getNext(), i++){
+        for(node=front, i=2; node.next!=null; node=node.next, i++){
             if(index==i){
-                Node<PriorityObject<T>> deletedNode=node.getNext();
-                node.setNext(deletedNode.getNext());
+                Node<PriorityObject<T>> deletedNode=node.next;
+                node.next = deletedNode.next;
                 length--;
-                deletedNode.setNext(null);
-                return deletedNode.getData().getObject();
+                deletedNode.next = null;
+                return deletedNode.data.getObject();
             }
         }
 
@@ -118,8 +118,8 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      *
      */
     public void display(){
-        for(Node node=front; node!=null; node=node.getNext()){
-            System.out.print(node.getData() + ", ");
+        for(Node node=front; node!=null; node=node.next){
+            System.out.print(node.data + ", ");
         }
         System.out.println();
     }

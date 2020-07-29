@@ -38,8 +38,8 @@ public class LinkedListTest {
         list.insertSorted(5);
         Assert.assertEquals(list.findIndex(5), 5);
 
-        Assert.assertEquals(list.deleteEnd().getData(), (Integer)10);
-        Assert.assertEquals(list.deleteStart().getData(), (Integer)1);
+        Assert.assertEquals(list.deleteEnd().data, (Integer)10);
+        Assert.assertEquals(list.deleteStart().data, (Integer)1);
 
         list.display();
     }
@@ -90,7 +90,7 @@ public class LinkedListTest {
     @Test
     private void testLoop(){
 
-        list.search(10).setNext(list.search(3));
+        list.search(10).next = list.search(3);
 
         Assert.assertTrue(list.hasLoop());
         Assert.assertEquals(list.getLoopLength(), 8);
@@ -103,15 +103,15 @@ public class LinkedListTest {
     @Test
     private void testNodeIndexes(){
 
-        Assert.assertEquals(list.minValueNode().getData(), (Integer)1);
-        Assert.assertEquals(list.maxValueNode().getData(), (Integer)10);
+        Assert.assertEquals(list.minValueNode().data, (Integer)1);
+        Assert.assertEquals(list.maxValueNode().data, (Integer)10);
 
         Assert.assertEquals(list.kthNodeFromEnd(7), list.search(4));
 
-        Assert.assertEquals(list.findIndex(list.getMiddleNode().getData()), 6);
+        Assert.assertEquals(list.findIndex(list.getMiddleNode().data), 6);
 
         list.insertEnd(11);
-        Assert.assertEquals(list.findIndex(list.getMiddleNode().getData()), 6);
+        Assert.assertEquals(list.findIndex(list.getMiddleNode().data), 6);
     }
 
     @Test

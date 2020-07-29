@@ -19,13 +19,13 @@ public class LinkedList<T extends Comparable<T>> {
     public Node<T> insertStart(T data){
 
         final Node<T> newNode = new Node<>(data);
-        newNode.setNext(start);
+        newNode.next = start;
         start = newNode;
 
         if(end==null){
             end = newNode;
         } else{
-            newNode.getNext().setPrev(newNode);
+            newNode.next.prev= newNode;
         }
         length++;
         return newNode;
@@ -39,13 +39,13 @@ public class LinkedList<T extends Comparable<T>> {
     public Node<T> insertEnd(T data){
 
         final Node<T> newNode = new Node<>(data);
-        newNode.setPrev(end);
+        newNode.prev = end;
         end = newNode;
 
         if(start==null){
             start=newNode;
         } else{
-            newNode.getPrev().setNext(newNode);
+            newNode.prev.next = newNode;
         }
 
         length++;
@@ -58,16 +58,16 @@ public class LinkedList<T extends Comparable<T>> {
      */
     private void fixNextAndPrevInsertion(final Node<T> newNode){
 
-        if(newNode.getNext()==null){
+        if(newNode.next==null){
             end = newNode;
         } else {
-            newNode.getNext().setPrev(newNode);
+            newNode.next.prev = newNode;
         }
 
-        if(newNode.getPrev() == null) {
+        if(newNode.prev == null) {
             start = newNode;
         } else {
-            newNode.getPrev().setNext(newNode);
+            newNode.prev.next = newNode;
         }
     }
 
@@ -82,11 +82,11 @@ public class LinkedList<T extends Comparable<T>> {
         final Node<T> newNode = new Node<>(data);
         int i;
         Node<T> node;
-        for(node=start, i=1; node!=null && i<index; node=node.getNext(), i++);
+        for(node=start, i=1; node!=null && i<index; node=node.next, i++);
 
         if(index==i){
-            newNode.setNext(node);
-            newNode.setPrev(node==null? end : node.getPrev());
+            newNode.next = node;
+            newNode.prev = node==null? end : node.prev;
 
             fixNextAndPrevInsertion(newNode);
 
@@ -108,10 +108,10 @@ public class LinkedList<T extends Comparable<T>> {
         final Node<T> newNode = new Node<>(data);
 
         Node<T> node;
-        for(node=start; node!=null && node.getData().compareTo(data)<0; node=node.getNext());
+        for(node=start; node!=null && node.data.compareTo(data)<0; node=node.next);
 
-        newNode.setNext(node);
-        newNode.setPrev(node==null? end : node.getPrev());
+        newNode.next = node;
+        newNode.prev = node==null? end : node.prev;
 
         fixNextAndPrevInsertion(newNode);
         length++;
@@ -130,15 +130,15 @@ public class LinkedList<T extends Comparable<T>> {
         }
 
         Node<T> deletedNode = start;
-        start=deletedNode.getNext();
-        start.setPrev(null);
+        start=deletedNode.next;
+        start.prev = null;
 
         if(start==null){
             end = null;
         }
         length--;
 
-        deletedNode.setNext(null);
+        deletedNode.next = null;
         return deletedNode;
     }
 
@@ -153,14 +153,14 @@ public class LinkedList<T extends Comparable<T>> {
         }
 
         Node<T> deletedNode = end;
-        end=deletedNode.getPrev();
-        end.setNext(null);
+        end=deletedNode.prev;
+        end.next = null;
 
         if(end==null){
             start = null;
         }
 
-        deletedNode.setPrev(null);
+        deletedNode.prev = null;
 
         length--;
         return deletedNode;
@@ -172,22 +172,22 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void fixNextAndPrevDeletion(final Node<T> deletedNode){
 
-        if(deletedNode.getNext()==null){
-            end = deletedNode.getPrev();
-            end.setNext(null);
+        if(deletedNode.next==null){
+            end = deletedNode.prev;
+            end.next = null;
         } else {
-            deletedNode.getNext().setPrev(deletedNode.getPrev());
+            deletedNode.next.prev = deletedNode.prev;
         }
 
-        if(deletedNode.getPrev() == null) {
-            start = deletedNode.getNext();
-            start.setPrev(null);
+        if(deletedNode.prev == null) {
+            start = deletedNode.next;
+            start.prev = null;
         } else {
-            deletedNode.getPrev().setNext(deletedNode.getNext());
+            deletedNode.prev.next = deletedNode.next;
         }
 
-        deletedNode.setPrev(null);
-        deletedNode.setNext(null);
+        deletedNode.prev = null;
+        deletedNode.next = null;
     }
 
     /**
@@ -197,8 +197,8 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public Node<T> delete(T data){
 
-        for(Node<T> node=start; node!=null; node=node.getNext()){
-            if(node.getData()==data){
+        for(Node<T> node=start; node!=null; node=node.next){
+            if(node.data==data){
                 Node<T> deletedNode=node;
                 fixNextAndPrevDeletion(deletedNode);
 
@@ -218,7 +218,7 @@ public class LinkedList<T extends Comparable<T>> {
 
         int i;
         Node<T> node;
-        for(node=start, i=1; node!=null && i<index; node=node.getNext(), i++);
+        for(node=start, i=1; node!=null && i<index; node=node.next, i++);
 
         if(node!=null){
             Node<T> deletedNode=node;
@@ -238,7 +238,7 @@ public class LinkedList<T extends Comparable<T>> {
     public Node<T> search(T data){
 
         Node<T> node;
-        for(node=start; node!=null && !node.getData().equals(data); node=node.getNext());
+        for(node=start; node!=null && !node.data.equals(data); node=node.next);
 
         return node;
     }
@@ -252,7 +252,7 @@ public class LinkedList<T extends Comparable<T>> {
 
         Node<T> node;
         int i=1;
-        for(node=start; node!=null && !node.getData().equals(data); node=node.getNext(), i++);
+        for(node=start; node!=null && !node.data.equals(data); node=node.next, i++);
 
         if(node==null){
             return -1;
@@ -269,7 +269,7 @@ public class LinkedList<T extends Comparable<T>> {
 
         Node<T> node;
         int i=1;
-        for(node=end; node!=null && !node.getData().equals(data); node=node.getPrev(), i++);
+        for(node=end; node!=null && !node.data.equals(data); node=node.prev, i++);
 
         if(node==null){
             return -1;
@@ -286,7 +286,7 @@ public class LinkedList<T extends Comparable<T>> {
 
         Node<T> node;
         int i=1;
-        for(node=start; node!=null && i<index; node=node.getNext(), i++);
+        for(node=start; node!=null && i<index; node=node.next, i++);
 
         return node;
     }
@@ -300,7 +300,7 @@ public class LinkedList<T extends Comparable<T>> {
 
         Node<T> node;
         int i=1;
-        for(node=end; node!=null && i<index; node=node.getPrev(), i++);
+        for(node=end; node!=null && i<index; node=node.prev, i++);
 
         return node;
     }
@@ -311,8 +311,8 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void display(){
         System.out.println("Linked list: ");
-        for(Node node=start; node!=null; node=node.getNext()){
-            System.out.print(node.getData() + ", ");
+        for(Node node=start; node!=null; node=node.next){
+            System.out.print(node.data + ", ");
         }
         System.out.println();
     }
@@ -322,8 +322,8 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void displayReverse(){
         System.out.println("Linked list (reversed): ");
-        for(Node node=end; node!=null; node=node.getPrev()){
-            System.out.print(node.getData() + ", ");
+        for(Node node=end; node!=null; node=node.prev){
+            System.out.print(node.data + ", ");
         }
         System.out.println();
     }
@@ -342,31 +342,31 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void swapAdjacentNodes(final int k){
 
-        if(start==null || start.getNext()==null){
+        if(start==null || start.next==null){
             return;
         }
 
         Node<T> node=start;
-        for(int i=1; node.getNext()!=null; i++, node=node.getNext()){
+        for(int i=1; node.next!=null; i++, node=node.next){
             if(k==i){
-                Node<T> temp = node.getNext();
+                Node<T> temp = node.next;
 
-                node.setNext(temp.getNext());
+                node.next = temp.next;
 
-                if(node.getNext()==null){
+                if(node.next==null){
                     end=node;
                 } else {
-                    node.getNext().setPrev(node);
+                    node.next.prev = node;
                 }
 
-                temp.setNext(node);
-                temp.setPrev(node.getPrev());
+                temp.next = node;
+                temp.prev = node.prev;
 
-                node.setPrev(temp);
-                if(temp.getPrev()==null){
+                node.prev = temp;
+                if(temp.prev==null){
                     start = temp;
                 } else {
-                    temp.getPrev().setNext(temp);
+                    temp.prev.next = temp;
                 }
             }
         }
@@ -382,28 +382,28 @@ public class LinkedList<T extends Comparable<T>> {
         for (int i=0; i < length; i++) {
             Node<T> node = start;
             for(int j=0; j < length-1-i; j++){
-                if(node.compareTo(node.getNext())>0){
-                    Node<T> temp = node.getNext();
+                if(node.compareTo(node.next)>0){
+                    Node<T> temp = node.next;
 
-                    node.setNext(temp.getNext());
+                    node.next = temp.next;
 
-                    if(node.getNext()==null){
+                    if(node.next==null){
                         end=node;
                     } else {
-                        node.getNext().setPrev(node);
+                        node.next.prev = node;
                     }
 
-                    temp.setNext(node);
-                    temp.setPrev(node.getPrev());
+                    temp.next = node;
+                    temp.prev = node.prev;
 
-                    node.setPrev(temp);
-                    if(temp.getPrev()==null){
+                    node.prev = temp;
+                    if(temp.prev==null){
                         start = temp;
                     } else {
-                        temp.getPrev().setNext(temp);
+                        temp.prev.next = temp;
                     }
                 } else {
-                    node=node.getNext();
+                    node=node.next;
                 }
             }
         }
@@ -417,11 +417,11 @@ public class LinkedList<T extends Comparable<T>> {
         Node<T> node = start;
 
         while(node!=null ){
-            Node<T> temp = node.getNext();
-            node.setNext(node.getPrev());
-            node.setPrev(temp);
+            Node<T> temp = node.next;
+            node.next = node.prev;
+            node.prev = temp;
 
-            node = node.getPrev();
+            node = node.prev;
         }
 
         Node<T> temp = start;

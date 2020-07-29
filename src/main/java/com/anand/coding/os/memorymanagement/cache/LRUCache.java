@@ -50,7 +50,7 @@ public class LRUCache<K extends Comparable<K>,V> {
     public V get(K key){
         if(cacheMap.containsKey(key)){
             queue.moveToRear(cacheMap.get(key));
-            return cacheMap.get(key).getData().value;
+            return cacheMap.get(key).data.value;
         }
        return null;
     }
@@ -62,7 +62,7 @@ public class LRUCache<K extends Comparable<K>,V> {
      */
     public void put(K key, V value){
         if(cacheMap.containsKey(key)){
-            cacheMap.get(key).getData().value = value;
+            cacheMap.get(key).data.value = value;
             queue.moveToRear(cacheMap.get(key));
         } else {
             //If capacity is full, remove LRU element

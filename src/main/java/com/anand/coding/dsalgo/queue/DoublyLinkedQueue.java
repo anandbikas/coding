@@ -25,8 +25,8 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
         if(rear==null){
             front=rear=newNode;
         } else {
-            rear.setNext(newNode);
-            newNode.setPrev(rear);
+            rear.next = newNode;
+            newNode.prev = rear;
             rear = newNode;
         }
 
@@ -44,15 +44,15 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
             throw new QueueEmptyException();
         }
         Node<T> deletedNode = front;
-        front = front.getNext();
+        front = front.next;
         if(front==null){
             rear = null;
         } else {
-            front.setPrev(null);
+            front.prev = null;
         }
         length--;
 
-        return deletedNode.getData();
+        return deletedNode.data;
     }
 
     /**
@@ -67,16 +67,16 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
         }
 
         if(node==front){
-            front=node.getNext();
-            front.setPrev(null);
+            front=node.next;
+            front.prev = null;
         } else {
-            node.getPrev().setNext(node.getNext());
-            node.getNext().setPrev(node.getPrev());
+            node.prev.next=node.next;
+            node.next.prev = node.prev;
         }
 
-        node.setNext(null);
-        node.setPrev(rear);
-        rear.setNext(node);
+        node.next = null;
+        node.prev = rear;
+        rear.next = node;
         rear = node;
     }
 
@@ -92,16 +92,16 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
         }
 
         if(node==rear){
-            rear=node.getPrev();
-            rear.setNext(null);
+            rear=node.prev;
+            rear.next = null;
         } else {
-            node.getPrev().setNext(node.getNext());
-            node.getNext().setPrev(node.getPrev());
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
         }
 
-        node.setPrev(null);
-        node.setNext(front);
-        front.setPrev(node);
+        node.prev = null;
+        node.next = front;
+        front.prev = node;
         front = node;
     }
 
@@ -119,8 +119,8 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
      *
      */
     public void display(){
-        for(Node node=front; node!=null; node=node.getNext()){
-            System.out.print(node.getData() + ", ");
+        for(Node node=front; node!=null; node=node.next){
+            System.out.print(node.data+ ", ");
         }
         System.out.println();
     }
