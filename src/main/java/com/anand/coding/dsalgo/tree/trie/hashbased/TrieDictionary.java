@@ -120,12 +120,12 @@ public class TrieDictionary<T> {
      * printAllWords
      * printAllPaths
      */
-    public void displayAllUniquePrefix() {
+    public void displayAllShortestUniquePrefix() {
         System.out.println("All Unique Prefixes");
         System.out.println(             "--------------------------------");
 
         if(root!=null) {
-            displayAllUniquePrefix(root, new StringBuilder());
+            displayAllShortestUniquePrefix(root, new StringBuilder());
         }
         System.out.println();
     }
@@ -135,7 +135,7 @@ public class TrieDictionary<T> {
      * @param trieNode
      * @param sb
      */
-    private void displayAllUniquePrefix(TrieNode<T> trieNode, StringBuilder sb) {
+    private void displayAllShortestUniquePrefix(TrieNode<T> trieNode, StringBuilder sb) {
 
         for(char c: trieNode.getCharSet()){
             if(trieNode.getChild(c)!=null){
@@ -144,7 +144,7 @@ public class TrieDictionary<T> {
                 if(child.getCount()==1){
                     System.out.println(String.format("%s", sb.toString()));
                 } else {
-                    displayAllUniquePrefix(child, sb);
+                    displayAllShortestUniquePrefix(child, sb);
                 }
                 sb.setLength(sb.length() - 1);
             }
@@ -220,7 +220,7 @@ public class TrieDictionary<T> {
         trieDictionary.insert("hippopotamus","dariyayi ghoda");
 
         trieDictionary.display();
-        trieDictionary.displayAllUniquePrefix();
+        trieDictionary.displayAllShortestUniquePrefix();
 
         String prefix = "bo";
 
