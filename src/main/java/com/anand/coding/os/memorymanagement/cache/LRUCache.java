@@ -1,6 +1,5 @@
 package com.anand.coding.os.memorymanagement.cache;
 
-import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
 import com.anand.coding.dsalgo.list.doubly.Node;
 import com.anand.coding.dsalgo.queue.DoublyLinkedQueue;
 
@@ -13,7 +12,22 @@ import java.util.HashMap;
  * put(key,value)   : O(1)
  *
  */
-public class LRUCache<K extends Comparable<K>,V extends Comparable<V>> {
+public class LRUCache<K extends Comparable<K>,V> {
+
+    private static class Pair<K extends Comparable<K>,V> implements Comparable<Pair<K,V>> {
+        K key;
+        V value;
+
+        public Pair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(Pair<K,V> o) {
+            return this.key.compareTo(o.key);
+        }
+    }
 
     private DoublyLinkedQueue<Pair<K,V>>  queue = new DoublyLinkedQueue<>();
     private HashMap<K, Node<Pair<K,V>>> cacheMap = new HashMap<>();
@@ -36,7 +50,7 @@ public class LRUCache<K extends Comparable<K>,V extends Comparable<V>> {
     public V get(K key){
         if(cacheMap.containsKey(key)){
             queue.moveToRear(cacheMap.get(key));
-            return cacheMap.get(key).getData().getValue();
+            return cacheMap.get(key).getData().value;
         }
        return null;
     }
@@ -48,12 +62,12 @@ public class LRUCache<K extends Comparable<K>,V extends Comparable<V>> {
      */
     public void put(K key, V value){
         if(cacheMap.containsKey(key)){
-            cacheMap.get(key).getData().setValue(value);
+            cacheMap.get(key).getData().value = value;
             queue.moveToRear(cacheMap.get(key));
         } else {
             //If capacity is full, remove LRU element
             if(cacheMap.size() == capacity) {
-                cacheMap.remove(queue.delete().getKey());
+                cacheMap.remove(queue.delete().key);
             }
 
             cacheMap.put(key, queue.insert(new Pair<>(key, value)));
