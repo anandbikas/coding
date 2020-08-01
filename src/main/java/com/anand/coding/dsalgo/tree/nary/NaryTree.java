@@ -47,16 +47,16 @@ public class NaryTree <T extends Comparable<T>>{
 
     /**
      * Print in order root, children (left to right)
-     * @param root
+     * @param node
      */
-    private void preOrderTraversalRec(final NaryNode root){
-        if(root == null){
+    private void preOrderTraversalRec(final NaryNode node){
+        if(node == null){
             return;
         }
-        System.out.print(root.data + "  ");
+        System.out.print(node.data + "  ");
 
         for(int i=0; i<N; i++){
-            preOrderTraversalRec(root.getChild(i));
+            preOrderTraversalRec(node.getChild(i));
         }
     }
 
@@ -71,16 +71,16 @@ public class NaryTree <T extends Comparable<T>>{
 
     /**
      * Print in order children (left to right), root
-     * @param root
+     * @param node
      */
-    private void postOrderTraversalRec(final NaryNode root){
-        if(root == null){
+    private void postOrderTraversalRec(final NaryNode node){
+        if(node == null){
             return;
         }
         for(int i=0; i<N; i++){
-            postOrderTraversalRec(root.getChild(i));
+            postOrderTraversalRec(node.getChild(i));
         }
-        System.out.print(root.data + "  ");
+        System.out.print(node.data + "  ");
     }
 
     /**
@@ -107,10 +107,9 @@ public class NaryTree <T extends Comparable<T>>{
         }
         System.out.println();
     }
-    
+
     /**
      * Print in order children (left to right), root
-     * Use loop with the help of two stacks.
      *
      * Space complexity: O(height)
      */
@@ -118,28 +117,25 @@ public class NaryTree <T extends Comparable<T>>{
         System.out.println("postOrderTraversal");
 
         Stack<NaryNode> stack = new Stack<>();
-        Stack<NaryNode> rootStack = new Stack<>();
-
 
         if(root != null){
             stack.push(root);
         }
         while(!stack.isEmpty()){
-            NaryNode node = stack.pop();
+            NaryNode node = stack.peek();
 
             if(node==null){
                 //Process root node
-                System.out.print(rootStack.pop().data + "  ");
+                stack.pop();
+                System.out.print(stack.pop().data + "  ");
+                continue;
+            }
 
-            } else {
-                //Push null to indicate a root needs to be processed from rootStack
-                stack.push(null);
-                rootStack.push(node);
-
-                for(int i=N-1; i>=0; i--){
-                    if(node.getChild(i) != null) {
-                        stack.push(node.getChild(i));
-                    }
+            //Push null to indicate a root needs to be processed from the stack
+            stack.push(null);
+            for(int i=N-1; i>=0; i--){
+                if(node.getChild(i) != null) {
+                    stack.push(node.getChild(i));
                 }
             }
         }
@@ -198,21 +194,21 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Print data in a given level
      *
-     * @param root
+     * @param node
      * @param level
      * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
      */
-    private void printLevel(NaryNode root, int level, int currentLevel){
-        if(root == null || currentLevel > level){
+    private void printLevel(NaryNode node, int level, int currentLevel){
+        if(node == null || currentLevel > level){
             return;
         }
         if(level == currentLevel){
-            System.out.print( root.data + " ");
+            System.out.print( node.data + " ");
             return;
         }
 
         for(int i=0; i<N; i++){
-            printLevel(root.getChild(i), level, currentLevel+1);
+            printLevel(node.getChild(i), level, currentLevel+1);
         }
     }
 
@@ -228,20 +224,20 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * If root is not the one, check in all children tree one by one.
      *
-     * @param root
+     * @param node
      * @param data
      * @return
      */
-    private NaryNode<T> searchRec(NaryNode<T> root, T data){
+    private NaryNode<T> searchRec(NaryNode<T> node, T data){
 
-        if(root==null || root.data.equals(data)){
-            return root;
+        if(node==null || node.data.equals(data)){
+            return node;
         }
 
         for(int i=0; i<N; i++){
-            NaryNode<T> node = searchRec(root.getChild(i), data);
-            if(node != null){
-                return node;
+            NaryNode<T> foundNode = searchRec(node.getChild(i), data);
+            if(foundNode != null){
+                return foundNode;
             }
         }
         return null;
@@ -258,23 +254,23 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Print all the nodes present in the left as seen from the left side
      *
-     * @param root
+     * @param node
      * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
      * @param processingLevel decides how many levels have already been processed.
      * @return
      */
-    private int leftSideView(NaryNode root, int currentLevel, int processingLevel){
-        if(root== null){
+    private int leftSideView(NaryNode node, int currentLevel, int processingLevel){
+        if(node== null){
             return processingLevel;
         }
         if(processingLevel == currentLevel) {
-            System.out.println(root.data);
+            System.out.println(node.data);
             processingLevel++;
         }
 
 
         for(int i=0; i<N; i++){
-            processingLevel = leftSideView(root.getChild(i), currentLevel+1, processingLevel);
+            processingLevel = leftSideView(node.getChild(i), currentLevel+1, processingLevel);
         }
         return processingLevel;
     }
@@ -290,23 +286,23 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Print all the nodes present in the right as seen from the right side
      *
-     * @param root
+     * @param node
      * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
      * @param processingLevel decides how many levels have already been processed.
      * @return
      */
-    private int rightSideView(NaryNode root, int currentLevel, int processingLevel){
-        if(root== null){
+    private int rightSideView(NaryNode node, int currentLevel, int processingLevel){
+        if(node== null){
             return processingLevel;
         }
         if(processingLevel == currentLevel) {
-            System.out.println(root.data);
+            System.out.println(node.data);
             processingLevel++;
         }
 
 
         for(int i=N-1; i>=0; i--){
-            processingLevel = rightSideView(root.getChild(i), currentLevel+1, processingLevel);
+            processingLevel = rightSideView(node.getChild(i), currentLevel+1, processingLevel);
         }
         return processingLevel;
     }
@@ -323,57 +319,53 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Print all the leave nodes
      *
-     * @param root
+     * @param node
      */
-    private void printLeaves(final NaryNode root){
-        if(root == null){
+    private void printLeaves(final NaryNode node){
+        if(node == null){
             return;
         }
-        if(root.isLeafNode()){
-            System.out.print(root.data + "  ");
+        if(node.isLeafNode()){
+            System.out.print(node.data + "  ");
             return;
         }
         for(int i=0; i<N; i++){
-            printLeaves(root.getChild(i));
+            printLeaves(node.getChild(i));
         }
     }
 
     /**
      *
      */
-    public void printAllPaths() {
-        System.out.println("printAllPaths");
+    public void displayPaths() {
+        System.out.println("displayPaths");
 
-        Stack<NaryNode> stack = new Stack<>();
-        printAllPaths(root, stack);
+        Stack<NaryNode> pathStack = new Stack<>();
+        displayPaths(root, pathStack);
         System.out.println();
     }
 
     /**
-     *  Print all the paths of the tree.
-     *  with the help of a stack
+     *  Display all paths in the tree.
      *
-     * @param root
-     * @param stack used to push the traversed node one by one.
-     *              Pop the node once its path is processed.
-     *              Pop the node once all the paths of its right subTree is processed.
+     * @param node
+     * @param pathStack keep track of the nodes in the traversed path.
      */
-    private void printAllPaths(final NaryNode root, final Stack<NaryNode> stack){
-        if(root == null){
+    private void displayPaths(final NaryNode node, final Stack<NaryNode> pathStack){
+        if(node == null){
             return;
         }
-        stack.push(root);
-        if(root.isLeafNode()){
-            System.out.println(stack.toString());
-            stack.pop();
-            return;
-        }
-        for(int i=0; i<N; i++){
-            printAllPaths(root.getChild(i), stack);
+        pathStack.push(node);
+        if(node.isLeafNode()){
+            //Instead of displaying paths we can add the them to pathList provided in function
+            System.out.println(pathStack.toString());
+        } else {
+            for (int i = 0; i < N; i++) {
+                displayPaths(node.getChild(i), pathStack);
+            }
         }
 
-        //Once right subTree is processed, remove its parent
-        stack.pop();
+        pathStack.pop();
     }
 
     /**
@@ -403,28 +395,29 @@ public class NaryTree <T extends Comparable<T>>{
         return maxHeightWithinChildren+1;
     }
 
-
     /**
      * Diameter of the tree (longest path in the tree)
      *
      * @return
      */
     public int diameter(){
-        int[] A = diameterCalculator(root);
-        return A[1];
+        return diameterCalculator(root).diameter;
+    }
+
+    public class HiDi{
+        int height=0,diameter=0;
     }
 
     /**
      * Just like height method. Twist is to calculate diameter as well.
      *
-     * Return array of 2 elements: [height, diameter].
-     * @param root
+     * @param node
      * @return []
      */
-    private int[] diameterCalculator(NaryNode<T> root){
+    private HiDi diameterCalculator(NaryNode<T> node){
 
-        if(root == null){
-            return new int[]{0,0};
+        if(node==null){
+            return new HiDi();
         }
 
         int maxChildNodeHeight = 0;
@@ -433,20 +426,20 @@ public class NaryTree <T extends Comparable<T>>{
         int maxChildNodeDiameter = 0;
 
         for(int i=0; i<N; i++) {
-            int [] child = diameterCalculator(root.getChild(i));
-            if(child[0]>=maxChildNodeHeight){
+            HiDi childHidi = diameterCalculator(node.getChild(i));
+            if(childHidi.height>=maxChildNodeHeight){
                 secondMaxChildNodeHeight = maxChildNodeHeight;
-                maxChildNodeHeight = child[0];
+                maxChildNodeHeight = childHidi.height;
             }
 
-            maxChildNodeDiameter = Math.max(child[1], maxChildNodeDiameter);
+            maxChildNodeDiameter = Math.max(childHidi.diameter, maxChildNodeDiameter);
         }
 
-        int thisNodeHeight = maxChildNodeHeight +1;
-        int thisNodeDiameter = maxChildNodeHeight+secondMaxChildNodeHeight+1;
+        HiDi hidi = new HiDi();
+        hidi.height = maxChildNodeHeight + 1;
+        hidi.diameter = Math.max((maxChildNodeHeight+secondMaxChildNodeHeight+1), maxChildNodeDiameter);
 
-        int maxDiameterInThisTree = Math.max(maxChildNodeDiameter, thisNodeDiameter);
-        return new int[]{thisNodeHeight, maxDiameterInThisTree};
+        return hidi;
     }
 
     /**
@@ -461,22 +454,22 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Checks whether two trees are similar in structure
      *
-     * @param root1
-     * @param root2
+     * @param node1
+     * @param node2
      * @return
      */
-    private boolean isSimilar(NaryNode root1, NaryNode root2){
-        if(root1 == null && root2 == null){
+    private boolean isSimilar(NaryNode node1, NaryNode node2){
+        if(node1 == null && node2 == null){
             return true;
         }
 
-        if(root1 == null || root2 ==null){
+        if(node1 == null || node2 ==null){
             return false;
         }
 
         boolean isSimilar = true;
         for(int i=0; i<N && isSimilar; i++) {
-            isSimilar = isSimilar(root1.getChild(i), root2.getChild(i));
+            isSimilar = isSimilar(node1.getChild(i), node2.getChild(i));
         }
 
         return isSimilar;
@@ -494,23 +487,23 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Checks whether two trees are similar in structure as well as data
      *
-     * @param root1
-     * @param root2
+     * @param node1
+     * @param node2
      * @return
      */
-    private boolean isCopy(NaryNode root1, NaryNode root2){
-        if(root1 == null && root2 == null){
+    private boolean isCopy(NaryNode node1, NaryNode node2){
+        if(node1 == null && node2 == null){
             return true;
         }
 
-        if(root1 == null || root2 ==null){
+        if(node1 == null || node2 ==null){
             return false;
         }
 
 
-        boolean isCopy = root1.data.equals(root2.data);
+        boolean isCopy = node1.data.equals(node2.data);
         for(int i=0; i<N && isCopy; i++) {
-            isCopy = isCopy(root1.getChild(i), root2.getChild(i));
+            isCopy = isCopy(node1.getChild(i), node2.getChild(i));
         }
 
         return isCopy;
@@ -527,17 +520,17 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Calculate number of nodes
      *
-     * @param root
+     * @param node
      * @return
      */
-    private int numberOfNodes(NaryNode root){
-        if(root==null){
+    private int numberOfNodes(NaryNode node){
+        if(node==null){
             return 0;
         }
 
         int numberOfNodes = 1;
         for(int i=0; i<N; i++) {
-            numberOfNodes += numberOfNodes(root.getChild(i));
+            numberOfNodes += numberOfNodes(node.getChild(i));
         }
         return numberOfNodes;
     }
@@ -556,32 +549,30 @@ public class NaryTree <T extends Comparable<T>>{
     /**
      * Insert a node to a provided childIndex of the provided node
      *
-     * @param root
+     * @param node
      * @param data
      * @param nodeData
      * @param childIndex
      * @return
      */
-    private boolean insertAsChild(final NaryNode<T> root, final T data, final T nodeData, int childIndex){
+    private boolean insertAsChild(final NaryNode<T> node, final T data, final T nodeData, int childIndex){
 
-        if(null == root){
+        if(null == node){
             return false;
         }
-        if(root.data.equals(nodeData)){
+        if(node.data.equals(nodeData)){
             final NaryNode<T> newNode = new NaryNode<>(data, N);
-            newNode.setChild(childIndex, root.getChild(childIndex));
-            root.setChild(childIndex, newNode);
+            newNode.setChild(childIndex, node.getChild(childIndex));
+            node.setChild(childIndex, newNode);
             return true;
-
         } else{
             boolean isInserted = false;
             for(int i=0; i<N && !isInserted; i++) {
-                isInserted = insertAsChild(root.getChild(i), data, nodeData, childIndex);
+                isInserted = insertAsChild(node.getChild(i), data, nodeData, childIndex);
             }
             return isInserted;
         }
     }
-
 
     /**
      *
@@ -632,7 +623,7 @@ public class NaryTree <T extends Comparable<T>>{
         naryTree.levelOrderTraversal();
         naryTree.levelOrderTraversalBruteForce();
 
-        naryTree.printAllPaths();
+        naryTree.displayPaths();
         naryTree.printLevel(3);
         naryTree.printLeaves();
 
@@ -643,6 +634,7 @@ public class NaryTree <T extends Comparable<T>>{
         System.out.println("naryTree.isSimilar(naryTree): " + naryTree.isSimilar(naryTree));
         System.out.println("naryTree.isSimilar(naryTree): " + naryTree.isCopy(naryTree));
         System.out.println("naryTree.height(): " + naryTree.height());
+        System.out.println("naryTree.diameter(): " + naryTree.diameter());
         System.out.println("naryTree.searchRec(4) " + naryTree.searchRec(4));
         System.out.println("naryTree.searchRec(9) " + naryTree.searchRec(9));
 
