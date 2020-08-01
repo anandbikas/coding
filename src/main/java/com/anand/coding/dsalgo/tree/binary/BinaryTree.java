@@ -157,11 +157,12 @@ public class BinaryTree <T extends Comparable<T>> {
 
         Stack<Node> stack = new Stack<>();
 
-        for(Node node = root; node!= null; node=node.left){
-            stack.push(node);
+        if(root != null){
+            stack.push(root);
         }
         while(!stack.isEmpty()){
             Node node = stack.peek();
+
             if(node==null){
                 //Process root node
                 stack.pop();
@@ -169,11 +170,16 @@ public class BinaryTree <T extends Comparable<T>> {
                 continue;
             }
 
-            //Push null to indicate a root needs to be processed from the stack as its right child processed.
+            //Push null to indicate a root needs to be processed from the stack
             stack.push(null);
-            for(node=node.right; node!= null; node = node.left){
-                stack.push(node);
+
+            if (node.right != null) {
+                stack.push(node.right);
             }
+            if (node.left != null) {
+                stack.push(node.left);
+            }
+
         }
 
         System.out.println();
@@ -962,24 +968,24 @@ public class BinaryTree <T extends Comparable<T>> {
      * Insert a node to the right of the provided node
      * Shifts the right child of the provided node to further right.
      *
-     * @param root
+     * @param node
      * @param data
      * @param nodeData
      * @return
      */
-    private boolean insertAsRightChild(final Node<T> root, final T data, final T nodeData){
+    private boolean insertAsRightChild(final Node<T> node, final T data, final T nodeData){
 
-        if(null == root){
+        if(null == node){
             return false;
         }
-        if(root.data.equals(nodeData)){
+        if(node.data.equals(nodeData)){
             final Node<T> newNode = new Node<>(data);
-            newNode.right = root.right;
-            root.right = newNode;
+            newNode.right = node.right;
+            node.right = newNode;
             return true;
         } else{
-            return insertAsRightChild(root.left, data, nodeData)
-                    || insertAsRightChild(root.right, data, nodeData);
+            return insertAsRightChild(node.left, data, nodeData)
+                    || insertAsRightChild(node.right, data, nodeData);
         }
     }
 
