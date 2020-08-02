@@ -16,7 +16,7 @@ import java.util.List;
  * 4. All leaf nodes are connected to facilitate linear traversal.
  *
  */
-public class BPlusTree<K extends Comparable<K>, V> {
+public class BPlusTree<K extends Comparable<K>,V> {
 
     private BPlusNode<K,V> root;
 
@@ -43,8 +43,9 @@ public class BPlusTree<K extends Comparable<K>, V> {
         return findNodeForKey(root, key);
     }
 
+
     /**
-     * Find a BPlusTree node which contains the key, null if not found
+     * Find a BPlusTree node which contains the key in the entries list, null if not found
      *
      * @param node
      * @param key
@@ -67,7 +68,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
             return null;
         }
 
-        return findNodeForKey(((BPlusNodeInternal<K, V>) node).getChildren(keyIndex + 1), key);
+        return findNodeForKey(((BPlusNodeInternal<K, V>) node).children[keyIndex + 1], key);
     }
 
     /**
@@ -95,19 +96,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
         int keyIndex = node.getKeyIndex(key);
 
         if(keyIndex!=-1 && key.compareTo(node.getKey(keyIndex))==0){
-
-            //If this is the leaf node, get the value
-            if(node instanceof BPlusNodeLeaf){
-                return (V)((BPlusNodeLeaf) node).keyValueList[keyIndex].getValue();
-            }
-            //Else, we need to traverse down to the leftmost leaf node (of its right child) and get the first element.
-            else {
-                node = ((BPlusNodeInternal<K, V>) node).getChildren(keyIndex+1);
-                while(node instanceof BPlusNodeInternal){
-                    node = ((BPlusNodeInternal<K, V>) node).getChildren(0);
-                }
-                return (V)((BPlusNodeLeaf) node).keyValueList[0].getValue();
-            }
+            return (V)getEntryFromLeafNodeForKey(node,keyIndex).value;
         }
 
         // If not found, traverse down the children
@@ -115,7 +104,27 @@ public class BPlusTree<K extends Comparable<K>, V> {
             return null;
         }
 
-        return get(((BPlusNodeInternal<K, V>) node).getChildren(keyIndex + 1), key);
+        return get(((BPlusNodeInternal<K, V>) node).children[keyIndex + 1], key);
+    }
+
+    /**
+     *
+     * @param node
+     * @param keyIndex
+     * @return
+     */
+    private BPlusNodeLeaf.Entry getEntryFromLeafNodeForKey(BPlusNode node, int keyIndex){
+
+        //If this is the leaf node, get the value
+        if(node instanceof BPlusNodeLeaf){
+            return ((BPlusNodeLeaf) node).entries[keyIndex];
+        }
+
+        //Else, we need to traverse down to the leftmost leaf node (of its right child)
+        //and get the first element.
+        node = ((BPlusNodeInternal<K, V>) node).children[keyIndex+1];
+        for(; node instanceof BPlusNodeInternal; node = ((BPlusNodeInternal<K, V>) node).children[0]);
+        return ((BPlusNodeLeaf) node).entries[0];
     }
 
     /**
@@ -127,11 +136,10 @@ public class BPlusTree<K extends Comparable<K>, V> {
         return get(key)!=null;
     }
 
-
     /**
      *
      */
-    private void display(){
+    public void display(){
 
         for(BPlusNodeLeaf<K,V> node=firstNode; node != null; node=node.next){
 
@@ -145,50 +153,46 @@ public class BPlusTree<K extends Comparable<K>, V> {
 
 
     /**
+     * Upsert to inster/update the value of the key.
      *
      * @param key
      * @return
      */
-    public void insert(K key, V value) {
+    public void upsert(K key, V value) {
 
         if (root == null) {
-            root = new BPlusNodeLeaf<>(t);
-            root.insertAsSorted(key,value);
-            firstNode = (BPlusNodeLeaf<K,V>) root;
+            root = firstNode = new BPlusNodeLeaf<>(t);
+            ((BPlusNodeLeaf<K,V>) root).insertAsSorted(key,value);
             return;
         }
 
         BPlusNodeInternal<K,V> parent = null;
         BPlusNode<K,V> node = root;
-        int childIndex = 0;
 
         while (true) {
 
             //Proactive Split
             if (node.isFull()) {
                 if (parent == null) {
-                    parent = new BPlusNodeInternal<>(t);
-                    root = parent;
+                    root = parent = new BPlusNodeInternal<>(t);
                 }
-                parent.splitChild(childIndex, node);
 
-                if(key.compareTo(parent.getKey(childIndex))==0){
-                    //Duplicate Data rejected
+                int shiftedSplitEntryIndex = node.split(parent);
+                if(key.compareTo(parent.getKey(shiftedSplitEntryIndex))==0){
+                    getEntryFromLeafNodeForKey(parent, shiftedSplitEntryIndex).value = value;
                     return;
                 }
 
-                if (key.compareTo(parent.getKey(childIndex)) < 0) {
-                    node = parent.getChildren(childIndex);
-                } else {
-                    node = parent.getChildren(childIndex+1);
-                }
+                //Node splitted, check which one to search: left or right
+                node = key.compareTo(parent.getKey(shiftedSplitEntryIndex)) < 0
+                        ? parent.children[shiftedSplitEntryIndex]       //Go left
+                        : parent.children[shiftedSplitEntryIndex+1];    //Go right
             }
 
+            // Get index of the largest key <= given key
             int keyIndex = node.getKeyIndex(key);
-
             if(keyIndex!=-1 && key.compareTo(node.getKey(keyIndex))==0){
-                //Duplicate Data rejected
-                //For upsert, we can update the value of the key.
+                getEntryFromLeafNodeForKey(node, keyIndex).value = value;
                 return;
             }
 
@@ -196,13 +200,12 @@ public class BPlusTree<K extends Comparable<K>, V> {
             if (node instanceof BPlusNodeLeaf) {
                 break;
             }
-            parent = (BPlusNodeInternal<K, V>) node;
-            childIndex = keyIndex+1;
-            node = ((BPlusNodeInternal<K, V>)node).getChildren(childIndex);
+            parent = (BPlusNodeInternal<K,V>)node;
+            node = ((BPlusNodeInternal<K,V>)node).children[keyIndex+1];
         }
 
         //Insert into the leaf node.
-        node.insertAsSorted(key,value);
+        ((BPlusNodeLeaf<K,V>) node).insertAsSorted(key, value);
     }
 
     /**
@@ -224,7 +227,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
         int A[] = {10,20,30,40,50,60,70,80,90,40,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108};
 
         for(int x: A){
-            bPlusTree.insert(x, String.format("v-%s",x));
+            bPlusTree.upsert(x, String.format("v-%s",x));
         }
 
         bPlusTree.display();
@@ -232,11 +235,11 @@ public class BPlusTree<K extends Comparable<K>, V> {
         for(int x: A){
             System.out.println(bPlusTree.findNodeForKey(x) + "\n");
         }
-
         System.out.println(bPlusTree.findNodeForKey(13) + "\n");
 
         System.out.println(bPlusTree.get(90) + "\n");
         System.out.println(bPlusTree.contains(90) + "\n");
+
 
         //Multi-value example
         BPlusTree<Integer, List<String>> bPlusTree1 = new BPlusTree<>(3);
@@ -246,7 +249,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
         for(int i=0; i<3; i++) {
             for (int x : B) {
                 if (!bPlusTree1.contains(x)) {
-                    bPlusTree1.insert(x, new ArrayList<>());
+                    bPlusTree1.upsert(x, new ArrayList<>());
                 }
                 bPlusTree1.get(x).add(String.format("v%d-%s",i, x));
             }

@@ -5,13 +5,13 @@ import java.util.Arrays;
 /**
  * BPlusTree Node
  */
-public class BPlusNodeInternal<K extends Comparable<K>, V> implements BPlusNode<K,V>{
+public class BPlusNodeInternal<K extends Comparable<K>, V> implements BPlusNode<K,V> {
 
-    private K[] keys;
-    private int n; //current size
-    private int t; //degree
+    public int t; // Degree
+    public int n; // Number of entries
 
-    private BPlusNode<K,V>[] children;
+    public K[] keys;
+    public BPlusNode<K,V>[] children;
 
 
     /**
@@ -20,8 +20,7 @@ public class BPlusNodeInternal<K extends Comparable<K>, V> implements BPlusNode<
      */
     public BPlusNodeInternal(int t) {
         this.t = t;
-        keys = (K [])new Comparable[2*t-1];
-        children = new BPlusNode[2 * t];
+        keys = (K []) new Comparable[2*t-1];
     }
 
     /**
@@ -44,15 +43,29 @@ public class BPlusNodeInternal<K extends Comparable<K>, V> implements BPlusNode<
      * Inserts a key in a sorted array in sorted fashion.
      *
      * @param key
+     * @param leftChild
+     * @param rightChild
      */
-    public void insertAsSorted(K key, V value) {
+    public int insertAsSortedIntoInternalNode(K key, BPlusNode<K,V> leftChild, BPlusNode<K,V> rightChild){
 
-        int j;
-        for(j=n-1; j >= 0 && keys[j].compareTo(key) > 0; j--) {
-            keys[j+1] = keys[j];
+        if(children == null){
+            children = new BPlusNode[2 * t];
         }
+
+        //Shift entries and children to make room for the new comer.
+        int j;
+        children[n+1] = children[n];
+        for(j=n-1; j >= 0 && keys[j].compareTo(key) > 0; j--){
+            keys[j+1] = keys[j];
+            children[j+1] = children[j];
+        }
+
         keys[j+1] = key;
+        children[j+1] = leftChild;
+        children[j+1+1] = rightChild;
         n++;
+
+        return j+1;
     }
 
     /**
@@ -88,110 +101,44 @@ public class BPlusNodeInternal<K extends Comparable<K>, V> implements BPlusNode<
     }
 
     /**
+     * Split the node into two adjust the middle entry into parent
+     * And return the index of the shifted entry in parent node.
      *
-     * @param index
+     * @param parent
      * @return
      */
-    public BPlusNode<K,V> getChildren(int index){
-        return children[index];
-    }
+    public int split(BPlusNodeInternal<K,V> parent){
 
-    /**
-     * split child
-     *
-     * @param childIndex
-     * @param childNode
-     */
-    public void splitChild(int childIndex, BPlusNode<K,V> childNode){
-        if(childNode instanceof BPlusNodeInternal){
-            splitChild(childIndex, (BPlusNodeInternal<K, V>) childNode);
-        } else {
-            splitChild(childIndex, (BPlusNodeLeaf<K, V>) childNode);
+        if(parent==null){
+            throw new IllegalArgumentException("Parent can not be null");
         }
-    }
 
-    /**
-     * split internal node
-     *
-     * @param childIndex
-     * @param childNode
-     */
-    private void splitChild(int childIndex, BPlusNodeInternal<K,V> childNode){
-
-        //Split childNode into two
         BPlusNodeInternal<K,V> rightChild = new BPlusNodeInternal<>(t);
-        int middleIndex = childNode.n/2;
+        int middleIndex = n/2;
 
-        int j=0; int i;
-        for(i=middleIndex+1; i<childNode.n; i++, j++){
-            rightChild.keys[j] = childNode.keys[i];
-            childNode.keys[i]=null;
+        int i,j;
+        for(i=middleIndex+1, j=0; i<n; i++, j++){
+            rightChild.keys[j] = keys[i];
+            keys[i]=null;
         }
 
-        j=0;
-        for(i=middleIndex+1; i<childNode.n; i++, j++){
-            rightChild.children[j] = childNode.children[i];
-            childNode.children[i]=null;
-        }
-        rightChild.children[j] = childNode.children[i];
-        childNode.children[i]=null;
+        rightChild.children = new BPlusNode[2 * t];
 
-        childNode.n = middleIndex;
+        for(i=middleIndex+1, j=0; i<n; i++, j++){
+            rightChild.children[j] = children[i];
+            children[i]=null;
+        }
+        rightChild.children[j] = children[i];
+        children[i]=null;
+
+        n = middleIndex;
         rightChild.n = j;
 
-        //Move up the middleKey and update its left and right child.
-        children[n+1] = children[n];
-        for(i=n; i>childIndex; i--){
-            keys[i] = keys[i-1];
-            children[i] = children[i-1];
-        }
+        K keyToShiftUp = keys[middleIndex];
+        keys[middleIndex] = null;
 
-        keys[childIndex] = childNode.keys[middleIndex];
-        children[childIndex] = childNode;
-        children[childIndex+1] = rightChild;
-        this.n++;
-
-        childNode.keys[middleIndex] = null;
-    }
-
-
-    /**
-     * Split leaf node
-     *
-     * @param childIndex
-     * @param childNode
-     */
-    private void splitChild(int childIndex, BPlusNodeLeaf<K,V> childNode){
-
-        //Split childNode into two
-        //(Note: Best way to store an internal key at the beginning of its right leaf child)
-        //So,copy middle element to the right child along with moving it to parent.
-        BPlusNodeLeaf<K,V> rightChild = new BPlusNodeLeaf<>(t);
-        int middleIndex = childNode.n/2;
-
-        int j=0; int i;
-        for(i=middleIndex; i<childNode.n; i++, j++){
-            rightChild.keyValueList[j] = childNode.keyValueList[i];
-            childNode.keyValueList[i]=null;
-        }
-
-        childNode.n = middleIndex;
-        rightChild.n = j;
-
-        //Move up the middleKey and update its left and right child.
-        children[n+1] = children[n];
-        for(i=n; i>childIndex; i--){
-            keys[i] = keys[i-1];
-            children[i] = children[i-1];
-        }
-
-        keys[childIndex] = rightChild.keyValueList[0].getKey();
-        children[childIndex] = childNode;
-        children[childIndex+1] = rightChild;
-        this.n++;
-
-        // Link leaf nodes.
-        childNode.next = rightChild;
+        //Insert the newly born child into parent.
+        return parent.insertAsSortedIntoInternalNode(keyToShiftUp, this, rightChild);
     }
 
     /**
