@@ -49,7 +49,7 @@ public class BTree<K extends Comparable<K>,V> {
 
 
     /**
-     * Find a BTree node which contains the key, null if not found
+     * Find a BTree node which contains the key in the entries list, null if not found
      *
      * @param node
      * @param key
@@ -63,7 +63,7 @@ public class BTree<K extends Comparable<K>,V> {
 
         int keyIndex = node.getKeyIndex(key);
 
-        if(keyIndex!=-1 && key.compareTo(node.keyValueList[keyIndex].getKey())==0){
+        if(keyIndex!=-1 && key.compareTo(node.entries[keyIndex].key)==0){
             return node;
         }
 
@@ -99,8 +99,8 @@ public class BTree<K extends Comparable<K>,V> {
 
         int keyIndex = node.getKeyIndex(key);
 
-        if(keyIndex!=-1 && key.compareTo(node.keyValueList[keyIndex].getKey())==0){
-            return node.keyValueList[keyIndex].getValue();
+        if(keyIndex!=-1 && key.compareTo(node.entries[keyIndex].key)==0){
+            return node.entries[keyIndex].value;
         }
 
         // If not found, traverse down the children
@@ -145,23 +145,24 @@ public class BTree<K extends Comparable<K>,V> {
         int i;
         if(node.isLeaf()) {
             for (i = 0; i < node.n; i++) {
-                System.out.print(node.keyValueList[i] + ", ");
+                System.out.print(node.entries[i] + ", ");
             }
         } else {
             for (i = 0; i < node.n; i++) {
                 display(node.children[i]);
-                System.out.print(node.keyValueList[i] + ", ");
+                System.out.print(node.entries[i] + ", ");
             }
             display(node.children[i]);
         }
     }
 
     /**
+     * Upsert to inster/update the value of the key.
      *
      * @param key
      * @return
      */
-    public void insert(K key, V value) {
+    public void upsert(K key, V value) {
 
         if (root == null) {
             root = new BNode<>(t);
@@ -171,36 +172,31 @@ public class BTree<K extends Comparable<K>,V> {
 
         BNode<K,V> parent = null;
         BNode<K,V> node = root;
-        int childIndex = 0;
 
         while (true) {
 
             //Proactive Split
             if (node.isFull()) {
                 if (parent == null) {
-                    parent = new BNode<>(t);
-                    root = parent;
+                    root = parent = new BNode<>(t);
                 }
-                parent.splitChild(childIndex, node);
 
-                if(key.compareTo(parent.keyValueList[childIndex].getKey())==0){
-                    //Duplicate Data rejected
+                int shiftedSplitEntryIndex = node.split(parent);
+                if(key.compareTo(parent.entries[shiftedSplitEntryIndex].key)==0){
+                    parent.entries[shiftedSplitEntryIndex].value = value;
                     return;
                 }
 
-                if (key.compareTo(parent.keyValueList[childIndex].getKey()) < 0) {
-                    node = parent.children[childIndex];
-                } else {
-                    node = parent.children[childIndex+1];
-                }
+                //Node splitted, check which one to search: left or right
+                node = key.compareTo(parent.entries[shiftedSplitEntryIndex].key) < 0
+                        ? parent.children[shiftedSplitEntryIndex]       //Go left
+                            : parent.children[shiftedSplitEntryIndex+1];    //Go right
             }
 
-
+            // Get index of the largest key <= given key
             int keyIndex = node.getKeyIndex(key);
-
-            if (key.compareTo(node.keyValueList[keyIndex].getKey()) == 0) {
-                //Duplicate Data rejected
-                //For upsert, we can update the value of the key.
+            if (keyIndex!=-1 && key.compareTo(node.entries[keyIndex].key) == 0) {
+                node.entries[keyIndex].value = value;
                 return;
             }
 
@@ -209,8 +205,7 @@ public class BTree<K extends Comparable<K>,V> {
                 break;
             }
             parent = node;
-            childIndex = keyIndex+1;
-            node = node.children[childIndex];
+            node = node.children[keyIndex+1];
         }
 
         //Insert into the leaf node.
@@ -236,7 +231,7 @@ public class BTree<K extends Comparable<K>,V> {
         int A[] = {10,20,30,40,50,60,70,80,90,40,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108};
 
         for(int x: A){
-            bTree.insert(x, String.format("v-%s",x));
+            bTree.upsert(x, String.format("v-%s",x));
         }
 
         bTree.display();
@@ -258,7 +253,7 @@ public class BTree<K extends Comparable<K>,V> {
         for(int i=0; i<3; i++) {
             for (int x : B) {
                 if (!bTree1.contains(x)) {
-                    bTree1.insert(x, new ArrayList<>());
+                    bTree1.upsert(x, new ArrayList<>());
                 }
                 bTree1.get(x).add(String.format("v%d-%s",i, x));
             }
