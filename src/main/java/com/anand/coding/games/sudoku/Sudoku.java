@@ -54,7 +54,7 @@ public class Sudoku {
                 if(j%3==0){
                     System.out.print("|");
                 }
-                System.out.print(String.format(" %d ", S[i][j]));
+                System.out.print(S[i][j]==0 ? " - " : String.format(" %d ", S[i][j]));
             }
             System.out.println("|");
         }
@@ -85,7 +85,7 @@ public class Sudoku {
         while(!solved){
             solved = solveRound();
 
-            System.out.println("\nAfter a round: " + round++);
+            System.out.println("\nAfter round: " + round++);
             display();
         }
         System.out.println();
