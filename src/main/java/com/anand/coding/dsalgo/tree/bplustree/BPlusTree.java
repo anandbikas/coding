@@ -13,7 +13,7 @@ import java.util.List;
  * 3. The keys in internal nodes are also stored in leaf nodes along with their values.
  *    (Note: Best way to store an internal key at the beginning of its right leaf child)
  *
- * 4. All leaf nodes are connected to facilitate linear traversal.
+ * 4. All leaf nodes are connected in the form of a singly Linked List to facilitate linear traversal.
  *
  */
 public class BPlusTree<K extends Comparable<K>,V> {
