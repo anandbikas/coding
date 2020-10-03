@@ -23,12 +23,14 @@ public class Bank {
     }
 
     /**
+     * synchronized method to make it thread-safe to prevent corruption in the balanceAccounts shared resource while run in multi-threading.
+     *
      *
      * @param fromAccount
      * @param toAccount
      * @param amount
      */
-    public void transferBalance(final int fromAccount, final int toAccount, final long amount) {
+    public synchronized void transferBalance(final int fromAccount, final int toAccount, final long amount) {
         if(balanceAccounts[fromAccount] < amount){
             System.out.println("Transfer bounced, Low balance in account: " + fromAccount);
             return;
