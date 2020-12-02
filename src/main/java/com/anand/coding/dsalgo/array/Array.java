@@ -173,6 +173,24 @@ public class Array {
     }
 
     /**
+     * If already sorted in ascending order. O(n)
+     */
+    public void deleteDuplicatesSortedArray(){
+
+        if(size<2){
+            return;
+        }
+
+        int n=0;
+        for(int i=1; i<A.length; i++){
+            if(A[i]>A[n]){
+                A[++n]=A[i];
+            }
+        }
+        size = n+1;
+    }
+
+    /**
      *
      */
     public void deleteAllOccurrence(int x){
