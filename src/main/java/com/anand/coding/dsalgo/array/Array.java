@@ -173,6 +173,23 @@ public class Array {
     }
 
     /**
+     *
+     * @return
+     */
+    public boolean containsDuplicate() {
+
+        Set<Integer> set = new HashSet<>();
+
+        for(int i=0; i<A.length; i++){
+            if(set.contains(A[i])){
+                return true;
+            }
+            set.add(A[i]);
+        }
+        return false;
+    }
+
+    /**
      * If already sorted in ascending order. O(n)
      */
     public void deleteDuplicatesSortedArray(){
@@ -280,6 +297,7 @@ public class Array {
         System.out.println("Array rotated by -2 elements: " + array);
         System.out.println();
 
+        System.out.println("array.containsDuplicate() : " + array.containsDuplicate());
         array.deleteDuplicates();
         System.out.println("array.deleteDuplicates() : " + array);
 
