@@ -23,6 +23,24 @@ public class _01_TheMissingNumber {
     }
 
     /**
+     * In an array every element appears twice except one. Find that single number.
+     *
+     * Trick: A^B^C = (A^B)^C = A^(B^C)
+     *
+     * @param A
+     * @return
+     */
+    public static int singleNumber(int[] A) {
+
+        int result=0;
+        for(int x: A){
+            result ^= x;
+        }
+
+        return result;
+    }
+
+    /**
      * Test Case Example:
      *
      *Input
