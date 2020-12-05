@@ -713,6 +713,39 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
 
     /**
+     * Add 1 to the number represented by the list.
+     *
+     * Approach...
+     *
+     * 1. Reverse list and add 1 and then reverse again
+     * 2. Recursive approach
+     * 3. Trick: Find rightmost digit not 9
+     *      a. Not found, add new node with value 1 and make all others 0.
+     *      b. Else, add 1 to it and make all to its right 0 if any.
+     */
+    public void addOne(){
+
+        Node<Integer> none9Node=null;
+        for(Node<Integer> node = (Node<Integer>)start; node!=null; node=node.next){
+            if(!node.data.equals(9)){
+                none9Node = node;
+            }
+        }
+
+        if(none9Node==null) {
+            none9Node = new Node<>(0);
+            none9Node.next = (Node<Integer>) start;
+            start = (Node<T>) none9Node;
+            length++;
+        }
+
+        none9Node.data += 1;
+        for(Node<Integer> node=none9Node.next; node!=null; node=node.next){
+            node.data = 0;
+        }
+    }
+
+    /**
      *
      * @return
      */
@@ -813,5 +846,13 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         linkedList.mergeKSortedLists(list);
         linkedList.display();
 
+        //Test addOne to the number list, 939
+        LinkedList<Integer> numberList = new LinkedList<>();
+        numberList.insertStart(9);
+        numberList.insertStart(3);
+        numberList.insertStart(9);
+        numberList.display();
+        numberList.addOne();
+        numberList.display();
     }
 }
