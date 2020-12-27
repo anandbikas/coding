@@ -306,6 +306,7 @@ public class BinaryTree <T extends Comparable<T>> {
 
         Map<Integer, List<Node>> nodeMap= new HashMap<>();
         Range verticalRange = new Range();
+
         verticalOrderTraversal(root, nodeMap, 0, verticalRange);
 
         for(int level = verticalRange.left; level<=verticalRange.right; level++) {
@@ -319,32 +320,56 @@ public class BinaryTree <T extends Comparable<T>> {
 
     }
 
+    private class NodeLevelPair{
+        Node<T> node; int level;
+
+        public NodeLevelPair(Node<T> node, int level) {
+            this.node = node;
+            this.level = level;
+        }
+    }
+
     /**
+     * Same as calculateVerticalLevelRange, but this requires BFS traversal so that output be in top-down order.
+     *
      *
      * @param node
      * @param nodeMap
      * @param currentLevel
      * @param range
      */
-    private void verticalOrderTraversal(Node node, Map<Integer, List<Node>> nodeMap, int currentLevel, Range range){
+    private void verticalOrderTraversal(Node<T> node, Map<Integer, List<Node>> nodeMap, int currentLevel, Range range){
 
-        if(node == null){
-            return;
+        Queue<NodeLevelPair> queue = new ArrayDeque<>(); //new LinkedList<>();
+
+        if(node!=null){
+            queue.add(new NodeLevelPair(node, currentLevel));
         }
 
-        if(currentLevel<range.left){
-            range.left=currentLevel;
+        while(!queue.isEmpty()){
+            NodeLevelPair pair = queue.remove();
+            node = pair.node;
+            currentLevel = pair.level;
+
+            if(currentLevel<range.left){
+                range.left=currentLevel;
+            }
+
+            if(currentLevel>range.right){
+                range.right = currentLevel;
+            }
+
+            nodeMap.computeIfAbsent(currentLevel, k->new ArrayList<>());
+            nodeMap.get(currentLevel).add(pair.node);
+
+
+            if(node.left!=null){
+                queue.add(new NodeLevelPair(node.left, currentLevel-1));
+            }
+            if(node.right!=null){
+                queue.add(new NodeLevelPair(node.right, currentLevel+1));
+            }
         }
-
-        if(currentLevel>range.right){
-            range.right = currentLevel;
-        }
-
-        nodeMap.computeIfAbsent(currentLevel, k->new ArrayList<>());
-        nodeMap.get(currentLevel).add(node);
-
-        verticalOrderTraversal(node.left, nodeMap, currentLevel-1, range);
-        verticalOrderTraversal(node.right, nodeMap,currentLevel+1, range);
     }
 
     /**
@@ -864,7 +889,7 @@ public class BinaryTree <T extends Comparable<T>> {
             return false;
         }
 
-        if(prevVisitedNode.data!=null && prevVisitedNode.data.compareTo(node.data)>0){
+        if(prevVisitedNode.data!=null && prevVisitedNode.data.compareTo(node.data)>=0){
             return false;
         }
         prevVisitedNode.data = node.data;
