@@ -463,4 +463,25 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         }
         return rootNode;
     }
+
+    /**
+     * balanced bst from inorder (sorted list)
+     *
+     * @param inOrder
+     * @return
+     */
+    public Node<T> bstFromInorder(T[] inOrder, int left, int right){
+
+        if(left>right){
+            return null;
+        }
+
+        int middle = left + (right-left) /2;
+        Node<T> node = new Node<>(inOrder[middle]);
+
+        node.left = bstFromInorder(inOrder, left, middle-1);
+        node.right = bstFromInorder(inOrder, middle+1, right);
+
+        return node;
+    }
 }
