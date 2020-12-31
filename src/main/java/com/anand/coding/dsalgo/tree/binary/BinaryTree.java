@@ -705,6 +705,34 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
+     *
+     * @return
+     */
+    public int minHeight(){
+        return minHeight(root);
+    }
+
+    /**
+     * Calculate minHeight of the tree
+     *
+     * @return
+     */
+    public int minHeight(Node node){
+        if(node==null){
+            return 0;
+        }
+
+        if(node.left==null){
+            return minHeight(node.right)+1;
+        }
+        if (node.right==null){
+            return minHeight(node.left)+1;
+        }
+
+        return Math.min(minHeight(node.left),minHeight(node.right)) + 1;
+    }
+
+    /**
      * heightBalanceFactor of a node is heightOfLeftSubTree - heightOfRightSubTree
      * @param node
      * @return
