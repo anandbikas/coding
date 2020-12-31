@@ -427,6 +427,11 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         bst.inOrderTraversalRec();
         System.out.println("bst.search(4): " + bst.search(4));
         System.out.println("bst.delete(4): " + bst.delete(4));
+
+        BSTIterator bstIterator =  bst.iterator();
+        System.out.println("bstIterator.hasNext(): " + bstIterator.hasNext());
+        System.out.println("bstIterator.next(): " + bstIterator.next());
+        System.out.println("bstIterator.next(): " + bstIterator.next());
     }
 
     /**
@@ -483,5 +488,43 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         node.right = bstFromInorder(inOrder, middle+1, right);
 
         return node;
+    }
+
+    /**
+     * Inorder BST iterator
+     */
+    public static class BSTIterator<T extends Comparable<T>> {
+
+        Stack<Node<T>> stack = new Stack<>();
+
+        private BSTIterator(Node<T> root) {
+            for(Node<T> node = root; node!= null; node=node.left){
+                stack.push(node);
+            }
+        }
+
+        public T next() {
+            if(hasNext()){
+                Node<T> node1 = stack.pop();
+
+                for(Node<T> node=node1.right; node!= null; node = node.left){
+                    stack.push(node);
+                }
+                return node1.data;
+            }
+            return null;
+        }
+
+        public boolean hasNext() {
+            return !stack.isEmpty();
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public BSTIterator<T> iterator(){
+        return new BSTIterator<>(root);
     }
 }
