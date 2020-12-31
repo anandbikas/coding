@@ -1215,4 +1215,43 @@ public class BinaryTree <T extends Comparable<T>> {
 
         return node;
     }
+
+    /**
+     * Construct a tree using postOrder and inOrder traversals
+     *
+     * @param postOrder
+     * @param inOrder
+     */
+//    public BinaryTree(T [] postOrder, T [] inOrder){
+//        this.root = treeFromPreAndInOrder(postOrder, postOrder.length-1, inOrder, 0, inOrder.length-1);
+//    }
+
+    private Node<T> treeFromPostAndInOrder(T [] postOrder, int i, T [] inOrder, int left, int right){
+
+        if(i==-1){
+            return null;
+        }
+
+        int inOrderNodeIndex = -1;
+        for(int k=left; k<=right; k++){
+            if(inOrder[k].equals(postOrder[i])){
+                inOrderNodeIndex = k;
+                break;
+            }
+        }
+
+        if(inOrderNodeIndex==-1) {
+            return  null;
+        }
+
+        Node<T> node = new Node<>(postOrder[i]);
+        node.right = treeFromPreAndInOrder(postOrder, i-1, inOrder, inOrderNodeIndex+1, right);
+
+        //Rewind i to the element which lies in the right side of the node in inOrder traversal.
+        i -= right - (inOrderNodeIndex) + 1;
+
+        node.left = treeFromPreAndInOrder(postOrder, i, inOrder, left, inOrderNodeIndex-1);
+
+        return node;
+    }
 }
