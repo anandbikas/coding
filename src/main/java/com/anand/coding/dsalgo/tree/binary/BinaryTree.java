@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.tree.binary;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,6 +210,46 @@ public class BinaryTree <T extends Comparable<T>> {
             }
         }
         System.out.println();
+    }
+
+    /**
+     * Print in level order
+     * Use loop with the help of a queue
+     */
+    public List<List<T>> levelOrderTraversal1() {
+
+        Queue<Node<T>> queue = new ArrayDeque<>(); //new LinkedList<>();
+
+        List<List<T>> list = new LinkedList<>();
+
+        List<T> currentList=null;
+        Node<T> NULL = new Node<T>();
+
+        if(root!=null){
+            queue.add(root);
+            queue.add(NULL);
+            list.add(currentList = new ArrayList<>());
+        }
+
+        while(queue.size()>1){
+            Node<T> node = queue.remove();
+
+            if(node==NULL){
+                list.add(currentList = new ArrayList<>());
+                queue.add(NULL);
+                continue;
+            }
+            currentList.add(node.data);
+
+            if(node.left!=null){
+                queue.add(node.left);
+            }
+            if(node.right!=null){
+                queue.add(node.right);
+            }
+        }
+
+        return list;
     }
 
     /**
@@ -1121,6 +1162,7 @@ public class BinaryTree <T extends Comparable<T>> {
         binaryTree.postOrderTraversal();
 
         binaryTree.levelOrderTraversal();
+        System.out.println(binaryTree.levelOrderTraversal1());
         binaryTree.levelOrderTraversalBruteForce();
         binaryTree.levelOrderSpiralTraversal();
 
