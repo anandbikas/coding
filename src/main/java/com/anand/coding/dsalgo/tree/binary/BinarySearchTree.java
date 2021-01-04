@@ -206,6 +206,40 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     }
 
     /**
+     *
+     * @param low
+     * @param high
+     * @return
+     */
+    public int rangeSumBST(int low, int high) {
+        return rangeSumBST((Node<Integer>)root, low, high);
+
+    }
+
+    /**
+     * sum of numbers lying in the range low<=x<=max
+     *
+     * @param node
+     * @param low
+     * @param high
+     * @return
+     */
+    public int rangeSumBST(Node<Integer> node, int low, int high) {
+
+        if (node == null) {
+            return 0;
+        }
+
+        if (node.data.compareTo(low) < 0) {
+            return rangeSumBST(node.right, low, high);
+        } else if (node.data.compareTo(high) > 0) {
+            return rangeSumBST(node.left, low, high);
+        } else {
+            return node.data + rangeSumBST(node.left, low, high) + rangeSumBST(node.right, low, high);
+        }
+    }
+
+    /**
      * Find the lowest common ancestor node of the two given nodes
      *
      * @return
@@ -416,6 +450,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         System.out.println("bst.searchRec(8): " + bst.searchRec(8));
 
         System.out.println("bst.isBinarySearchTree(): " + bst.isBinarySearchTree());
+
+        System.out.println("bst.rangeSumBST(4, 7): " + bst.rangeSumBST(4, 7));
 
         System.out.println("bst.lowestCommonAncestor(4, 8): " + bst.lowestCommonAncestor(4, 8));
         System.out.println("bst.lowestCommonAncestor(4, 11): " + bst.lowestCommonAncestor(4, 11));
