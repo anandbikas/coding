@@ -142,37 +142,33 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return null;
         }
 
-        Node<T> nodeToShift;
+        Node<T> successor;
 
         if(pivotNode.right == null) {
             //If pivot node has no inOrder successor, replace pivot with its left node.
-            nodeToShift = pivotNode.left;
+            successor = pivotNode.left;
 
         } else {
             // Replace pivot with its inorder successor
-            // 1. update left of inOrderSuccessor's parent with inOrderSuccessor's right node.
-            // 2. update left and right of inOrderSuccessor node with those of pivot node.
-            Node<T> parentOfNodeToShift = pivotNode;
-            nodeToShift = pivotNode.right;
+            Node<T> parentOfSuccessor = pivotNode;
+            successor = pivotNode.right;
 
-            while(nodeToShift.left!= null){
-                parentOfNodeToShift = nodeToShift;
-                nodeToShift = nodeToShift.left;
+            if(successor.left==null) {
+                parentOfSuccessor.right = successor.right;
+            }  else {
+                for (; successor.left != null; parentOfSuccessor=successor, successor = successor.left) ;
+                parentOfSuccessor.left = successor.right;
+                successor.right = pivotNode.right;
             }
-
-            if(parentOfNodeToShift != pivotNode) {
-                parentOfNodeToShift.left = nodeToShift.right;
-                nodeToShift.right = pivotNode.right;
-            }
-            nodeToShift.left = pivotNode.left;
+            successor.left = pivotNode.left;
         }
 
         if(parent == null){
-            root = nodeToShift;
+            root = successor;
         } else if(parent.left == pivotNode){
-            parent.left = nodeToShift;
+            parent.left = successor;
         } else {
-            parent.right = nodeToShift;
+            parent.right = successor;
         }
 
         pivotNode.left = null;
