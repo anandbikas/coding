@@ -156,7 +156,7 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Queue<T> queue = new ArrayDeque<>(size);
-        Map<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
 
         queue.add(u);
 
@@ -164,10 +164,10 @@ public class Graph<T extends Comparable<T>> {
 
             u = queue.remove();
             System.out.print(u + "  ");
-            visited.put(u,true);
+            visited.add(u);
 
             for(Pair<T, Integer> child: vertices.get(u)){
-                if(!visited.containsKey(child.getKey())){
+                if(!visited.contains(child.getKey())){
                     queue.add(child.getKey());
                 }
             }
@@ -187,7 +187,7 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Stack<T> stack = new Stack<>();
-        Map<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
 
         stack.push(u);
 
@@ -197,13 +197,13 @@ public class Graph<T extends Comparable<T>> {
 
             //For PostOrder printing will be done after processing adjList.
             System.out.print(u + "  ");
-            visited.put(u,true);
+            visited.add(u);
 
             Iterator<Pair<T, Integer>> iterator = vertices.get(u).descendingIterator();
 
             while (iterator.hasNext()){
                 Pair<T, Integer> child = iterator.next();
-                if(!visited.containsKey(child.getKey())){
+                if(!visited.contains(child.getKey())){
                     stack.push(child.getKey());
                 }
             }
@@ -221,7 +221,7 @@ public class Graph<T extends Comparable<T>> {
             throw new IllegalArgumentException();
         }
 
-        Map<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
         dfsDisplayPreOrderRec(u, visited);
         System.out.println();
     }
@@ -230,18 +230,18 @@ public class Graph<T extends Comparable<T>> {
      * @param u
      * @param visited
      */
-    private void dfsDisplayPreOrderRec(T u, Map<T, Boolean> visited){
+    private void dfsDisplayPreOrderRec(T u, Set<T> visited){
 
-        if(visited.containsKey(u)) {
+        if(visited.contains(u)) {
             return;
         }
 
         //For PostOrder printing will be done after processing adjList.
         System.out.print(u + "  ");
-        visited.put(u,true);
+        visited.add(u);
 
         for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.containsKey(child.getKey())){
+            if(!visited.contains(child.getKey())){
                 dfsDisplayPreOrderRec(child.getKey(), visited);
             }
         }
@@ -254,13 +254,13 @@ public class Graph<T extends Comparable<T>> {
      */
     public int countDfsForests(){
 
-        Map<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
 
         int dfsForests = 0;
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
         for(T u : vertices.keySet()){
-            if(!visited.containsKey(u)){
+            if(!visited.contains(u)){
                 countDfsForests(u, visited);
                 dfsForests++;
             }
@@ -274,16 +274,16 @@ public class Graph<T extends Comparable<T>> {
      * @param visited
      * @return
      */
-    private void countDfsForests(T u, Map<T, Boolean> visited){
+    private void countDfsForests(T u, Set<T> visited){
 
-        if(visited.containsKey(u)) {
+        if(visited.contains(u)) {
             return;
         }
 
-        visited.put(u,true);
+        visited.add(u);
 
         for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.containsKey(child.getKey())){
+            if(!visited.contains(child.getKey())){
                 countDfsForests(child.getKey(), visited);
             }
         }
@@ -329,13 +329,13 @@ public class Graph<T extends Comparable<T>> {
             throw new NotImplementedException();
         }
 
-        Map<T, Boolean> visited = new HashMap<>();
-        Map<T, Boolean> inRecStack = new HashMap<>();
+        Set<T> visited = new HashSet<>();
+        Set<T> inRecStack = new HashSet<>();
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
         for(T u : vertices.keySet()){
-            if(!visited.containsKey(u) && isCyclicDfsRec(u, visited, inRecStack)){
+            if(!visited.contains(u) && isCyclicDfsRec(u, visited, inRecStack)){
                 return true;
             }
         }
@@ -349,18 +349,18 @@ public class Graph<T extends Comparable<T>> {
      * @param inRecStack
      * @return
      */
-    private boolean isCyclicDfsRec(T u, Map<T, Boolean> visited, Map<T, Boolean> inRecStack){
+    private boolean isCyclicDfsRec(T u, Set<T> visited, Set<T> inRecStack){
 
-        if(inRecStack.containsKey(u)){
+        if(inRecStack.contains(u)){
             return true;
         }
 
-        if(visited.containsKey(u)) {
+        if(visited.contains(u)) {
             return false;
         }
 
-        inRecStack.put(u,true);
-        visited.put(u,true);
+        inRecStack.add(u);
+        visited.add(u);
 
         for(Pair<T, Integer> child: vertices.get(u)){
             //Note: no need to check visited here
@@ -389,15 +389,15 @@ public class Graph<T extends Comparable<T>> {
             dus.insert(u);
         }
 
-        HashMap<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
         for(T u: vertices.keySet()) {
-            visited.put(u,true);
+            visited.add(u);
 
             for(Pair<T, Integer> child: vertices.get(u)){
-                if(visited.containsKey(child.getKey())){
+                if(visited.contains(child.getKey())){
                     continue;
                 }
 
@@ -491,13 +491,13 @@ public class Graph<T extends Comparable<T>> {
             return null;
         }
 
-        Map<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
         Stack<T> topologicalVertexStack = new Stack<>();
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
         for(T u: vertices.keySet()) {
-            if(!visited.containsKey(u)) {
+            if(!visited.contains(u)) {
                 topologicalSortingDfsRec(u, visited, topologicalVertexStack);
             }
         }
@@ -516,15 +516,15 @@ public class Graph<T extends Comparable<T>> {
      * @param visited
      * @param topologicalVertexStack
      */
-    private void topologicalSortingDfsRec(T u, Map<T,Boolean> visited, Stack<T> topologicalVertexStack){
+    private void topologicalSortingDfsRec(T u, Set<T> visited, Stack<T> topologicalVertexStack){
 
-        if(visited.containsKey(u)) {
+        if(visited.contains(u)) {
             return;
         }
-        visited.put(u,true);
+        visited.add(u);
 
         for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.containsKey(child.getKey())){
+            if(!visited.contains(child.getKey())){
                 topologicalSortingDfsRec(child.getKey(), visited, topologicalVertexStack);
             }
         }
@@ -543,7 +543,7 @@ public class Graph<T extends Comparable<T>> {
             throw new IllegalArgumentException();
         }
 
-        Map<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
         Stack<T> pathStack = new Stack<>();
 
         List<List<T>> pathList= new ArrayList<>();
@@ -558,9 +558,9 @@ public class Graph<T extends Comparable<T>> {
      * @param v
      * @param visited
      */
-    private void findAllPathsDFSRec(T u, T v, Map<T, Boolean> visited, Stack<T> pathStack, List<List<T>> pathList){
+    private void findAllPathsDFSRec(T u, T v, Set<T> visited, Stack<T> pathStack, List<List<T>> pathList){
 
-        if(visited.containsKey(u)) {
+        if(visited.contains(u)) {
             return;
         }
 
@@ -573,10 +573,10 @@ public class Graph<T extends Comparable<T>> {
             return;
         }
 
-        visited.put(u,true);
+        visited.add(u);
 
         for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.containsKey(child.getKey())){
+            if(!visited.contains(child.getKey())){
                 findAllPathsDFSRec(child.getKey(), v, visited, pathStack, pathList);
             }
         }
@@ -597,7 +597,7 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Stack<T> stack = new Stack<>();
-        Map<T, Boolean> visited = new HashMap<>();
+        Set<T> visited = new HashSet<>();
 
         Stack<T> pathStack = new Stack<>();
 
@@ -622,7 +622,7 @@ public class Graph<T extends Comparable<T>> {
                 continue;
             }
 
-            visited.put(u,true);
+            visited.add(u);
 
             //Put a marker in stack for parent place holder.
             stack.push(null);
@@ -630,7 +630,7 @@ public class Graph<T extends Comparable<T>> {
             Iterator<Pair<T, Integer>> iterator = vertices.get(u).descendingIterator();
             while (iterator.hasNext()) {
                 Pair<T, Integer> child = iterator.next();
-                if (!visited.containsKey(child.getKey())) {
+                if (!visited.contains(child.getKey())) {
                     stack.push(child.getKey());
                 }
             }
@@ -730,7 +730,7 @@ public class Graph<T extends Comparable<T>> {
 
         Map<T, Integer> weightValueMap = new HashMap<>();
         Map<T, T> parentMap = new HashMap<>();
-        Map<T, Boolean> selectedMap = new HashMap<>();
+        Set<T> selectedSet = new HashSet<>();
 
         for(T u: vertices.keySet()) {
             weightValueMap.put(u,INF);
@@ -743,13 +743,13 @@ public class Graph<T extends Comparable<T>> {
 
         while(minValuedNode !=null) {
 
-            selectedMap.put(minValuedNode, true);
+            selectedSet.add(minValuedNode);
             if(parentMap.get(minValuedNode) != minValuedNode) {
                 mstGraph.addEdge(parentMap.get(minValuedNode), minValuedNode, weightValueMap.get(minValuedNode));
             }
 
             for(Pair<T, Integer> child : vertices.get(minValuedNode)){
-                if(!selectedMap.containsKey(child.getKey()) && child.getValue() < weightValueMap.get(child.getKey())){
+                if(!selectedSet.contains(child.getKey()) && child.getValue() < weightValueMap.get(child.getKey())){
                     weightValueMap.put(child.getKey(), child.getValue());
                     parentMap.put(child.getKey(), minValuedNode);
                 }
@@ -758,7 +758,7 @@ public class Graph<T extends Comparable<T>> {
             int minValue=INF;
             minValuedNode=null;
             for(T u: vertices.keySet()) {
-                if(!selectedMap.containsKey(u) && weightValueMap.get(u)<minValue) {
+                if(!selectedSet.contains(u) && weightValueMap.get(u)<minValue) {
                     minValuedNode = u;
                     minValue = weightValueMap.get(u);
                 }
@@ -791,7 +791,7 @@ public class Graph<T extends Comparable<T>> {
         Map<T, Integer> pathValueMap = new HashMap<>();
         Map<T, Integer> weightValueMap = new HashMap<>();
         Map<T, T> parentMap = new HashMap<>();
-        Map<T, Boolean> selectedMap = new HashMap<>();
+        Set<T> selectedSet = new HashSet<>();
 
         for(T u: vertices.keySet()) {
             pathValueMap.put(u,INF);
@@ -805,14 +805,14 @@ public class Graph<T extends Comparable<T>> {
         T minValuedNode = source;
         while(minValuedNode !=null) {
 
-            selectedMap.put(minValuedNode, true);
+            selectedSet.add(minValuedNode);
             if(parentMap.get(minValuedNode) != minValuedNode) {
                 mstGraph.addEdge(parentMap.get(minValuedNode), minValuedNode, weightValueMap.get(minValuedNode));
             }
 
             for(Pair<T, Integer> child : vertices.get(minValuedNode)){
 
-                if(!selectedMap.containsKey(child.getKey()) &&
+                if(!selectedSet.contains(child.getKey()) &&
                         child.getValue()+pathValueMap.get(minValuedNode) < pathValueMap.get(child.getKey())){
 
                     pathValueMap.put(child.getKey(), child.getValue()+pathValueMap.get(minValuedNode));
@@ -824,7 +824,7 @@ public class Graph<T extends Comparable<T>> {
             int minValue=INF;
             minValuedNode=null;
             for(T u: vertices.keySet()) {
-                if(!selectedMap.containsKey(u) && pathValueMap.get(u)<minValue) {
+                if(!selectedSet.contains(u) && pathValueMap.get(u)<minValue) {
                     minValuedNode = u;
                     minValue = pathValueMap.get(u);
                 }
