@@ -22,22 +22,14 @@ import java.util.Queue;
 public class _03_ShortestDistanceUsingBFS {
 
     // Possible 4 directions of a node up, down, left, right.
-    static int[] row = { -1, +1,  0, 0};
-    static int[] col = {  0,  0, -1, 1};
+    static int[] rows = { -1, +1,  0,  0};
+    static int[] cols = {  0,  0, -1, +1};
 
-
-    /**
-     *
-     */
     private static class Node{
-        int row;
-        int col;
-        int dist;
+        int row, col;
 
-        public Node(int row, int col, int dist) {
-            this.row = row;
-            this.col = col;
-            this.dist = dist;
+        public Node(int row, int col) {
+            this.row = row; this.col = col;
         }
     }
 
@@ -50,42 +42,44 @@ public class _03_ShortestDistanceUsingBFS {
      */
     public static int shortestDistance(int [][]A, int n, int m){
 
+        Queue<Node> queue = new LinkedList<>();
         boolean[][] visited = new boolean[n][m];
 
-        Node node = null;
         //Find the start node
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
                 if(A[i][j]==2){
-                    node = new Node(i,j,0);
+                    queue.add(new Node(i,j));
+                    visited[i][j]=true;
                     break;
                 }
             }
         }
-        if(node == null){
-            return -1;
-        }
+        queue.add(null);
 
-        Queue<Node> queue = new LinkedList<>();
-
-        queue.add(node);
-        while (!queue.isEmpty()){
-            node = queue.remove();
-
-            if (A[node.row][node.col] == 9){
-                return node.dist;
+        int dist=0;
+        while (queue.size()>1){
+            Node node = queue.remove();
+            if(node == null){
+                dist++;
+                queue.add(null);
+                continue;
             }
 
-            // DFS all 4 neighbors if any
+            if (A[node.row][node.col] == 9){
+                return dist;
+            }
+
+            // BFS all 4 neighbors if any
             for(int k=0; k<4; k++){
-                int i = node.row + row[k];
-                int j = node.col + col[k];
+                int i = node.row + rows[k];
+                int j = node.col + cols[k];
 
                 if(i<0 || i>=n || j<0 || j>=m || A[i][j]==0 || visited[i][j]){
                     continue;
                 }
-
-                queue.add(new Node(i,j,node.dist+1));
+                queue.add(new Node(i,j));
+                visited[i][j]=true;
             }
         }
 
