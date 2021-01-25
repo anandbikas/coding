@@ -642,25 +642,24 @@ public class Graph<T> {
             throw new NotImplementedException();
         }
 
+        Graph<T> mstGraph = new Graph<>();
+        DisjointUnionSets dus = new DisjointUnionSets(size);
         List<Edge<Integer>> edgeList = new ArrayList<>();
 
-        for(int u=0; u<size; u++) {
+        boolean []visited = new boolean[size];
+        for(Integer u=0; u<size; u++){
+            visited[u]=true;
+            mstGraph.insert(vertices.get(u));
+
             Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).iterator();
             while (iterator.hasNext()) {
                 Pair<Integer, Integer> v = iterator.next();
-                edgeList.add(new Edge(u, v.getKey(), v.getValue()));
+                if(!visited[v.getKey()]){
+                    edgeList.add(new Edge<>(u, v.getKey(), v.getValue()));
+                }
             }
         }
         Collections.sort(edgeList);
-
-        Graph<T> mstGraph = new Graph<>();
-
-        for(int i=0; i<size; i++){
-            mstGraph.insert(vertices.get(i));
-        }
-
-        //DisjointSets: Union find for loop detection.
-        DisjointUnionSets dus = new DisjointUnionSets(size);
 
         int edgeCount=0;
         for(Edge<Integer> edge: edgeList){
@@ -678,7 +677,6 @@ public class Graph<T> {
                 dus.union(leftEnd, rightEnd);
             }
         }
-
         return mstGraph;
     }
 

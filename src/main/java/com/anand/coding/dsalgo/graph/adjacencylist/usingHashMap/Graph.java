@@ -375,6 +375,9 @@ public class Graph<T extends Comparable<T>> {
 
     /**
      * Use DisjointSets Union-Find to find a cycle in an undirected graph
+     * Consider all the edges(u-v) in the graph,
+     * if they are already in the same disjoint set, there is a loop
+     * Else perform union on u and v.
      *
      * @return
      */
@@ -662,28 +665,25 @@ public class Graph<T extends Comparable<T>> {
             throw new NotImplementedException();
         }
 
+        Graph<T> mstGraph = new Graph<>();
+        DisjointUnionSetsGeneric<T> dus = new DisjointUnionSetsGeneric<>();
         List<Edge<T>> edgeList = new ArrayList<>();
 
+        Set<T> visited = new HashSet<>();
         for(T u: vertices.keySet()) {
+            visited.add(u);
+            mstGraph.insert(u);
+            dus.insert(u);
+
             Iterator<Pair<T, Integer>> iterator = vertices.get(u).iterator();
             while (iterator.hasNext()) {
                 Pair<T, Integer> v = iterator.next();
-                edgeList.add(new Edge<>(u, v.getKey(), v.getValue()));
+                if(!visited.contains(v)) {
+                    edgeList.add(new Edge<>(u, v.getKey(), v.getValue()));
+                }
             }
         }
         Collections.sort(edgeList);
-
-        Graph<T> mstGraph = new Graph<>();
-
-        for(T u: vertices.keySet()) {
-            mstGraph.insert(u);
-        }
-
-        //DisjointSets: Union find for loop detection.
-        DisjointUnionSetsGeneric<T> dus = new DisjointUnionSetsGeneric<>();
-        for(T u: vertices.keySet()) {
-            dus.insert(u);
-        }
 
         int edgeCount=0;
         for(Edge<T> edge: edgeList){
@@ -701,7 +701,6 @@ public class Graph<T extends Comparable<T>> {
                 dus.union(leftEnd, rightEnd);
             }
         }
-
         return mstGraph;
     }
 
