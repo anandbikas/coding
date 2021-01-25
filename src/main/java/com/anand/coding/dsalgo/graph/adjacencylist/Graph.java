@@ -359,6 +359,9 @@ public class Graph<T> {
 
     /**
      * Use DisjointSets Union-Find to find a cycle in an undirected graph
+     * Consider all the edges(u-v) in the graph,
+     * if they are already in the same disjoint set, there is a loop
+     * Else perform union on u and v.
      *
      * @return
      */
