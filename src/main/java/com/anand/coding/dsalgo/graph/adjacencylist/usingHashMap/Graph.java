@@ -708,10 +708,20 @@ public class Graph<T extends Comparable<T>> {
      * Prim's MST: Greedy Algorithm
      * -> Unlike Kruskal, Prims operates on vertices rather than edges.
      *
-     *  1. Create a new set of vertices with a key value INFINITY to all. Assign key value 0 to the first element for it to be picked up.
-     *  3. Insert min valued node u to the MST.
-     *  3. Update the key value of all the adjacent nodes v of u to minimum of current_key_value_v and weight(u,v) and change its parent if required.
+     *  1. Create a new set of vertices with a weight INFINITY to all. Assign weight 0 to the first element for it to be picked up.
+     *  3. Insert min weighted node u to the MST.
+     *  3. Edge Relaxation: Update the weight of all the adjacent nodes v of u to minimum of current_weight_v and weight(u,v) and change its parent if required.
      *
+     *  Prims vs Kruskal
+     *      * ========================================================
+     *      * 1.   Prims operates on vertices and can start with any node.
+     *      *      Kruskal's prepares sorted weight edge list and starts with the minimum weight edge.
+     *      *
+     *      * 2.   Prims works only connected graph.
+     *      *      Kruskal's can work on disconnected/forest graph.
+     *      *
+     *      * 3.   Prims is suitable for dense graph.
+     *      *      Kruskal runs faster in sparse graphs.
      *
      * @return
      */
@@ -727,39 +737,38 @@ public class Graph<T extends Comparable<T>> {
             return mstGraph;
         }
 
-        Map<T, Integer> weightValueMap = new HashMap<>();
-        Map<T, T> parentMap = new HashMap<>();
-        Set<T> selectedSet = new HashSet<>();
+        Map<T, Integer> weight = new HashMap<>();
+        Map<T, T> parent = new HashMap<>();
+        Set<T> selected = new HashSet<>();
 
         for(T u: vertices.keySet()) {
-            weightValueMap.put(u,INF);
-            parentMap.put(u,u);
+            weight.put(u,INF);  parent.put(u,u);
             mstGraph.insert(u);
         }
 
-        T minValuedNode = vertices.keySet().iterator().next();
-        weightValueMap.put(minValuedNode, 0);
+        T minWeightedNode = vertices.keySet().iterator().next();
+        weight.put(minWeightedNode, 0);
 
-        while(minValuedNode !=null) {
+        while(minWeightedNode !=null) {
 
-            selectedSet.add(minValuedNode);
-            if(parentMap.get(minValuedNode) != minValuedNode) {
-                mstGraph.addEdge(parentMap.get(minValuedNode), minValuedNode, weightValueMap.get(minValuedNode));
+            selected.add(minWeightedNode);
+            if(parent.get(minWeightedNode) != minWeightedNode) {
+                mstGraph.addEdge(parent.get(minWeightedNode), minWeightedNode, weight.get(minWeightedNode));
             }
 
-            for(Pair<T, Integer> child : vertices.get(minValuedNode)){
-                if(!selectedSet.contains(child.getKey()) && child.getValue() < weightValueMap.get(child.getKey())){
-                    weightValueMap.put(child.getKey(), child.getValue());
-                    parentMap.put(child.getKey(), minValuedNode);
+            for(Pair<T, Integer> v : vertices.get(minWeightedNode)){
+                if(!selected.contains(v.getKey()) && v.getValue() < weight.get(v.getKey())){
+                    weight.put(v.getKey(), v.getValue());
+                    parent.put(v.getKey(), minWeightedNode);
                 }
             }
 
             int minValue=INF;
-            minValuedNode=null;
+            minWeightedNode=null;
             for(T u: vertices.keySet()) {
-                if(!selectedSet.contains(u) && weightValueMap.get(u)<minValue) {
-                    minValuedNode = u;
-                    minValue = weightValueMap.get(u);
+                if(!selected.contains(u) && weight.get(u)<minValue) {
+                    minWeightedNode = u;
+                    minValue = weight.get(u);
                 }
             }
         }
@@ -768,13 +777,12 @@ public class Graph<T extends Comparable<T>> {
 
     /**
      * DijkstraShortestPathTree: Greedy Algorithm
-     * -> This is same as Prim's except it calculates distance pathValue instead of weightValue.
-     * -> It works for both directed and undirected graphs
+     * -> This is same as Prim's except it calculates total distance instead of node's weight.
+     * -> It works for both directed and undirected graphs, except for NEGATIVE EDGES.
      *
-     *  1. Create a new set of vertices with a key value INFINITY to all. Assign key value 0 to the SOURCE element for it to be picked up.
-     *  3. Insert min valued node u to the MST.
-     *  3. Update the key value of all the adjacent nodes v of u to minimum of current_key_value_v and weight(u,v)+current_key_value_u and change its parent if required.
-     *
+     *  1. Create a new set of vertices with dist INFINITY to all. Assign dist 0 to the SOURCE element for it to be picked up.
+     *  3. Insert min distance node u to the MST.
+     *  3. Edge Relaxation: Update the dist of all the adjacent nodes v of u to minimum of current_dist_v and weight(u,v)+current_dist_u and change its parent if required.
      *
      * @return
      */
@@ -787,45 +795,44 @@ public class Graph<T extends Comparable<T>> {
             return mstGraph;
         }
 
-        Map<T, Integer> pathValueMap = new HashMap<>();
-        Map<T, Integer> weightValueMap = new HashMap<>();
-        Map<T, T> parentMap = new HashMap<>();
-        Set<T> selectedSet = new HashSet<>();
+        Map<T, Integer> dist = new HashMap<>();
+        Map<T, Integer> weight = new HashMap<>();   // Required only for building SPT graph
+        Map<T, T> parent = new HashMap<>();         // Required only for building SPT graph
+        Set<T> selected = new HashSet<>();
 
         for(T u: vertices.keySet()) {
-            pathValueMap.put(u,INF);
-            weightValueMap.put(u, 0);
-            parentMap.put(u,u);
+            dist.put(u,INF);
+            weight.put(u, 0);
+            parent.put(u,u);
             mstGraph.insert(u);
         }
 
-        pathValueMap.put(source, 0);
+        dist.put(source, 0);
 
-        T minValuedNode = source;
-        while(minValuedNode !=null) {
+        T minDistNode = source;
+        while(minDistNode !=null) {
 
-            selectedSet.add(minValuedNode);
-            if(parentMap.get(minValuedNode) != minValuedNode) {
-                mstGraph.addEdge(parentMap.get(minValuedNode), minValuedNode, weightValueMap.get(minValuedNode));
+            selected.add(minDistNode);
+            if(parent.get(minDistNode) != minDistNode) {
+                mstGraph.addEdge(parent.get(minDistNode), minDistNode, weight.get(minDistNode));
             }
 
-            for(Pair<T, Integer> child : vertices.get(minValuedNode)){
+            for(Pair<T, Integer> v : vertices.get(minDistNode)){
+                if(!selected.contains(v.getKey()) &&
+                        v.getValue()+dist.get(minDistNode) < dist.get(v.getKey())){
 
-                if(!selectedSet.contains(child.getKey()) &&
-                        child.getValue()+pathValueMap.get(minValuedNode) < pathValueMap.get(child.getKey())){
-
-                    pathValueMap.put(child.getKey(), child.getValue()+pathValueMap.get(minValuedNode));
-                    weightValueMap.put(child.getKey(), child.getValue());
-                    parentMap.put(child.getKey(), minValuedNode);
+                    dist.put(v.getKey(), v.getValue()+dist.get(minDistNode));
+                    weight.put(v.getKey(), v.getValue());
+                    parent.put(v.getKey(), minDistNode);
                 }
             }
 
             int minValue=INF;
-            minValuedNode=null;
+            minDistNode=null;
             for(T u: vertices.keySet()) {
-                if(!selectedSet.contains(u) && pathValueMap.get(u)<minValue) {
-                    minValuedNode = u;
-                    minValue = pathValueMap.get(u);
+                if(!selected.contains(u) && dist.get(u)<minValue) {
+                    minDistNode = u;
+                    minValue = dist.get(u);
                 }
             }
         }

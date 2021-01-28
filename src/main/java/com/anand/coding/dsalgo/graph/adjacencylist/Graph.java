@@ -684,10 +684,20 @@ public class Graph<T> {
      * Prim's MST: Greedy Algorithm
      * -> Unlike Kruskal, Prims operates on vertices rather than edges.
      *
-     *  1. Create a new set of vertices with a key value INFINITY to all. Assign key value 0 to the first element for it to be picked up.
-     *  3. Insert min valued node u to the MST.
-     *  3. Update the key value of all the adjacent nodes v of u to minimum of current_key_value_v and weight(u,v) and change its parent if required.
+     *  1. Create a new set of vertices with a weight INFINITY to all. Assign weight 0 to the first element for it to be picked up.
+     *  3. Insert min weighted node u to the MST.
+     *  3. Edge Relaxation: Update the weight of all the adjacent nodes v of u to minimum of current_weight_v and weight(u,v) and change its parent if required.
      *
+     *  Prims vs Kruskal
+     *      * ========================================================
+     *      * 1.   Prims operates on vertices and can start with any node.
+     *      *      Kruskal's prepares sorted weight edge list and starts with the minimum weight edge.
+     *      *
+     *      * 2.   Prims works only connected graph.
+     *      *      Kruskal's can work on disconnected/forest graph.
+     *      *
+     *      * 3.   Prims is suitable for dense graph.
+     *      *      Kruskal runs faster in sparse graphs.
      *
      * @return
      */
@@ -703,38 +713,37 @@ public class Graph<T> {
             return mstGraph;
         }
 
-        int [] weightValue = new int[size];
+        int [] weight = new int[size];
         int [] parent = new int[size];
         boolean [] selected = new boolean[size];
 
         for(int i=0; i<size; i++) {
-            weightValue[i]=INF;
-            parent[i]=i;
+            weight[i]=INF; parent[i]=i;
             mstGraph.insert(vertices.get(i));
         }
-        weightValue[0]=0;
+        weight[0]=0;
 
-        int minValuedNode = 0;
-        while(minValuedNode !=-1) {
+        int minWeightedNode = 0;
+        while(minWeightedNode !=-1) {
 
-            selected[minValuedNode]=true;
-            if(parent[minValuedNode] != minValuedNode) {
-                mstGraph.addEdge(parent[minValuedNode], minValuedNode, weightValue[minValuedNode]);
+            selected[minWeightedNode]=true;
+            if(parent[minWeightedNode] != minWeightedNode) {
+                mstGraph.addEdge(parent[minWeightedNode], minWeightedNode, weight[minWeightedNode]);
             }
 
-            for(Pair<Integer, Integer> childIndex : adjListArray.get(minValuedNode)){
-                if(!selected[childIndex.getKey()] && childIndex.getValue() < weightValue[childIndex.getKey()]){
-                    weightValue[childIndex.getKey()] = childIndex.getValue();
-                    parent[childIndex.getKey()] = minValuedNode;
+            for(Pair<Integer, Integer> v : adjListArray.get(minWeightedNode)){
+                if(!selected[v.getKey()] && v.getValue() < weight[v.getKey()]){
+                    weight[v.getKey()] = v.getValue();
+                    parent[v.getKey()] = minWeightedNode;
                 }
             }
 
             int minValue=INF;
-            minValuedNode=-1;
+            minWeightedNode=-1;
             for(int u=0; u<size; u++) {
-                if(!selected[u] && weightValue[u]<minValue) {
-                    minValuedNode = u;
-                    minValue = weightValue[u];
+                if(!selected[u] && weight[u]<minValue) {
+                    minWeightedNode = u;
+                    minValue = weight[u];
                 }
             }
         }
@@ -743,13 +752,12 @@ public class Graph<T> {
 
     /**
      * DijkstraShortestPathTree: Greedy Algorithm
-     * -> This is same as Prim's except it calculates distance pathValue instead of weightValue.
-     * -> It works for both directed and undirected graphs
+     * -> This is same as Prim's except it calculates total distance instead of node's weight.
+     * -> It works for both directed and undirected graphs, except for NEGATIVE EDGES.
      *
-     *  1. Create a new set of vertices with a key value INFINITY to all. Assign key value 0 to the SOURCE element for it to be picked up.
-     *  3. Insert min valued node u to the MST.
-     *  3. Update the key value of all the adjacent nodes v of u to minimum of current_key_value_v and weight(u,v)+current_key_value_u and change its parent if required.
-     *
+     *  1. Create a new set of vertices with dist INFINITY to all. Assign dist 0 to the SOURCE element for it to be picked up.
+     *  3. Insert min distance node u to the MST.
+     *  3. Edge Relaxation: Update the dist of all the adjacent nodes v of u to minimum of current_dist_v and weight(u,v)+current_dist_u and change its parent if required.
      *
      * @return
      */
@@ -762,44 +770,41 @@ public class Graph<T> {
             return mstGraph;
         }
 
-        int [] pathValue = new int[size];
-        int [] weightValue = new int[size];
-        int [] parent = new int[size];
+        int [] dist = new int[size];
+        int [] weight = new int[size];      // Required only for building SPT graph
+        int [] parent = new int[size];      // Required only for building SPT graph
         boolean [] selected = new boolean[size];
 
         for(int i=0; i<size; i++) {
-            pathValue[i]=INF;
-            weightValue[i]=0;
-            parent[i]=i;
+            dist[i]=INF; weight[i]=0; parent[i]=i;
             mstGraph.insert(vertices.get(i));
         }
-        pathValue[source]=0;
+        dist[source]=0;
 
-        int minValuedNode = source;
-        while(minValuedNode !=-1) {
+        int minDistNode = source;
+        while(minDistNode !=-1) {
 
-            selected[minValuedNode]=true;
-            if(parent[minValuedNode] != minValuedNode) {
-                mstGraph.addEdge(parent[minValuedNode], minValuedNode, weightValue[minValuedNode]);
+            selected[minDistNode]=true;
+            if(parent[minDistNode] != minDistNode) {
+                mstGraph.addEdge(parent[minDistNode], minDistNode, weight[minDistNode]);
             }
 
-            for(Pair<Integer, Integer> childIndex : adjListArray.get(minValuedNode)){
+            for(Pair<Integer, Integer> v : adjListArray.get(minDistNode)){
+                if(!selected[v.getKey()] &&
+                        v.getValue()+dist[minDistNode] < dist[v.getKey()]){
 
-                if(!selected[childIndex.getKey()] &&
-                        childIndex.getValue()+pathValue[minValuedNode] < pathValue[childIndex.getKey()]){
-
-                    pathValue[childIndex.getKey()] = childIndex.getValue()+pathValue[minValuedNode];
-                    weightValue[childIndex.getKey()] = childIndex.getValue();
-                    parent[childIndex.getKey()] = minValuedNode;
+                    dist[v.getKey()] = v.getValue()+dist[minDistNode];
+                    weight[v.getKey()] = v.getValue();
+                    parent[v.getKey()] = minDistNode;
                 }
             }
 
             int minValue=INF;
-            minValuedNode=-1;
+            minDistNode=-1;
             for(int u=0; u<size; u++) {
-                if(!selected[u] && pathValue[u]<minValue) {
-                    minValuedNode = u;
-                    minValue = pathValue[u];
+                if(!selected[u] && dist[u]<minValue) {
+                    minDistNode = u;
+                    minValue = dist[u];
                 }
             }
         }
