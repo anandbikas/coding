@@ -1,6 +1,7 @@
 package com.anand.coding.problems.graph;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -155,6 +156,47 @@ public class _99_CheapestFlightPrice {
     }
 
     /**
+     * Bellman Shortest Path Tree.
+     *
+     * @param n
+     * @param flights
+     * @param U
+     * @param V
+     * @param stops
+     * @return
+     */
+    public int findCheapestPriceBellman(int n, int[][] flights, int U, int V, int stops){
+
+        int INF= Integer.MAX_VALUE;
+        size=n;
+
+        int [] dist = new int[size];
+
+        for(int i=0; i<size; i++) {
+            dist[i]=INF;
+        }
+        dist[U]=0;
+
+        for(int i=0; i<size-1 && i<=stops; i++) {
+
+            int [] tempDist = Arrays.copyOf(dist, size);
+
+            for(int []flight: flights){
+                int u = flight[0], v=flight[1], weight=flight[2];
+                if(dist[u]==INF){
+                    continue;
+                }
+
+                if (weight + dist[u] < tempDist[v]) {
+                    tempDist[v] = weight + dist[u];
+                }
+            }
+            dist = tempDist;
+        }
+        return dist[V]==INF ? -1 : dist[V];
+    }
+
+    /**
      *
      * @param args
      */
@@ -163,8 +205,11 @@ public class _99_CheapestFlightPrice {
         int [][] flights = {{0,1,100},{1,2,100},{0,2,500}};
         System.out.println(new _99_CheapestFlightPrice().findCheapestPriceBfs(3, flights,0,2,1));
         System.out.println(new _99_CheapestFlightPrice().findCheapestPriceDfs(3, flights,0,2,1));
+        System.out.println(new _99_CheapestFlightPrice().findCheapestPriceBellman(3, flights,0,2,1));
 
         int [][] flights1 = {{0,1,1},{0,2,5},{1,2,1},{2,3,1}};
         System.out.println(new _99_CheapestFlightPrice().findCheapestPriceBfs(4, flights1,0,3,1));
+        System.out.println(new _99_CheapestFlightPrice().findCheapestPriceDfs(4, flights1,0,3,1));
+        System.out.println(new _99_CheapestFlightPrice().findCheapestPriceBellman(4, flights1,0,3,1));
     }
 }
