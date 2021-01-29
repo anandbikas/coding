@@ -132,13 +132,11 @@ public class Graph<T extends Comparable<T>> {
     public void displayWeighted(){
         System.out.println("Adjacency List Graph");
 
-
         for(T u : vertices.keySet()){
             System.out.print(u + " -> ");
 
             for(Pair<T, Integer> child: vertices.get(u)){
                 System.out.print(String.format("%s(%s), ", child.getKey(), child.getValue()));
-
             }
             System.out.println();
         }
@@ -429,6 +427,7 @@ public class Graph<T extends Comparable<T>> {
      *              3.1 Consider the vertex in the topological sorting list.
      *              3.2 Reduce indegree of all its children and put the one's with indegree=0 in the queue
      *
+     *  NOTE: If the result list size is less than vertices count, then there is a cycle in the graph
      * @return
      */
     public List<T> topologicalSortingBfs(){

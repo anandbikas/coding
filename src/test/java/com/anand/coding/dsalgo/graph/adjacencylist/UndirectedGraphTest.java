@@ -140,4 +140,12 @@ public class UndirectedGraphTest {
         undirectedWeightedGraph.dijkstraShortestPathTree(0).displayWeighted();
     }
 
+    @Test
+    private void testBellmanSPTWeighted(){
+
+        undirectedWeightedGraph.displayWeighted();
+        System.out.println();
+        undirectedWeightedGraph.bellmanShortestPathTree(0).displayWeighted();
+    }
+
 }

@@ -410,6 +410,7 @@ public class Graph<T> {
      *              3.1 Consider the vertex in the topological sorting list.
      *              3.2 Reduce indegree of all its children and put the one's with indegree=0 in the queue
      *
+     *  NOTE: If the result list size is less than vertices count, then there is a cycle in the graph
      * @return
      */
     public List<T> topologicalSortingBfs(){
@@ -806,6 +807,60 @@ public class Graph<T> {
                     minDistNode = u;
                     minValue = dist[u];
                 }
+            }
+        }
+        return mstGraph;
+    }
+
+    /**
+     * Dijkstra does not work with negative edges.
+     *
+     * Bellman's idea is to relax all the edges exactly v-1 times, so that all the minimum possible distance can be considered..
+     * The i'th iteration gives shortest paths upto i edges long.
+     *
+     * Again this does not work for graphs having negative edge cycle.
+     *
+     * @return
+     */
+    public Graph<T> bellmanShortestPathTree(int source){
+
+        int INF= Integer.MAX_VALUE;
+        Graph<T> mstGraph = new Graph<>(this.type);
+
+        if(size==0){
+            return mstGraph;
+        }
+
+        int [] dist = new int[size];
+        int [] weight = new int[size];      // Required only for building SPT graph
+        int [] parent = new int[size];      // Required only for building SPT graph
+
+        for(int i=0; i<size; i++) {
+            dist[i]=INF; weight[i]=0; parent[i]=i;
+            mstGraph.insert(vertices.get(i));
+        }
+        dist[source]=0;
+
+        for(int i=0; i<size-1; i++) {
+
+            for (int u=0; u<size;u++) {
+                if(dist[u]==INF){
+                    continue;
+                }
+                for (Pair<Integer, Integer> v : adjListArray.get(u)) {
+
+                    if (v.getValue() + dist[u] < dist[v.getKey()]) {
+                        dist[v.getKey()] = v.getValue() + dist[u];
+                        weight[v.getKey()] = v.getValue();
+                        parent[v.getKey()] = u;
+                    }
+                }
+            }
+        }
+
+        for(int v=0; v<size; v++){
+            if(parent[v]!=v){
+                mstGraph.addEdge(parent[v], v, weight[v]);
             }
         }
         return mstGraph;
