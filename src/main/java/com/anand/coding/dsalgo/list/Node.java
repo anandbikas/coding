@@ -16,6 +16,13 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
         this.data = data;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return o!=null
+                && this.getClass() == o.getClass()
+                && data.equals(((Node<?>) o).data);
+    }
+
     /**
      *
      * @param that
