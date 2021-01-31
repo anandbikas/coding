@@ -104,8 +104,8 @@ public class _02_MinRangeKSortedLists {
 
         while (true){
             Pair pair = binaryMinHeap.extractMin();
-            min = (Integer) pair.getKey();
-            int minValueArrayIndex = (Integer) pair.getValue();
+            min = (Integer) pair.key;
+            int minValueArrayIndex = (Integer) pair.value;
 
             range = max-min;
             if(minRange > range){

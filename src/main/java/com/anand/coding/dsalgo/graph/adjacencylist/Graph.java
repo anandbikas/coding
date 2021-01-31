@@ -104,10 +104,10 @@ public class Graph<T> {
     public void display(){
         System.out.println("Adjacency List Graph");
 
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
-            System.out.print(vertices.get(nodeIndex) + " -> ");
-            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-                System.out.print(String.format("%s, ", vertices.get(childIndex.getKey())));
+        for(int u=0; u<size; u++){
+            System.out.print(vertices.get(u) + " -> ");
+            for(Pair<Integer, Integer> v: adjListArray.get(u)){
+                System.out.print(String.format("%s, ", vertices.get(v.key)));
             }
             System.out.println();
         }
@@ -119,10 +119,10 @@ public class Graph<T> {
     public void displayWeighted(){
         System.out.println("Adjacency List Graph");
 
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
-            System.out.print(vertices.get(nodeIndex) + " -> ");
-            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-                System.out.print(String.format("%s(%s), ", vertices.get(childIndex.getKey()), childIndex.getValue()));
+        for(int u=0; u<size; u++){
+            System.out.print(vertices.get(u) + " -> ");
+            for(Pair<Integer, Integer> v: adjListArray.get(u)){
+                System.out.print(String.format("%s(%s), ", vertices.get(v.key), v.value));
             }
             System.out.println();
         }
@@ -131,28 +131,28 @@ public class Graph<T> {
     /**
      * Breath First Search algorithm (similar to levelOrderTraversal of a tree)
      *
-     * @param nodeIndex
+     * @param u
      */
-    public void bfsDisplay(int nodeIndex) {
-        System.out.println("BFS Display from index: " + nodeIndex);
-        if(nodeIndex>=size){
+    public void bfsDisplay(int u) {
+        System.out.println("BFS Display from index: " + u);
+        if(u>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
         Queue<Integer> queue = new ArrayDeque<>(size);
         boolean []visited = new boolean[size];
 
-        queue.add(nodeIndex);
+        queue.add(u);
+        visited[u]=true;
 
         while(!queue.isEmpty()){
+            u = queue.remove();
+            System.out.print(vertices.get(u) + "  ");
 
-            nodeIndex = queue.remove();
-            System.out.print(vertices.get(nodeIndex) + "  ");
-            visited[nodeIndex] = true;
-
-            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-                if(!visited[childIndex.getKey()]){
-                    queue.remove(childIndex.getKey());
+            for(Pair<Integer, Integer> v: adjListArray.get(u)){
+                if(!visited[v.key]){
+                    queue.add(v.key);
+                    visited[v.key] = true;
                 }
             }
         }
@@ -162,33 +162,32 @@ public class Graph<T> {
     /**
      * Depth First Search algorithm
      *
-     * @param nodeIndex
+     * @param u
      */
-    public void dfsDisplayPreOrder(int nodeIndex) {
-        System.out.println("DFS Display PreOrder from index: " + nodeIndex);
-        if(nodeIndex>=size){
+    public void dfsDisplayPreOrder(int u) {
+        System.out.println("DFS Display PreOrder from index: " + u);
+        if(u>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
         Stack<Integer> stack = new Stack<>();
         boolean []visited = new boolean[size];
 
-        stack.push(nodeIndex);
+        stack.push(u);
+        visited[u]=true;
 
         while(!stack.isEmpty()){
-
-            nodeIndex = stack.pop();
+            u = stack.pop();
 
             //For PostOrder printing will be done after processing adjList.
-            System.out.print(vertices.get(nodeIndex) + "  ");
-            visited[nodeIndex] = true;
+            System.out.print(vertices.get(u) + "  ");
 
-            Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(nodeIndex).descendingIterator();
-
+            Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).descendingIterator();
             while (iterator.hasNext()){
-                Pair<Integer, Integer> childIndex = iterator.next();
-                if(!visited[childIndex.getKey()]){
-                    stack.push(childIndex.getKey());
+                Pair<Integer, Integer> v = iterator.next();
+                if(!visited[v.key]){
+                    stack.push(v.key);
+                    visited[v.key] = true;
                 }
             }
         }
@@ -197,36 +196,32 @@ public class Graph<T> {
 
     /**
      *
-     * @param nodeIndex
+     * @param u
      */
-    public void dfsDisplayPreOrderRec(int nodeIndex){
-        System.out.println("\nDFS Display PreOrder Recursive from index: " + nodeIndex);
-        if(nodeIndex>=size){
+    public void dfsDisplayPreOrderRec(int u){
+        System.out.println("\nDFS Display PreOrder Recursive from index: " + u);
+        if(u>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
         boolean []visited = new boolean[size];
-        dfsDisplayPreOrderRec(nodeIndex, visited);
+        dfsDisplayPreOrderRec(u, visited);
         System.out.println();
     }
 
     /**
-     * @param nodeIndex
+     * @param u
      * @param visited
      */
-    private void dfsDisplayPreOrderRec(int nodeIndex, boolean []visited){
-
-        if(visited[nodeIndex]) {
-            return;
-        }
+    private void dfsDisplayPreOrderRec(int u, boolean []visited){
 
         //For PostOrder printing will be done after processing adjList.
-        System.out.print(vertices.get(nodeIndex) + "  ");
-        visited[nodeIndex] = true;
+        System.out.print(vertices.get(u) + "  ");
+        visited[u] = true;
 
-        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex.getKey()]){
-                dfsDisplayPreOrderRec(childIndex.getKey(), visited);
+        for(Pair<Integer, Integer> v: adjListArray.get(u)){
+            if(!visited[v.key]){
+                dfsDisplayPreOrderRec(v.key, visited);
             }
         }
     }
@@ -243,9 +238,9 @@ public class Graph<T> {
         int dfsForests = 0;
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
-            if(!visited[nodeIndex]){
-                countDfsForests(nodeIndex, visited);
+        for(int u=0; u<size; u++) {
+            if(!visited[u]){
+                countDfsForests(u, visited);
                 dfsForests++;
             }
         }
@@ -254,21 +249,17 @@ public class Graph<T> {
 
     /**
      *
-     * @param nodeIndex
+     * @param u
      * @param visited
      * @return
      */
-    private void countDfsForests(int nodeIndex, boolean []visited){
+    private void countDfsForests(int u, boolean []visited){
 
-        if(visited[nodeIndex]) {
-            return;
-        }
+        visited[u] = true;
 
-        visited[nodeIndex] = true;
-
-        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex.getKey()]){
-                countDfsForests(childIndex.getKey(), visited);
+        for(Pair<Integer, Integer> v: adjListArray.get(u)){
+            if(!visited[v.key]){
+                countDfsForests(v.key, visited);
             }
         }
     }
@@ -276,24 +267,24 @@ public class Graph<T> {
 
     /**
      *
-     * @param u
+     * @param node
      */
-    public int outDegree(int u) {
-        return adjListArray.get(u).size();
+    public int outDegree(int node) {
+        return adjListArray.get(node).size();
     }
 
     /**
      *
-     * @param u
+     * @param node
      */
-    public int inDegree(int u) {
+    public int inDegree(int node) {
 
         //To calculate inDegrees for all nodes, take an array instead.
         int inDegree=0;
 
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
-            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)) {
-                if(childIndex.getKey()==u) {
+        for(int u=0; u<size; u++){
+            for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+                if(v.key==node) {
                    inDegree++;
                 }
             }
@@ -318,8 +309,8 @@ public class Graph<T> {
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
-            if(!visited[nodeIndex] && isCyclicDfsRec(nodeIndex, visited, inRecStack)){
+        for(int u=0; u<size; u++) {
+            if(!visited[u] && isCyclicDfsRec(u, visited, inRecStack)){
                 return true;
             }
         }
@@ -328,32 +319,27 @@ public class Graph<T> {
 
     /**
      *
-     * @param nodeIndex
+     * @param u
      * @param visited
      * @param inRecStack
      * @return
      */
-    private boolean isCyclicDfsRec(int nodeIndex, boolean []visited, boolean []inRecStack){
+    private boolean isCyclicDfsRec(int u, boolean []visited, boolean []inRecStack){
 
-        if(inRecStack[nodeIndex]){
-            return true;
-        }
+        inRecStack[u] = true;
+        visited[u] = true;
 
-        if(visited[nodeIndex]) {
-            return false;
-        }
-
-        inRecStack[nodeIndex] = true;
-        visited[nodeIndex] = true;
-
-        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-            //Note: no need to check visited here
-            if(isCyclicDfsRec(childIndex.getKey(), visited, inRecStack)){
+        for(Pair<Integer, Integer> v: adjListArray.get(u)){
+            if(inRecStack[v.key]){
                 return true;
-
+            }
+            if(!visited[v.key]) {
+                if (isCyclicDfsRec(v.key, visited, inRecStack)) {
+                    return true;
+                }
             }
         }
-        inRecStack[nodeIndex] = false;
+        inRecStack[u] = false;
         return false;
     }
 
@@ -372,21 +358,20 @@ public class Graph<T> {
         }
 
         DisjointUnionSets dus = new DisjointUnionSets(size);
-
         boolean []visited = new boolean[size];
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
-            visited[nodeIndex] = true;
+        for(int u=0; u<size; u++) {
+            visited[u] = true;
 
-            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-                if(visited[childIndex.getKey()]){
+            for(Pair<Integer, Integer> v: adjListArray.get(u)){
+                if(visited[v.key]){
                     continue;
                 }
 
-                int leftEnd = dus.find(nodeIndex);
-                int rightEnd = dus.find(childIndex.getKey());
+                int leftEnd = dus.find(u);
+                int rightEnd = dus.find(v.key);
 
                 if(leftEnd==rightEnd){
                     return true;
@@ -424,26 +409,26 @@ public class Graph<T> {
 
         int[] inDegrees = new int[size];
 
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
-            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)) {
-                inDegrees[childIndex.getKey()]++;
+        for(int u=0; u<size; u++){
+            for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+                inDegrees[v.key]++;
             }
         }
 
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++){
-            if(inDegrees[nodeIndex]==0){
-                queue.add(nodeIndex);
+        for(int u=0; u<size; u++){
+            if(inDegrees[u]==0){
+                queue.add(u);
             }
         }
 
         while(!queue.isEmpty()){
-            int nodeIndex = queue.remove();
-            topologicallySortedVertices.add(vertices.get(nodeIndex));
+            int u = queue.remove();
+            topologicallySortedVertices.add(vertices.get(u));
 
-            for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
+            for(Pair<Integer, Integer> v: adjListArray.get(u)){
                 //Reduce indegree once its parent is processed.
-                if(--inDegrees[childIndex.getKey()] == 0){
-                    queue.add(childIndex.getKey());
+                if(--inDegrees[v.key] == 0){
+                    queue.add(v.key);
                 }
             }
         }
@@ -477,9 +462,9 @@ public class Graph<T> {
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
-        for(int nodeIndex=0; nodeIndex<size; nodeIndex++) {
-            if(!visited[nodeIndex]) {
-                topologicalSortingDfsRec(nodeIndex, visited, topologicalVertexStack);
+        for(int u=0; u<size; u++) {
+            if(!visited[u]) {
+                topologicalSortingDfsRec(u, visited, topologicalVertexStack);
             }
         }
 
@@ -493,34 +478,31 @@ public class Graph<T> {
 
     /**
      *
-     * @param nodeIndex
+     * @param u
      * @param visited
      * @param topologicalVertexStack
      */
-    private void topologicalSortingDfsRec(int nodeIndex, boolean []visited, Stack<T> topologicalVertexStack){
+    private void topologicalSortingDfsRec(int u, boolean []visited, Stack<T> topologicalVertexStack){
 
-        if(visited[nodeIndex]) {
-            return;
-        }
-        visited[nodeIndex] = true;
+        visited[u] = true;
 
-        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex.getKey()]){
-                topologicalSortingDfsRec(childIndex.getKey(), visited, topologicalVertexStack);
+        for(Pair<Integer, Integer> v: adjListArray.get(u)){
+            if(!visited[v.key]){
+                topologicalSortingDfsRec(v.key, visited, topologicalVertexStack);
             }
         }
-        topologicalVertexStack.push(vertices.get(nodeIndex));
+        topologicalVertexStack.push(vertices.get(u));
     }
 
     /**
      * use DFS(PreOrder) to find all paths from u to v
      *
-     * @param sourceIndex
-     * @param destIndex
+     * @param u
+     * @param v
      * @param
      */
-    public List<List<T>> findAllPathsDFSRec(int sourceIndex, int destIndex){
-        if(sourceIndex>=size || destIndex >=size){
+    public List<List<T>> findAllPathsDFSRec(int u, int v){
+        if(u>=size || v >=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
@@ -529,36 +511,32 @@ public class Graph<T> {
 
         List<List<T>> pathList= new ArrayList<>();
 
-        findAllPathsDFSRec(sourceIndex, destIndex, visited, pathStack, pathList);
+        findAllPathsDFSRec(u, v, visited, pathStack, pathList);
         return pathList;
     }
 
     /**
      *
-     * @param nodeIndex
-     * @param destIndex
+     * @param u
+     * @param v
      * @param visited
      */
-    private void findAllPathsDFSRec(int nodeIndex, int destIndex, boolean []visited, Stack<T> pathStack, List<List<T>> pathList){
+    private void findAllPathsDFSRec(int u, int v, boolean []visited, Stack<T> pathStack, List<List<T>> pathList){
 
-        if(visited[nodeIndex]) {
-            return;
-        }
+        pathStack.push(vertices.get(u));
 
-        pathStack.push(vertices.get(nodeIndex));
-
-        if(nodeIndex == destIndex){
+        if(u == v){
             pathList.add(Arrays.asList((T[])pathStack.toArray()));
 
             pathStack.pop();
             return;
         }
 
-        visited[nodeIndex] = true;
+        visited[u] = true;
 
-        for(Pair<Integer, Integer> childIndex: adjListArray.get(nodeIndex)){
-            if(!visited[childIndex.getKey()]){
-                findAllPathsDFSRec(childIndex.getKey(), destIndex, visited, pathStack, pathList);
+        for(Pair<Integer, Integer> vNode: adjListArray.get(u)){
+            if(!visited[vNode.key]){
+                findAllPathsDFSRec(vNode.key, v, visited, pathStack, pathList);
             }
         }
 
@@ -568,12 +546,12 @@ public class Graph<T> {
     /**
      * use DFS(PostOrder) to find all paths from u to v
      *
-     * @param sourceIndex
-     * @param destIndex
+     * @param u
+     * @param v
      * @param
      */
-    public List<List<T>> findAllPathsDFS(int sourceIndex, int destIndex) {
-        if (sourceIndex >= size || destIndex >= size) {
+    public List<List<T>> findAllPathsDFS(int u, int v) {
+        if (u >= size || v >= size) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
@@ -581,38 +559,37 @@ public class Graph<T> {
         boolean[] visited = new boolean[size];
 
         Stack<T> pathStack = new Stack<>();
-
         List<List<T>> pathList = new ArrayList<>();
 
-        stack.push(sourceIndex);
+        stack.push(u);
 
         while (!stack.isEmpty()) {
 
-            int nodeIndex = stack.pop();
-            if (nodeIndex == -1) {
+            u = stack.pop();
+            if (u == -1) {
                 //Means all childs processed, now remove parent from pathStack
                 pathStack.pop();
                 continue;
             }
 
-            pathStack.push(vertices.get(nodeIndex));
+            pathStack.push(vertices.get(u));
 
-            if (nodeIndex == destIndex) {
+            if (u == v) {
                 pathList.add(Arrays.asList((T[])pathStack.toArray()));
                 pathStack.pop();
                 continue;
             }
 
-            visited[nodeIndex] = true;
+            visited[u] = true;
 
             //Put a marker in stack for parent place holder.
             stack.push(-1);
 
-            Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(nodeIndex).descendingIterator();
+            Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).descendingIterator();
             while (iterator.hasNext()) {
-                Pair<Integer, Integer> childIndex = iterator.next();
-                if (!visited[childIndex.getKey()]) {
-                    stack.push(childIndex.getKey());
+                Pair<Integer, Integer> vNode = iterator.next();
+                if (!visited[vNode.key]) {
+                    stack.push(vNode.key);
                 }
             }
         }
@@ -655,8 +632,8 @@ public class Graph<T> {
             Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).iterator();
             while (iterator.hasNext()) {
                 Pair<Integer, Integer> v = iterator.next();
-                if(!visited[v.getKey()]){
-                    edgeList.add(new Edge<>(u, v.getKey(), v.getValue()));
+                if(!visited[v.key]){
+                    edgeList.add(new Edge<>(u, v.key, v.value));
                 }
             }
         }
@@ -733,9 +710,9 @@ public class Graph<T> {
             }
 
             for(Pair<Integer, Integer> v : adjListArray.get(minWeightedNode)){
-                if(!selected[v.getKey()] && v.getValue() < weight[v.getKey()]){
-                    weight[v.getKey()] = v.getValue();
-                    parent[v.getKey()] = minWeightedNode;
+                if(!selected[v.key] && v.value < weight[v.key]){
+                    weight[v.key] = v.value;
+                    parent[v.key] = minWeightedNode;
                 }
             }
 
@@ -791,12 +768,12 @@ public class Graph<T> {
             }
 
             for(Pair<Integer, Integer> v : adjListArray.get(minDistNode)){
-                if(!selected[v.getKey()] &&
-                        v.getValue()+dist[minDistNode] < dist[v.getKey()]){
+                if(!selected[v.key] &&
+                        v.value+dist[minDistNode] < dist[v.key]){
 
-                    dist[v.getKey()] = v.getValue()+dist[minDistNode];
-                    weight[v.getKey()] = v.getValue();
-                    parent[v.getKey()] = minDistNode;
+                    dist[v.key] = v.value+dist[minDistNode];
+                    weight[v.key] = v.value;
+                    parent[v.key] = minDistNode;
                 }
             }
 
@@ -849,10 +826,10 @@ public class Graph<T> {
                 }
                 for (Pair<Integer, Integer> v : adjListArray.get(u)) {
 
-                    if (v.getValue() + dist[u] < dist[v.getKey()]) {
-                        dist[v.getKey()] = v.getValue() + dist[u];
-                        weight[v.getKey()] = v.getValue();
-                        parent[v.getKey()] = u;
+                    if (v.value + dist[u] < dist[v.key]) {
+                        dist[v.key] = v.value + dist[u];
+                        weight[v.key] = v.value;
+                        parent[v.key] = u;
                     }
                 }
             }

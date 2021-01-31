@@ -119,8 +119,8 @@ public class Graph<T extends Comparable<T>> {
         for(T u : vertices.keySet()){
             System.out.print(u + " -> ");
 
-            for(Pair<T, Integer> child: vertices.get(u)){
-                System.out.print(String.format("%s, ", child.getKey()));
+            for(Pair<T, Integer> v: vertices.get(u)){
+                System.out.print(String.format("%s, ", v.key));
             }
             System.out.println();
         }
@@ -135,8 +135,8 @@ public class Graph<T extends Comparable<T>> {
         for(T u : vertices.keySet()){
             System.out.print(u + " -> ");
 
-            for(Pair<T, Integer> child: vertices.get(u)){
-                System.out.print(String.format("%s(%s), ", child.getKey(), child.getValue()));
+            for(Pair<T, Integer> v: vertices.get(u)){
+                System.out.print(String.format("%s(%s), ", v.key, v.value));
             }
             System.out.println();
         }
@@ -157,16 +157,16 @@ public class Graph<T extends Comparable<T>> {
         Set<T> visited = new HashSet<>();
 
         queue.add(u);
+        visited.add(u);
 
         while(!queue.isEmpty()){
-
             u = queue.remove();
             System.out.print(u + "  ");
-            visited.add(u);
 
-            for(Pair<T, Integer> child: vertices.get(u)){
-                if(!visited.contains(child.getKey())){
-                    queue.add(child.getKey());
+            for(Pair<T, Integer> v: vertices.get(u)){
+                if(!visited.contains(v.key)){
+                    queue.add(v.key);
+                    visited.add(v.key);
                 }
             }
         }
@@ -188,21 +188,20 @@ public class Graph<T extends Comparable<T>> {
         Set<T> visited = new HashSet<>();
 
         stack.push(u);
+        visited.add(u);
 
         while(!stack.isEmpty()){
-
             u = stack.pop();
 
             //For PostOrder printing will be done after processing adjList.
             System.out.print(u + "  ");
-            visited.add(u);
 
             Iterator<Pair<T, Integer>> iterator = vertices.get(u).descendingIterator();
-
             while (iterator.hasNext()){
-                Pair<T, Integer> child = iterator.next();
-                if(!visited.contains(child.getKey())){
-                    stack.push(child.getKey());
+                Pair<T, Integer> v = iterator.next();
+                if(!visited.contains(v.key)){
+                    stack.push(v.key);
+                    visited.add(v.key);
                 }
             }
         }
@@ -230,17 +229,13 @@ public class Graph<T extends Comparable<T>> {
      */
     private void dfsDisplayPreOrderRec(T u, Set<T> visited){
 
-        if(visited.contains(u)) {
-            return;
-        }
-
         //For PostOrder printing will be done after processing adjList.
         System.out.print(u + "  ");
         visited.add(u);
 
-        for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.contains(child.getKey())){
-                dfsDisplayPreOrderRec(child.getKey(), visited);
+        for(Pair<T, Integer> v: vertices.get(u)){
+            if(!visited.contains(v.key)){
+                dfsDisplayPreOrderRec(v.key, visited);
             }
         }
     }
@@ -274,15 +269,11 @@ public class Graph<T extends Comparable<T>> {
      */
     private void countDfsForests(T u, Set<T> visited){
 
-        if(visited.contains(u)) {
-            return;
-        }
-
         visited.add(u);
 
-        for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.contains(child.getKey())){
-                countDfsForests(child.getKey(), visited);
+        for(Pair<T, Integer> v: vertices.get(u)){
+            if(!visited.contains(v.key)){
+                countDfsForests(v.key, visited);
             }
         }
     }
@@ -298,16 +289,16 @@ public class Graph<T extends Comparable<T>> {
 
     /**
      *
-     * @param u
+     * @param node
      */
-    public int inDegree(T u) {
+    public int inDegree(T node) {
 
         //To calculate inDegrees for all nodes, take an array instead.
         int inDegree=0;
 
-        for(T U : vertices.keySet()){
-            for(Pair<T, Integer> child: vertices.get(U)) {
-                if(child.getKey().equals(u)) {
+        for(T u : vertices.keySet()){
+            for(Pair<T, Integer> v: vertices.get(u)) {
+                if(v.key.equals(node)) {
                     inDegree++;
                 }
             }
@@ -349,22 +340,17 @@ public class Graph<T extends Comparable<T>> {
      */
     private boolean isCyclicDfsRec(T u, Set<T> visited, Set<T> inRecStack){
 
-        if(inRecStack.contains(u)){
-            return true;
-        }
-
-        if(visited.contains(u)) {
-            return false;
-        }
-
         inRecStack.add(u);
         visited.add(u);
 
-        for(Pair<T, Integer> child: vertices.get(u)){
-            //Note: no need to check visited here
-            if(isCyclicDfsRec(child.getKey(), visited, inRecStack)){
+        for(Pair<T, Integer> v: vertices.get(u)){
+            if(inRecStack.contains(v.key)){
                 return true;
-
+            }
+            if(visited.contains(v.key)) {
+                if (isCyclicDfsRec(v.key, visited, inRecStack)) {
+                    return true;
+                }
             }
         }
         inRecStack.remove(u);
@@ -397,13 +383,13 @@ public class Graph<T extends Comparable<T>> {
         for(T u: vertices.keySet()) {
             visited.add(u);
 
-            for(Pair<T, Integer> child: vertices.get(u)){
-                if(visited.contains(child.getKey())){
+            for(Pair<T, Integer> v: vertices.get(u)){
+                if(visited.contains(v.key)){
                     continue;
                 }
 
                 T leftEnd = dus.find(u);
-                T rightEnd = dus.find(child.getKey());
+                T rightEnd = dus.find(v.key);
 
                 if(leftEnd==rightEnd){
                     return true;
@@ -445,8 +431,8 @@ public class Graph<T extends Comparable<T>> {
         }
 
         for(T u: vertices.keySet()){
-            for(Pair<T, Integer> child: vertices.get(u)) {
-                inDegrees.put(child.getKey(), inDegrees.get(child.getKey())+1);
+            for(Pair<T, Integer> v: vertices.get(u)) {
+                inDegrees.put(v.key, inDegrees.get(v.key)+1);
             }
         }
 
@@ -460,11 +446,11 @@ public class Graph<T extends Comparable<T>> {
             T u = queue.remove();
             topologicallySortedVertices.add(u);
 
-            for(Pair<T, Integer> child: vertices.get(u)){
+            for(Pair<T, Integer> v: vertices.get(u)){
                 //Reduce indegree once its parent is processed.
-                inDegrees.put(child.getKey(),inDegrees.get(child.getKey())-1);
-                if(inDegrees.get(child.getKey()) == 0){
-                    queue.add(child.getKey());
+                inDegrees.put(v.key,inDegrees.get(v.key)-1);
+                if(inDegrees.get(v.key) == 0){
+                    queue.add(v.key);
                 }
             }
         }
@@ -520,14 +506,11 @@ public class Graph<T extends Comparable<T>> {
      */
     private void topologicalSortingDfsRec(T u, Set<T> visited, Stack<T> topologicalVertexStack){
 
-        if(visited.contains(u)) {
-            return;
-        }
         visited.add(u);
 
-        for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.contains(child.getKey())){
-                topologicalSortingDfsRec(child.getKey(), visited, topologicalVertexStack);
+        for(Pair<T, Integer> v: vertices.get(u)){
+            if(!visited.contains(v.key)){
+                topologicalSortingDfsRec(v.key, visited, topologicalVertexStack);
             }
         }
         topologicalVertexStack.push(u);
@@ -562,10 +545,6 @@ public class Graph<T extends Comparable<T>> {
      */
     private void findAllPathsDFSRec(T u, T v, Set<T> visited, Stack<T> pathStack, List<List<T>> pathList){
 
-        if(visited.contains(u)) {
-            return;
-        }
-
         pathStack.push(u);
 
         if(u.equals(v)){
@@ -577,9 +556,9 @@ public class Graph<T extends Comparable<T>> {
 
         visited.add(u);
 
-        for(Pair<T, Integer> child: vertices.get(u)){
-            if(!visited.contains(child.getKey())){
-                findAllPathsDFSRec(child.getKey(), v, visited, pathStack, pathList);
+        for(Pair<T, Integer> vNode: vertices.get(u)){
+            if(!visited.contains(vNode.key)){
+                findAllPathsDFSRec(vNode.key, v, visited, pathStack, pathList);
             }
         }
 
@@ -602,7 +581,6 @@ public class Graph<T extends Comparable<T>> {
         Set<T> visited = new HashSet<>();
 
         Stack<T> pathStack = new Stack<>();
-
         List<List<T>> pathList = new ArrayList<>();
 
         stack.push(u);
@@ -631,9 +609,9 @@ public class Graph<T extends Comparable<T>> {
 
             Iterator<Pair<T, Integer>> iterator = vertices.get(u).descendingIterator();
             while (iterator.hasNext()) {
-                Pair<T, Integer> child = iterator.next();
-                if (!visited.contains(child.getKey())) {
-                    stack.push(child.getKey());
+                Pair<T, Integer> vNode = iterator.next();
+                if (!visited.contains(vNode.key)) {
+                    stack.push(vNode.key);
                 }
             }
         }
@@ -678,7 +656,7 @@ public class Graph<T extends Comparable<T>> {
             while (iterator.hasNext()) {
                 Pair<T, Integer> v = iterator.next();
                 if(!visited.contains(v)) {
-                    edgeList.add(new Edge<>(u, v.getKey(), v.getValue()));
+                    edgeList.add(new Edge<>(u, v.key, v.value));
                 }
             }
         }
@@ -756,9 +734,9 @@ public class Graph<T extends Comparable<T>> {
             }
 
             for(Pair<T, Integer> v : vertices.get(minWeightedNode)){
-                if(!selected.contains(v.getKey()) && v.getValue() < weight.get(v.getKey())){
-                    weight.put(v.getKey(), v.getValue());
-                    parent.put(v.getKey(), minWeightedNode);
+                if(!selected.contains(v.key) && v.value < weight.get(v.key)){
+                    weight.put(v.key, v.value);
+                    parent.put(v.key, minWeightedNode);
                 }
             }
 
@@ -817,12 +795,12 @@ public class Graph<T extends Comparable<T>> {
             }
 
             for(Pair<T, Integer> v : vertices.get(minDistNode)){
-                if(!selected.contains(v.getKey()) &&
-                        v.getValue()+dist.get(minDistNode) < dist.get(v.getKey())){
+                if(!selected.contains(v.key) &&
+                        v.value+dist.get(minDistNode) < dist.get(v.key)){
 
-                    dist.put(v.getKey(), v.getValue()+dist.get(minDistNode));
-                    weight.put(v.getKey(), v.getValue());
-                    parent.put(v.getKey(), minDistNode);
+                    dist.put(v.key, v.value+dist.get(minDistNode));
+                    weight.put(v.key, v.value);
+                    parent.put(v.key, minDistNode);
                 }
             }
 

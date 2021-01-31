@@ -106,11 +106,11 @@ public class Graph<T> {
     public void display(){
         System.out.println("\nAdjacency Matrix Graph");
 
-        for(int i=0; i<size; i++){
-            System.out.print(vertices[i] + " -> ");
-            for(int j=0; j<size; j++){
-                if(adjArr[i][j]>0){
-                    System.out.print(String.format("%s(%s), ", vertices[j], adjArr[i][j]));
+        for(int u=0; u<size; u++){
+            System.out.print(vertices[u] + " -> ");
+            for(int v=0; v<size; v++){
+                if(adjArr[u][v]>0){
+                    System.out.print(String.format("%s(%s), ", vertices[u], adjArr[u][v]));
                 }
             }
             System.out.println();
@@ -120,29 +120,28 @@ public class Graph<T> {
     /**
      * Breath First Search algorithm (similar to levelOrderTraversal of a tree)
      *
-     * @param nodeIndex
+     * @param u
      */
-    public void bfsDisplay(int nodeIndex) {
-        System.out.println("\nBFS Display from index: " + nodeIndex);
-        if(nodeIndex>=size){
+    public void bfsDisplay(int u) {
+        System.out.println("\nBFS Display from index: " + u);
+        if(u>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
         Queue<Integer> queue = new ArrayDeque<>(size);
         boolean []visited = new boolean[size];
 
-        queue.add(nodeIndex);
-        visited[nodeIndex] = true;
+        queue.add(u);
+        visited[u] = true;
 
         while(!queue.isEmpty()){
+            u = queue.remove();
+            System.out.print(vertices[u] + "  ");
 
-            nodeIndex = queue.remove();
-            System.out.print(vertices[nodeIndex] + "  ");
-
-            for(int childIndex=0; childIndex<size; childIndex++){
-                if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
-                    queue.add(childIndex);
-                    visited[childIndex] = true;
+            for(int v=0; v<size; v++){
+                if(adjArr[u][v]>0 && !visited[v]){
+                    queue.add(v);
+                    visited[v] = true;
                 }
             }
         }
@@ -152,29 +151,28 @@ public class Graph<T> {
     /**
      * Depth First Search algorithm
      *
-     * @param nodeIndex
+     * @param u
      */
-    public void dfsDisplay(int nodeIndex) {
-        System.out.println("\nDFS Display from index: " + nodeIndex);
-        if(nodeIndex>=size){
+    public void dfsDisplay(int u) {
+        System.out.println("\nDFS Display from index: " + u);
+        if(u>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
         Stack<Integer> stack = new Stack<>();
         boolean []visited = new boolean[size];
 
-        stack.push(nodeIndex);
-        visited[nodeIndex] = true;
+        stack.push(u);
+        visited[u] = true;
 
         while(!stack.isEmpty()){
+            u = stack.pop();
+            System.out.print(vertices[u] + "  ");
 
-            nodeIndex = stack.pop();
-            System.out.print(vertices[nodeIndex] + "  ");
-
-            for(int childIndex=size-1; childIndex>=0; childIndex--){
-                if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
-                    stack.push(childIndex);
-                    visited[childIndex] = true;
+            for(int v=size-1; v>=0; v--){
+                if(adjArr[u][v]>0 && !visited[v]){
+                    stack.push(v);
+                    visited[v] = true;
                 }
             }
         }
@@ -183,36 +181,32 @@ public class Graph<T> {
 
     /**
      *
-     * @param nodeIndex
+     * @param u
      */
-    public void dfsDisplayRec(int nodeIndex){
-        System.out.println("\nDFS Display Recursive from index: " + nodeIndex);
-        if(nodeIndex>=size){
+    public void dfsDisplayRec(int u){
+        System.out.println("\nDFS Display Recursive from index: " + u);
+        if(u>=size){
             throw new ArrayIndexOutOfBoundsException();
         }
 
         boolean []visited = new boolean[size];
-        dfsDisplayRec(nodeIndex, visited);
+        dfsDisplayRec(u, visited);
         System.out.println();
     }
 
     /**
      *
-     * @param nodeIndex
+     * @param u
      * @param visited
      */
-    private void dfsDisplayRec(int nodeIndex, boolean []visited){
+    private void dfsDisplayRec(int u, boolean []visited){
 
-        if(visited[nodeIndex]) {
-            return;
-        }
+        System.out.print(vertices[u] + "  ");
+        visited[u] = true;
 
-        System.out.print(vertices[nodeIndex] + "  ");
-        visited[nodeIndex] = true;
-
-        for(int childIndex=0; childIndex<size; childIndex++){
-            if(adjArr[nodeIndex][childIndex]>0 && !visited[childIndex]){
-                dfsDisplayRec(childIndex, visited);
+        for(int v=0; v<size; v++){
+            if(adjArr[u][v]>0 && !visited[v]){
+                dfsDisplayRec(v, visited);
             }
         }
     }

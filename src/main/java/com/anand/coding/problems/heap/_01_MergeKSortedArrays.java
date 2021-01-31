@@ -43,9 +43,9 @@ public class _01_MergeKSortedArrays {
         int i=0;
         while (!binaryMinHeap.isEmpty()){
             Pair pair = binaryMinHeap.extractMin();
-            A[i++] = (Integer) pair.getKey();
+            A[i++] = (Integer) pair.key;
 
-            int minValueArrayIndex = (Integer) pair.getValue();
+            int minValueArrayIndex = (Integer) pair.value;
             kPointers[minValueArrayIndex]++;
             if(kPointers[minValueArrayIndex]<list.get(minValueArrayIndex).length){
                 binaryMinHeap.insert(new Pair<>(list.get(minValueArrayIndex)[kPointers[minValueArrayIndex]], minValueArrayIndex));
