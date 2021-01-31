@@ -507,7 +507,7 @@ public class Graph<T> {
         }
 
         boolean []visited = new boolean[size];
-        Stack<T> pathStack = new Stack<>();
+        LinkedList<T> pathStack = new LinkedList<>();
 
         List<List<T>> pathList= new ArrayList<>();
 
@@ -521,14 +521,14 @@ public class Graph<T> {
      * @param v
      * @param visited
      */
-    private void findAllPathsDFSRec(int u, int v, boolean []visited, Stack<T> pathStack, List<List<T>> pathList){
+    private void findAllPathsDFSRec(int u, int v, boolean []visited, LinkedList<T> pathStack, List<List<T>> pathList){
 
-        pathStack.push(vertices.get(u));
+        pathStack.addLast(vertices.get(u));
 
         if(u == v){
-            pathList.add(Arrays.asList((T[])pathStack.toArray()));
+            pathList.add((List<T>)pathStack.clone());
 
-            pathStack.pop();
+            pathStack.removeLast();
             return;
         }
 
@@ -540,7 +540,7 @@ public class Graph<T> {
             }
         }
 
-        pathStack.pop();
+        pathStack.removeLast();
     }
 
     /**
@@ -558,7 +558,7 @@ public class Graph<T> {
         Stack<Integer> stack = new Stack<>();
         boolean[] visited = new boolean[size];
 
-        Stack<T> pathStack = new Stack<>();
+        LinkedList<T> pathStack = new LinkedList<>();
         List<List<T>> pathList = new ArrayList<>();
 
         stack.push(u);
@@ -568,15 +568,15 @@ public class Graph<T> {
             u = stack.pop();
             if (u == -1) {
                 //Means all childs processed, now remove parent from pathStack
-                pathStack.pop();
+                pathStack.removeLast();
                 continue;
             }
 
-            pathStack.push(vertices.get(u));
+            pathStack.addLast(vertices.get(u));
 
             if (u == v) {
-                pathList.add(Arrays.asList((T[])pathStack.toArray()));
-                pathStack.pop();
+                pathList.add((List<T>)pathStack.clone());
+                pathStack.removeLast();
                 continue;
             }
 

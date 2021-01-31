@@ -529,7 +529,7 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Set<T> visited = new HashSet<>();
-        Stack<T> pathStack = new Stack<>();
+        LinkedList<T> pathStack = new LinkedList<>();
 
         List<List<T>> pathList= new ArrayList<>();
 
@@ -543,14 +543,14 @@ public class Graph<T extends Comparable<T>> {
      * @param v
      * @param visited
      */
-    private void findAllPathsDFSRec(T u, T v, Set<T> visited, Stack<T> pathStack, List<List<T>> pathList){
+    private void findAllPathsDFSRec(T u, T v, Set<T> visited, LinkedList<T> pathStack, List<List<T>> pathList){
 
-        pathStack.push(u);
+        pathStack.addLast(u);
 
         if(u.equals(v)){
-            pathList.add(Arrays.asList((T[])pathStack.toArray()));
+            pathList.add((List<T>)pathStack.clone());
 
-            pathStack.pop();
+            pathStack.removeLast();
             return;
         }
 
@@ -562,7 +562,7 @@ public class Graph<T extends Comparable<T>> {
             }
         }
 
-        pathStack.pop();
+        pathStack.removeLast();
     }
 
     /**
@@ -580,7 +580,7 @@ public class Graph<T extends Comparable<T>> {
         Stack<T> stack = new Stack<>();
         Set<T> visited = new HashSet<>();
 
-        Stack<T> pathStack = new Stack<>();
+        LinkedList<T> pathStack = new LinkedList<>();
         List<List<T>> pathList = new ArrayList<>();
 
         stack.push(u);
@@ -590,15 +590,15 @@ public class Graph<T extends Comparable<T>> {
             u = stack.pop();
             if (u == null) {
                 //Means all childs processed, now remove parent from pathStack
-                pathStack.pop();
+                pathStack.removeLast();
                 continue;
             }
 
-            pathStack.push(u);
+            pathStack.addLast(u);
 
             if (u.equals(v)) {
-                pathList.add(Arrays.asList((T[])pathStack.toArray()));
-                pathStack.pop();
+                pathList.add((List<T>)pathStack.clone());
+                pathStack.removeLast();
                 continue;
             }
 
