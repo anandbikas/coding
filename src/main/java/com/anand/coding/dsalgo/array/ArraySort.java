@@ -230,6 +230,8 @@ public class ArraySort extends Array {
         return i;
     }
 
+    private void swap(int i, int j){ int temp = A[i]; A[i] = A[j]; A[j] = temp;}
+
     /**
      * Sort using Binary Max Heap
      * It takes O(nLog n) time even if the array is already sorted due to creating a heap at the start.
@@ -244,10 +246,7 @@ public class ArraySort extends Array {
 
         //Top element is the largest, replace it with last and heapify the new element upto size -1.
         for(int x=size-1; x>0;x--){
-            int temp = A[0];
-            A[0] = A[x];
-            A[x] = temp;
-
+            swap(0,x);
             heapify(0, x);
         }
     }
@@ -259,10 +258,8 @@ public class ArraySort extends Array {
      */
     private void heapify(int i, int currentSize){
 
-        int left = 2*i+1;
-        int right = 2*i+2;
+        int left=2*i+1, right=2*i+2, largest = i;
 
-        int largest = i;
         if(left<currentSize && A[left] > A[largest]){
             largest = left;
         }
@@ -271,10 +268,7 @@ public class ArraySort extends Array {
         }
 
         if(largest!=i){
-            int temp = A[largest];
-            A[largest] = A[i];
-            A[i] = temp;
-
+            swap(i, largest);
             heapify(largest, currentSize);
         }
     }
