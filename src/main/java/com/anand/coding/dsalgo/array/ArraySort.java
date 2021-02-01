@@ -89,11 +89,10 @@ public class ArraySort extends Array {
      */
     private void mergeAsSorted(int left, int midIndex, int right){
 
-        int A1[] = Arrays.copyOfRange(A, left, midIndex);
-        int A2[] = Arrays.copyOfRange(A, midIndex+1, right);
+        int []A1 = Arrays.copyOfRange(A, left, midIndex+1);
+        int []A2 = Arrays.copyOfRange(A, midIndex+1, right+1);
 
-        int i = 0;
-        int j = 0;
+        int i=0,j=0;
         while(i<A1.length && j<A2.length){
             A[left++] = (A1[i] < A2[j]) ? A1[i++] : A2[j++];
         }
