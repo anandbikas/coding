@@ -1,8 +1,6 @@
 package com.anand.coding.dsalgo.tree.arraybased;
 
-
 import com.anand.coding.dsalgo.exception.HeapEmptyException;
-import com.anand.coding.dsalgo.exception.HeapFullException;
 
 /**
  * A BinaryHeap is a complete BinaryTree.
@@ -37,71 +35,35 @@ import com.anand.coding.dsalgo.exception.HeapFullException;
  */
 public class BinaryMinHeap<T extends Comparable<T>>{
 
-    private T [] heapArr;
+    private T [] A;
     private int size=0;
 
-    /**
-     *
-     */
     public BinaryMinHeap(){
         this(1);
     }
 
-    /**
-     *
-     * @param size
-     */
     @SuppressWarnings("unchecked")
-    public BinaryMinHeap(int size){
-        heapArr = (T[])new Comparable[size];
+    public BinaryMinHeap(int initialSize){
+        A = (T[])new Comparable[initialSize];
     }
 
-    /**
-     *
-     * @param newSize
-     */
     @SuppressWarnings("unchecked")
     public void alterSize(int newSize){
-        T[] heapArrTemp = (T[])new Comparable[newSize];
+        T[] T = (T[])new Comparable[newSize];
 
-        System.arraycopy(heapArr, 0, heapArrTemp, 0, this.size);
-        heapArr = heapArrTemp;
+        System.arraycopy(A, 0, T, 0, this.size);
+        A = T;
     }
 
-    /**
-     *
-     * @return
-     */
-    public int getCapacity(){
-        return heapArr.length;
-    }
+    public int getCapacity(){ return A.length;}
+    public int getSize(){ return size;}
+    public boolean isFull(){ return size==A.length;}
+    public boolean isEmpty(){ return size==0;}
 
-    /**
-     *
-     * @param i
-     * @return
-     */
-    private int left(int i){
-        return 2*i+1;
-    }
-
-    /**
-     *
-     * @param i
-     * @return
-     */
-    private int right(int i){
-        return 2*i+2;
-    }
-
-    /**
-     *
-     * @param i
-     * @return
-     */
-    private int parent(int i){
-        return (i-1)/2;
-    }
+    private int left(int i){ return 2*i+1;}
+    private int right(int i){ return 2*i+2;}
+    private int parent(int i){ return (i-1)/2;}
+    private void swap(int i, int j){ T temp = A[i]; A[i] = A[j]; A[j] = temp;}
 
     /**
      * fix MinHeap property by comparing with parent, bottom up
@@ -109,16 +71,9 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      */
     private void heapUp(int child){
 
-        int parent;
-        for(; child>0; child=parent){
-
-            parent=parent(child);
-            if(heapArr[parent].compareTo(heapArr[child])<=0){
-                break;
-            }
-            T temp = heapArr[parent];
-            heapArr[parent] = heapArr[child];
-            heapArr[child] = temp;
+        while (child>0 && A[child].compareTo(A[parent(child)])<0){
+            swap(child, parent(child));
+            child = parent(child);
         }
     }
 
@@ -128,22 +83,17 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      */
     private void heapify(int i){
 
-        int left = left(i);
-        int right = right(i);
-        int smallest = i;
-        if(left<size && heapArr[left].compareTo(heapArr[smallest])<0){
+        int left=left(i), right=right(i), smallest = i;
+
+        if(left<size && A[left].compareTo(A[smallest])<0){
             smallest = left;
         }
-
-        if(right<size && heapArr[right].compareTo(heapArr[smallest])<0){
+        if(right<size && A[right].compareTo(A[smallest])<0){
             smallest = right;
         }
 
         if(smallest!=i){
-            T temp = heapArr[smallest];
-            heapArr[smallest] = heapArr[i];
-            heapArr[i] = temp;
-
+            swap(i, smallest);
             heapify(smallest);
         }
     }
@@ -153,16 +103,25 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      * @param data
      */
     public void insert(T data){
-
-        if(heapArr.length==size){
-            // throw new HeapFullException();
-            //Dynamic size increase.
-            alterSize(heapArr.length*2);
+        //Dynamic size increase.
+        if(A.length==size){
+            alterSize(A.length*2);
         }
 
-        int i = size++;
-        heapArr[i]=data;
-        heapUp(i);
+        A[size]=data;
+        heapUp(size++);
+    }
+
+    /**
+     *
+     * @param i
+     */
+    public T view(int i){
+        if(i>=size){
+            throw new IllegalArgumentException("Index out of size: " + i);
+        }
+
+        return A[i];
     }
 
     /**
@@ -174,29 +133,14 @@ public class BinaryMinHeap<T extends Comparable<T>>{
             throw new HeapEmptyException();
         }
 
-        T root = heapArr[0];
-        heapArr[0]=heapArr[--size];
-        heapArr[size]=null;
+        final T deletedNode=A[0];   A[0]=A[--size];     A[size]=null;
         heapify(0);
 
         //Dynamic size decrease.
-        if(size == heapArr.length/4){
-            alterSize(heapArr.length/2);
-        }
+        if(size==A.length/4)
+            alterSize(A.length/2);
 
-        return root;
-    }
-
-    /**
-     *
-     * @param i
-     */
-    public T view(int i){
-        if(i>=heapArr.length){
-            throw new IllegalArgumentException("Index out of size: " + i);
-        }
-
-        return heapArr[i];
+        return deletedNode;
     }
 
     /**
@@ -204,79 +148,44 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      * @param i
      */
     public T delete(int i){
-        final T deletedNode = replace(i, heapArr[--size]);
-        heapArr[size]=null;
+        if(i>=size){
+            throw new IllegalArgumentException("Index out of size: " + i);
+        }
+
+        final T deletedNode=A[i];   A[i]=A[--size];     A[size]=null;
+        if(i>0 && A[i].compareTo(A[parent(i)])<0) heapUp(i); else heapify(i);
 
         //Dynamic size decrease.
-        if(size == heapArr.length/4){
-            alterSize(heapArr.length/2);
-        }
+        if(size==A.length/4)
+            alterSize(A.length/2);
 
         return deletedNode;
     }
 
     /**
      * Replaces a key with a new data.
-     * This can be used for both decreaseKey() or increaseKey() operations.
-     *
-     * Depending upo the operations, it implies heapUp or heapify to fix broken heap property.
+     * This can be used for both decreaseKey() and increaseKey() operations.
      *
      * @param i
      * @param data
-     * @return
      */
     public T replace(int i, T data){
-
-        if(i>=heapArr.length){
+        if(i>=size){
             throw new IllegalArgumentException("Index out of size: " + i);
         }
 
-        final T deletedNode = heapArr[i];
-        heapArr[i]=data;
+        final T oldData=A[i];   A[i]=data;
+        if(i>0 && A[i].compareTo(A[parent(i)])<0) heapUp(i); else heapify(i);
 
-        if(i>0 && heapArr[parent(i)].compareTo(heapArr[i])>0){
-            heapUp(i);
-        } else {
-            heapify(i);
-        }
-
-        return deletedNode;
+        return oldData;
     }
 
-    /**
-     *
-     */
     public void display(){
         for(int i=0; i<size; i++){
-            System.out.print(heapArr[i] + ", ");
+            System.out.print(A[i] + ", ");
         }
         System.out.println();
     }
-
-    /**
-     *
-     * @return
-     */
-    public int getSize(){
-        return size;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isFull(){
-        return size==heapArr.length;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isEmpty(){
-        return size==0;
-    }
-
 
     /**
      *  Main function to test BinaryMinHeap
