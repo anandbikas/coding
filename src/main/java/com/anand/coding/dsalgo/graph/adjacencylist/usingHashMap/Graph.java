@@ -729,7 +729,7 @@ public class Graph<T extends Comparable<T>> {
         while(minWeightedNode !=null) {
 
             selected.add(minWeightedNode);
-            if(parent.get(minWeightedNode) != minWeightedNode) {
+            if(!minWeightedNode.equals(parent.get(minWeightedNode))) {
                 mstGraph.addEdge(parent.get(minWeightedNode), minWeightedNode, weight.get(minWeightedNode));
             }
 
@@ -790,7 +790,7 @@ public class Graph<T extends Comparable<T>> {
         while(minDistNode !=null) {
 
             selected.add(minDistNode);
-            if(parent.get(minDistNode) != minDistNode) {
+            if(!minDistNode.equals(parent.get(minDistNode))) {
                 mstGraph.addEdge(parent.get(minDistNode), minDistNode, weight.get(minDistNode));
             }
 
@@ -810,6 +810,64 @@ public class Graph<T extends Comparable<T>> {
                 if(!selected.contains(u) && dist.get(u)<minValue) {
                     minDistNode = u;
                     minValue = dist.get(u);
+                }
+            }
+        }
+        return mstGraph;
+    }
+
+    /**
+     * Dijkstra O(E log(V)) using heap/priority queue
+     *
+     * @param source
+     * @return
+     */
+    public Graph<T> dijkstraShortestPathTreeHeap(T source){
+
+        int INF= Integer.MAX_VALUE;
+        Graph<T> mstGraph = new Graph<>(this.type);
+
+        if(size==0){
+            return mstGraph;
+        }
+
+        Map<T, Integer> dist = new HashMap<>();
+        Map<T, Integer> weight = new HashMap<>();   // Required only for building SPT graph
+        Map<T, T> parent = new HashMap<>();         // Required only for building SPT graph
+        Set<T> selected = new HashSet<>();
+
+        for(T u: vertices.keySet()) {
+            dist.put(u,INF);
+            weight.put(u, 0);
+            parent.put(u,u);
+            mstGraph.insert(u);
+        }
+
+        dist.put(source, 0);
+
+        PriorityQueue<Pair<Integer,T>> priorityQueue = new PriorityQueue<>();
+        priorityQueue.add(new Pair<>(0, source));
+
+        while(!priorityQueue.isEmpty()) {
+            T minDistNode = priorityQueue.remove().value;
+            if(selected.contains(minDistNode)){
+                continue;
+            }
+
+            selected.add(minDistNode);
+            if(!minDistNode.equals(parent.get(minDistNode))) {
+                mstGraph.addEdge(parent.get(minDistNode), minDistNode, weight.get(minDistNode));
+            }
+
+            for(Pair<T, Integer> v : vertices.get(minDistNode)){
+                if(!selected.contains(v.key) &&
+                        v.value+dist.get(minDistNode) < dist.get(v.key)){
+
+                    dist.put(v.key, v.value+dist.get(minDistNode));
+                    weight.put(v.key, v.value);
+                    parent.put(v.key, minDistNode);
+                    priorityQueue.add(new Pair<>(dist.get(v.key), v.key));
+
                 }
             }
         }

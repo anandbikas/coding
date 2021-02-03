@@ -138,6 +138,7 @@ public class UndirectedGraphTest {
         undirectedWeightedGraph.displayWeighted();
         System.out.println();
         undirectedWeightedGraph.dijkstraShortestPathTree(0).displayWeighted();
+        undirectedWeightedGraph.dijkstraShortestPathTreeHeap(0).displayWeighted();
     }
 
     @Test

@@ -790,6 +790,60 @@ public class Graph<T> {
     }
 
     /**
+     * Dijkstra O(E log(V)) using heap/priority queue
+     *
+     * @param source
+     * @return
+     */
+    public Graph<T> dijkstraShortestPathTreeHeap(int source){
+
+        int INF= Integer.MAX_VALUE;
+        Graph<T> mstGraph = new Graph<>(this.type);
+
+        if(size==0){
+            return mstGraph;
+        }
+
+        int [] dist = new int[size];
+        int [] weight = new int[size];      // Required only for building SPT graph
+        int [] parent = new int[size];      // Required only for building SPT graph
+        boolean [] selected = new boolean[size];
+
+        for(int i=0; i<size; i++) {
+            dist[i]=INF; weight[i]=0; parent[i]=i;
+            mstGraph.insert(vertices.get(i));
+        }
+        dist[source]=0;
+
+        PriorityQueue<Pair<Integer,Integer>> priorityQueue = new PriorityQueue<>();
+        priorityQueue.add(new Pair<>(0, source));
+
+        while(!priorityQueue.isEmpty()) {
+            int minDistNode = priorityQueue.remove().value;
+            if(selected[minDistNode]){
+                continue;
+            }
+
+            selected[minDistNode]=true;
+            if(parent[minDistNode] != minDistNode) {
+                mstGraph.addEdge(parent[minDistNode], minDistNode, weight[minDistNode]);
+            }
+
+            for(Pair<Integer, Integer> v : adjListArray.get(minDistNode)){
+                if(!selected[v.key] &&
+                        v.value+dist[minDistNode] < dist[v.key]){
+
+                    dist[v.key] = v.value+dist[minDistNode];
+                    weight[v.key] = v.value;
+                    parent[v.key] = minDistNode;
+                    priorityQueue.add(new Pair<>(dist[v.key], v.key));
+                }
+            }
+        }
+        return mstGraph;
+    }
+
+    /**
      * Dijkstra does not work with negative edges.
      *
      * Bellman's idea is to relax all the edges exactly v-1 times, so that all the minimum possible distance can be considered..
