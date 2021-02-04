@@ -12,6 +12,7 @@ import java.util.List;
 public class DirectedGraphTest {
 
     private Graph<String> directedGraph;
+    private Graph<String> directedWeightedGraph;
 
     @BeforeMethod
     private void setUp(){
@@ -38,6 +39,16 @@ public class DirectedGraphTest {
         directedGraph.addEdge(4,1);
         directedGraph.addEdge(3,0);
         directedGraph.addEdge(2,3);
+
+        // directedWeightedGraph
+        directedWeightedGraph = new Graph<>(GraphType.DIRECTED);
+        for (int i = 0; i <= 6; i++) {
+            directedWeightedGraph.insert("node" + i);
+        }
+        int[][] edges = {{0, 1, 5}, {1, 2, 5}, {0, 3, 2}, {3, 1, 2}, {1, 4, 1}, {4, 2, 1}};
+        for (int[] e : edges) {
+            directedWeightedGraph.addEdge(e[0], e[1], e[2]);
+        }
     }
 
     @Test
@@ -105,6 +116,12 @@ public class DirectedGraphTest {
 
         Assert.assertEquals(pathList5To3.get(0).toArray(), path5To3_1);
         Assert.assertEquals(pathList5To3.get(1).toArray(), path5To3_2);
+    }
+
+    @Test
+    private void testDijkstra() {
+        directedWeightedGraph.dijkstraShortestPathTree(0).displayWeighted();
+        directedWeightedGraph.dijkstraShortestPathTreeHeap(0).displayWeighted();
     }
 }
 
