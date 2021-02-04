@@ -1,9 +1,8 @@
 package com.anand.coding.problems.graph;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Queue;
-import java.util.Stack;
+import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
+
+import java.util.*;
 
 /**
  * n cities are connected by m flights. Each flight starts from city u and arrives at v with a price w.
@@ -158,27 +157,22 @@ public class _99_CheapestFlightPrice {
     /**
      * Bellman Shortest Path Tree.
      *
-     * @param n
+     * @param size
      * @param flights
      * @param U
      * @param V
      * @param stops
      * @return
      */
-    public int findCheapestPriceBellman(int n, int[][] flights, int U, int V, int stops){
+    public int findCheapestPriceBellman(int size, int[][] flights, int U, int V, int stops){
 
         int INF= Integer.MAX_VALUE;
-        size=n;
 
         int [] dist = new int[size];
-
-        for(int i=0; i<size; i++) {
-            dist[i]=INF;
-        }
+        Arrays.fill(dist, INF);
         dist[U]=0;
 
         for(int i=0; i<size-1 && i<=stops; i++) {
-
             int [] tempDist = Arrays.copyOf(dist, size);
 
             for(int []flight: flights){
@@ -196,6 +190,42 @@ public class _99_CheapestFlightPrice {
         return dist[V]==INF ? -1 : dist[V];
     }
 
+    public int findCheapestPriceDijkstra(int size, int[][] flights, int U, int V, int stops){
+
+        HashMap<Integer, Set<Pair<Integer,Integer>>> vertices = new HashMap<>();
+
+        //Populate graph
+        for(int []flight: flights) {
+            int u = flight[0], v = flight[1], weight = flight[2];
+            if (!vertices.containsKey(u))
+                vertices.put(u, new HashSet<>());
+            if (!vertices.containsKey(v))
+                vertices.put(v, new HashSet<>());
+            vertices.get(u).add(new Pair<>(v,weight));
+        }
+
+        PriorityQueue<Pair<Integer,int[]>> priorityQueue = new PriorityQueue<>();
+        priorityQueue.add(new Pair<>(0, new int[]{U,-1}));
+
+        while(!priorityQueue.isEmpty()) {
+            Pair<Integer,int []> pair = priorityQueue.remove();
+            int minDist=pair.key, minDistNode = pair.value[0], stop = pair.value[1];
+
+            if(minDistNode==V){
+                return minDist;
+            }
+
+            if(stop>=stops){
+                continue;
+            }
+
+            for(Pair<Integer, Integer> v : vertices.get(minDistNode)){
+                priorityQueue.add(new Pair<>( v.value+minDist, new int[]{v.key, stop+1}));
+            }
+        }
+        return -1;
+    }
+
     /**
      *
      * @param args
@@ -211,5 +241,10 @@ public class _99_CheapestFlightPrice {
         System.out.println(new _99_CheapestFlightPrice().findCheapestPriceBfs(4, flights1,0,3,1));
         System.out.println(new _99_CheapestFlightPrice().findCheapestPriceDfs(4, flights1,0,3,1));
         System.out.println(new _99_CheapestFlightPrice().findCheapestPriceBellman(4, flights1,0,3,1));
+        System.out.println(new _99_CheapestFlightPrice().findCheapestPriceDijkstra(4, flights1,0,3,1));
+
+        int [][]flights2 = {{0,1,5},{1,2,5},{0,3,2},{3,1,2},{1,4,1},{4,2,1}};
+        System.out.println(new _99_CheapestFlightPrice().findCheapestPriceBellman(5, flights2,0,2,2));
+        System.out.println(new _99_CheapestFlightPrice().findCheapestPriceDijkstra(5, flights2,0,2,2));
     }
 }
