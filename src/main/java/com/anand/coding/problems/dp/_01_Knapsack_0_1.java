@@ -1,5 +1,8 @@
 package com.anand.coding.problems.dp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Given weights and values of n items, put these items in a knapsack of capacity W to get the maximum total value
  *
@@ -77,6 +80,19 @@ public class _01_Knapsack_0_1 {
             }
         }
         printDPArray(DP, n, weight);
+
+        // Print the selected items.
+        List<Integer> itemWeights = new ArrayList<>();
+        List<Integer> itemValues = new ArrayList<>();
+        int w=weight;
+        for(int i=n; i>0;i--){
+            if (DP[i][w]!=DP[i-1][w]) {
+                itemWeights.add(wt[i-1]);
+                itemValues.add(val[i-1]);
+                w-=wt[i-1];
+            }
+        }
+        System.out.println(itemWeights + "\n" + itemValues);
         return DP[n][weight];
     }
 
