@@ -56,6 +56,9 @@ public class _01_Knapsack_0_1_PartitionEqually {
         }
         System.out.println(A + "\n" + B);
         return weight==DP[n][weight];
+        //For minimum possible absolute difference.
+        //return sum-DP[n][weight]-DP[n][weight];
+
     }
 
     /**
