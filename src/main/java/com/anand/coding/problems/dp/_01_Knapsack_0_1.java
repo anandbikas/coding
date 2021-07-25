@@ -46,6 +46,8 @@ public class _01_Knapsack_0_1 {
 
         return DP[n][w] = Math.max(knapsackRec(wt, val, n-1, w, DP),
                                         val[itemIndex] + knapsackRec(wt, val, n-1, w-wt[itemIndex], DP));
+                                        // For unbounded knapsack, take n, not n-1.
+                                        // val[itemIndex] + knapsackRec(wt, val, n, w-wt[itemIndex], DP));
     }
 
     /**
@@ -76,6 +78,8 @@ public class _01_Knapsack_0_1 {
                 }
                 else{
                     DP[i][w] = Math.max( DP[i-1][w], val[itemIndex] + DP[i-1][w-wt[itemIndex]]);
+                    //For unbounded knapsack, take i, not i-1.
+                    //DP[i][w] = Math.max( DP[i-1][w], val[itemIndex] + DP[i][w-wt[itemIndex]]);
                 }
             }
         }
@@ -91,6 +95,10 @@ public class _01_Knapsack_0_1 {
                 itemValues.add(val[i-1]);
                 w-=wt[i-1];
             }
+            // For unbounded knapsack
+            // else {
+            //    i--;
+            //}
         }
         System.out.println(itemWeights + "\n" + itemValues);
         return DP[n][weight];
