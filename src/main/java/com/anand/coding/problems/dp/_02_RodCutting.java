@@ -1,5 +1,8 @@
 package com.anand.coding.problems.dp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * There is a rod of n unit and price list per unit of the rod.
  *
@@ -83,6 +86,64 @@ public class _02_RodCutting {
     }
 
     /**
+     * Can be solved using Unbounded Knapsack where
+     * wt[] = Item i has weight i.
+     * val[] = price [];
+     * knapsack weight = n (length)
+     *
+     * @param price
+     * @param n
+     * @return
+     */
+    public static int rodCuttingUnboundedKnapsack(int [] price, int n){
+
+        //int []wt = Item i has weight i.
+        int []val = price;
+        int weight = n;
+
+        if(n==0 || weight==0){
+            return 0;
+        }
+
+        int [][] DP = new int[n+1][weight+1];   //Item-Weight
+
+        //Populate DP from 1st element onwards
+        for(int i=1; i<=n; i++){
+
+            int itemIndex = i-1;
+            int itemWeight = i;
+            for(int w=1; w<=weight; w++){
+
+                //Can't take i'th element upto now
+                if(itemWeight>w) {
+                    DP[i][w] = DP[i-1][w];
+                }
+                else{
+                    DP[i][w] = Math.max( DP[i-1][w], val[itemIndex] + DP[i][w-itemWeight]);
+                }
+            }
+        }
+
+        // Print the selected items.
+        List<Integer> itemWeights = new ArrayList<>();
+        List<Integer> itemValues = new ArrayList<>();
+        int w=weight;
+        for(int i=n; i>0;){
+            int itemWeight = i;
+            if (DP[i][w]!=DP[i-1][w]) {
+                itemWeights.add(itemWeight);
+                itemValues.add(val[i-1]);
+                w-=itemWeight;
+            } else {
+                i--;
+            }
+
+        }
+        System.out.println("Piece Lengths : " + itemWeights + "\n" + "Piece Values : " + itemValues);
+        return DP[n][weight];
+    }
+
+    /**
      *
      * @param args
      */
@@ -93,5 +154,21 @@ public class _02_RodCutting {
 
         System.out.println(rodCuttingIterative(price, price.length));
 
+        System.out.println(rodCuttingUnboundedKnapsack(price, price.length));
+
+        int price1[] = new int[] {2,5,3,1};
+        System.out.println(rodCuttingUnboundedKnapsack(price1, price1.length));
+    }
+
+    public static void printDPArray(int [][] DP, int n, int m)
+    {
+        System.out.println();
+        for(int i=0; i<=n; i++){
+
+            for(int j =0; j<=m; j++){
+                System.out.print(String.format("%4d", DP[i][j]));
+            }
+            System.out.println();
+        }
     }
 }
