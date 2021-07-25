@@ -24,7 +24,7 @@ public class _02_RodCutting {
     public static int rodCutting(int price [], int n){
 
         int [] DP = new int[n+1];   //Length
-
+        DP[1] = price[0];
         int result =  rodCutting(price, n, DP);
 
         for(int i=0; i<=n; i++){
@@ -45,11 +45,12 @@ public class _02_RodCutting {
             return DP[n];
         }
 
-        int result=0;
-        for(int i=1; i<=n; i++){
-            result = Math.max(result, price[i-1] + rodCutting(price, n-i, DP));
+        int profit = price[n-1];
+        for(int i=n-1; i>=n/2; i--){
+            profit = Math.max(profit, rodCutting(price, i, DP) + rodCutting(price, n-i, DP));
+
         }
-        return DP[n] = result;
+        return DP[n] = profit;
     }
 
     /**
@@ -67,12 +68,11 @@ public class _02_RodCutting {
         int [] DP = new int[n+1];   //Length
 
         for(int k=1; k<=n; k++) {
-
-            int result = 0;
-            for (int i = 1; i <= k; i++) {
-                result = Math.max(result, price[i-1] + DP[k-i]);
+            int profit = price[k-1];
+            for(int i=k-1; i>=k/2; i--){
+                profit = Math.max(profit, DP[i]+DP[k-i]);
             }
-            DP[k] = result;
+            DP[k]=profit;
         }
 
         for(int i=0; i<=n; i++){
