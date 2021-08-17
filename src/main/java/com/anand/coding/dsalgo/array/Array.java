@@ -174,6 +174,23 @@ public class Array {
 
     /**
      *
+     */
+    public void deleteDuplicatesHashSet(){
+
+        Set<Integer> set = new HashSet<>();
+
+        int k=0;
+        for(int i=0; i<size; i++){
+            if(!set.contains(A[i])){
+                A[k++]=A[i];
+                set.add(A[i]);
+            }
+        }
+        size = k;
+    }
+
+    /**
+     *
      * @return
      */
     public boolean containsDuplicate() {
