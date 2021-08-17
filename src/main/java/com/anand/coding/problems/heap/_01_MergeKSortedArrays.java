@@ -1,17 +1,16 @@
 package com.anand.coding.problems.heap;
 
 import com.anand.coding.dsalgo.array.Array;
-import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
-import com.anand.coding.dsalgo.tree.arraybased.BinaryMinHeap;
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * Approach:
  * 1. using kPointers [] : O(n * k)
  *
- * 2. optimized using BinaryMinHeap : O(n log(k))
+ * 2. optimized using BinaryMinHeap(PriorityQueue) : O(n log(k))
  *
  */
 public class _01_MergeKSortedArrays {
@@ -23,36 +22,24 @@ public class _01_MergeKSortedArrays {
      */
     public static int [] mergeKSortedArrays(List<int[]> list){
 
-        int [] kPointers = new int[list.size()];
+        PriorityQueue<IndexedArray> pq = new PriorityQueue<>(Comparator.comparingInt(x -> x.A[x.index]));
 
-        //MinHeap entry is a Pair:(number, array_index_which_contains_the_number)
-        //                          key             value
-        BinaryMinHeap<Pair<Integer, Integer>> binaryMinHeap = new BinaryMinHeap<>(list.size());
-
-        int totalCount = 0;
         for(int i=0; i<list.size(); i++){
-            totalCount +=list.get(i).length;
             if(list.get(i).length>0) {
-                binaryMinHeap.insert(new Pair<>(list.get(i)[0], i));
-            }
-            kPointers[i]=0;
-        }
-
-        int A[] = new int[totalCount];
-
-        int i=0;
-        while (!binaryMinHeap.isEmpty()){
-            Pair pair = binaryMinHeap.extractMin();
-            A[i++] = (Integer) pair.key;
-
-            int minValueArrayIndex = (Integer) pair.value;
-            kPointers[minValueArrayIndex]++;
-            if(kPointers[minValueArrayIndex]<list.get(minValueArrayIndex).length){
-                binaryMinHeap.insert(new Pair<>(list.get(minValueArrayIndex)[kPointers[minValueArrayIndex]], minValueArrayIndex));
+                pq.offer(new IndexedArray(list.get(i), 0));
             }
         }
 
-        return A;
+        List<Integer> sortedList = new ArrayList<>();
+        while (!pq.isEmpty()){
+            IndexedArray indexedArray = pq.poll();
+            sortedList.add(indexedArray.A[indexedArray.index++]);
+            if(indexedArray.index<indexedArray.A.length){
+                pq.offer(indexedArray);
+            }
+        }
+
+        return sortedList.stream().mapToInt(x->x).toArray();
     }
 
     /**
@@ -114,5 +101,14 @@ public class _01_MergeKSortedArrays {
 
         int []B = mergeKSortedArrays1(list);
         Array.display(B);
+    }
+
+    private static class IndexedArray{
+        public int index, A[];
+
+        public IndexedArray(int[] a, int index) {
+            this.A = a;
+            this.index = index;
+        }
     }
 }
