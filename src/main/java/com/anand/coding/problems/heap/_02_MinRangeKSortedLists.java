@@ -1,10 +1,9 @@
 package com.anand.coding.problems.heap;
 
-import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
-import com.anand.coding.dsalgo.tree.arraybased.BinaryMinHeap;
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  *
@@ -69,7 +68,6 @@ public class _02_MinRangeKSortedLists {
         return new int[]{minRangeMin, minRangeMax};
     }
 
-
     /**
      *
      * @param list
@@ -78,53 +76,30 @@ public class _02_MinRangeKSortedLists {
     public static int [] minRangeKSortedListsUsingBinaryMeanHeap(List<int []> list){
 
         int minRange = Integer.MAX_VALUE;
-        int minRangeMin = -1;
-        int minRangeMax = -1;
+        int rangeMin=-1, rangeMax=-1;
 
-        int [] kPointers = new int[list.size()];
+        PriorityQueue<IndexedArray> pq = new PriorityQueue<>(Comparator.comparingInt(x -> x.A[x.index]));
 
-        int range,min,max;
-
-        max = list.get(0)[0];
-        for(int i=1; i<list.size(); i++){
-            if(list.get(i)[0] > max){
-                max = list.get(i)[0];
-            }
+        int max = list.get(0)[0];
+        for(int []A: list){
+            max = Math.max(max,A[0]);
+            pq.offer(new IndexedArray(A, 0));
         }
 
-        //MinHeap entry is a Pair:(number, array_index_which_contains_the_number)
-        //                          key             value
-        BinaryMinHeap<Pair<Integer, Integer>> binaryMinHeap = new BinaryMinHeap<>(list.size());
-        for(int i=0; i<list.size(); i++){
-            if(list.get(i).length>0) {
-                binaryMinHeap.insert(new Pair<>(list.get(i)[0], i));
+        while (!pq.isEmpty()){
+            IndexedArray indexedArray = pq.remove();
+            int min = indexedArray.A[indexedArray.index++];
+            if(max-min < minRange){
+                minRange = max-min; rangeMin=min; rangeMax=max;
             }
-        }
-
-
-        while (true){
-            Pair pair = binaryMinHeap.extractMin();
-            min = (Integer) pair.key;
-            int minValueArrayIndex = (Integer) pair.value;
-
-            range = max-min;
-            if(minRange > range){
-                minRange = range;
-                minRangeMin = min;
-                minRangeMax = max;
-            }
-
-            kPointers[minValueArrayIndex]++;
-            if( kPointers[minValueArrayIndex] >= list.get(minValueArrayIndex).length){
+            if(indexedArray.index==indexedArray.A.length) {
                 break;
             }
-
-            binaryMinHeap.insert(new Pair<>(list.get(minValueArrayIndex)[kPointers[minValueArrayIndex]], minValueArrayIndex));
-            // Check if the new element is greater than max
-            max = Math.max(max, list.get(minValueArrayIndex)[kPointers[minValueArrayIndex]]);
+            pq.offer(indexedArray);
+            max = Math.max(max, indexedArray.A[indexedArray.index]);
         }
 
-        return new int[]{minRangeMin, minRangeMax};
+        return new int[]{rangeMin, rangeMax};
     }
 
     /**
@@ -144,5 +119,14 @@ public class _02_MinRangeKSortedLists {
 
         int [] minRange1 = minRangeKSortedListsUsingBinaryMeanHeap(list);
         System.out.println(minRange1[0] + " -- " + minRange1[1]);
+    }
+
+    private static class IndexedArray{
+        public int index, A[];
+
+        public IndexedArray(int[] a, int index) {
+            this.A = a;
+            this.index = index;
+        }
     }
 }
