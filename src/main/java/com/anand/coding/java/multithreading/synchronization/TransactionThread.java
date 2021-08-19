@@ -24,7 +24,7 @@ public class TransactionThread extends Thread
                 int toAccount = (int)(bank.size() * Math.random());
                 long amount = (long)(maxAmount * Math.random());
                 bank.transferBalance(fromAccount, toAccount, amount);
-                Thread.sleep(SLEEP_MILLI_SECONDS);
+                Thread.sleep((int)(SLEEP_MILLI_SECONDS * Math.random()));
             }
         } catch(InterruptedException e) {
             System.out.println("TransactionThread interrupted.");
