@@ -19,10 +19,13 @@ public class TrieDictionary<T> {
 
         TrieNode<T> trieNode = root;
         for(char c: key.toCharArray()){
-            trieNode = trieNode.setChild(c);
-            trieNode.incrementCounter();
+            if(!trieNode.charMap.containsKey(c)){
+                trieNode.charMap.put(c, new TrieNode<>());
+            }
+            trieNode = trieNode.charMap.get(c);
+            trieNode.count++;
         }
-        trieNode.setValue(value);
+        trieNode.value = value;
     }
 
     /**
@@ -31,18 +34,15 @@ public class TrieDictionary<T> {
      * @return
      */
     public T search(final String key){
-        if(root == null){
-            return null;
-        }
 
         TrieNode<T> trieNode = root;
         for(char c: key.toCharArray()){
-            trieNode = trieNode.getChild(c);
+            trieNode = trieNode.charMap.get(c);
             if(trieNode==null){
                 return null;
             }
         }
-        return trieNode.getValue();
+        return trieNode.value;
     }
 
     /**
@@ -51,18 +51,15 @@ public class TrieDictionary<T> {
      * @return
      */
     public void delete(final String key){
-        if(root == null){
-            return;
-        }
 
         TrieNode<T> trieNode = root;
         for(char c: key.toCharArray()){
-            trieNode = trieNode.getChild(c);
+            trieNode = trieNode.charMap.get(c);
             if(trieNode==null){
                 return;
             }
         }
-        trieNode.setValue(null);
+        trieNode.value=null;
 
         //Decrease counter and detach the node from where count becomes 0.
         TrieNode<T> trieNodeParent = null;
@@ -70,10 +67,10 @@ public class TrieDictionary<T> {
 
         for(char c: key.toCharArray()){
             trieNodeParent = trieNode;
-            trieNode = trieNode.getChild(c);
-            trieNode.decrementCounter();
-            if(trieNode.getCount()==0){
-                trieNodeParent.deleteChild(c);
+            trieNode = trieNode.charMap.get(c);
+            trieNode.count--;
+            if(trieNode.count==0){
+                trieNodeParent.charMap.remove(c);
                 return;
             }
         }
@@ -88,9 +85,8 @@ public class TrieDictionary<T> {
         System.out.println(String.format("%10s%15s", "Key", "Value"));
         System.out.println(             "--------------------------------");
 
-        if(root!=null) {
-            display(root, new StringBuilder());
-        }
+        display(root, new StringBuilder());
+
         System.out.println();
     }
 
@@ -101,16 +97,16 @@ public class TrieDictionary<T> {
      */
     private void display(TrieNode<T> trieNode, StringBuilder sb) {
 
-        for(char c: trieNode.getCharSet()){
-            if(trieNode.getChild(c)!=null){
-                TrieNode<T> child = trieNode.getChild(c);
+        for(char c: trieNode.charSet()){
+            TrieNode<T> child = trieNode.charMap.get(c);
+            if(child!=null){
                 sb.append(c);
-                if(child.getValue()!=null){
+                if(child.value!=null){
                     System.out.println(
-                            String.format("%-18s%s", sb.toString(), child.getValue()));
+                            String.format("%-18s%s", sb, child.value));
                 }
                 display(child, sb);
-                sb.setLength(sb.length() - 1);
+                sb.setLength(sb.length()-1);
             }
         }
     }
@@ -124,9 +120,8 @@ public class TrieDictionary<T> {
         System.out.println("All Unique Prefixes");
         System.out.println(             "--------------------------------");
 
-        if(root!=null) {
-            displayAllShortestUniquePrefix(root, new StringBuilder());
-        }
+        displayAllShortestUniquePrefix(root, new StringBuilder());
+
         System.out.println();
     }
 
@@ -137,12 +132,12 @@ public class TrieDictionary<T> {
      */
     private void displayAllShortestUniquePrefix(TrieNode<T> trieNode, StringBuilder sb) {
 
-        for(char c: trieNode.getCharSet()){
-            if(trieNode.getChild(c)!=null){
-                TrieNode<T> child = trieNode.getChild(c);
+        for(char c: trieNode.charSet()){
+            TrieNode<T> child = trieNode.charMap.get(c);
+            if(child!=null){
                 sb.append(c);
-                if(child.getCount()==1){
-                    System.out.println(String.format("%s", sb.toString()));
+                if(child.count==1){
+                    System.out.println(sb);
                 } else {
                     displayAllShortestUniquePrefix(child, sb);
                 }
@@ -156,27 +151,26 @@ public class TrieDictionary<T> {
      * @param prefix
      * @return
      */
-    public List<String> getAllPrefixedWords(String prefix) {
+    public List<String> wordsWithPrefix(String prefix) {
 
         List<String> list = new ArrayList<>();
 
-        if (root == null || prefix == null) {
+        if (prefix == null || prefix.isEmpty()) {
             return list;
         }
 
         StringBuilder sb = new StringBuilder();
 
-        //Put all characters in prefix in the StringBuilder.
         TrieNode<T> trieNode = root;
-        for(char c: prefix.toUpperCase().toCharArray()){
-            trieNode = trieNode.getChild(c);
+        for(char c: prefix.toCharArray()){
+            trieNode = trieNode.charMap.get(c);
             if(trieNode==null){
                 return list;
             }
             sb.append(c);
         }
 
-        getAllPrefixedWords(trieNode, sb, list);
+        wordsWithPrefix(trieNode, sb, list);
 
         return list;
     }
@@ -187,20 +181,21 @@ public class TrieDictionary<T> {
      * @param sb
      * @param list
      */
-    private void getAllPrefixedWords(TrieNode<T> trieNode, StringBuilder sb, List<String> list){
+    private void wordsWithPrefix(TrieNode<T> trieNode, StringBuilder sb, List<String> list){
         if(trieNode == null){
             return;
         }
 
-        for(char c: trieNode.getCharSet()){
-            if(trieNode.getChild(c)!=null){
-                TrieNode<T> child = trieNode.getChild(c);
+        for(char c: trieNode.charSet()){
+            TrieNode<T> child = trieNode.charMap.get(c);
+
+            if(child!=null){
                 sb.append(c);
-                if(child.getValue()!=null){
+                if(child.value!=null){
                     list.add(sb.toString());
                 }
-                getAllPrefixedWords(child, sb, list);
-                sb.setLength(sb.length() - 1);
+                wordsWithPrefix(child, sb, list);
+                sb.setLength(sb.length()-1);
             }
         }
     }
@@ -225,8 +220,7 @@ public class TrieDictionary<T> {
         String prefix = "bo";
 
         System.out.println("All words prefixed with : " + prefix);
-        trieDictionary.getAllPrefixedWords(prefix).forEach(System.out::println);
-
+        trieDictionary.wordsWithPrefix(prefix).forEach(System.out::println);
 
         trieDictionary.delete("boot");
         trieDictionary.display();
