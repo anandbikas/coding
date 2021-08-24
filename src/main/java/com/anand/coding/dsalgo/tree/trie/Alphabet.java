@@ -7,23 +7,7 @@ import java.util.Set;
  */
 public interface Alphabet {
 
-    /**
-     *
-     * @return
-     */
-    public int getSize();
-
-    /**
-     *
-     * @param c
-     * @return
-     */
+    public int size();
     public int charToIndex(char c);
-
-    /**
-     *
-     * @return
-     */
-    public Set<Character> getCharSet();
-
+    public Set<Character> charSet();
 }

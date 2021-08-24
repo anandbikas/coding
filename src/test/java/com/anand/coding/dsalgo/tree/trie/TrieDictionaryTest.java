@@ -11,7 +11,7 @@ public class TrieDictionaryTest {
 
     @BeforeMethod
     private void setUp(){
-        trieDictionary = new TrieDictionary<>();
+        trieDictionary = new TrieDictionary<>(new EnglishAlphabet());
 
         trieDictionary.insert("elephant", "hathi");
         trieDictionary.insert("book", "kitab");

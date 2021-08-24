@@ -17,32 +17,19 @@ public class EnglishAlphabet implements Alphabet {
         }
     }
 
-    /**
-     *
-     * @return
-     */
-    public Set<Character> getCharSet() {
+    public Set<Character> charSet() {
         return charSet;
     }
 
-    /**
-     *
-     * @return
-     */
-    public int getSize(){
+    public int size(){
         return charSet.size();
     }
 
-    /**
-     *
-     * @param c
-     * @return
-     */
     public int charToIndex(char c){
         c = Character.toUpperCase(c);
 
         if(charSet.contains(c)){
-            return Character.toUpperCase(c)-A;
+            return c-A;
         }
         return -1;
     }
