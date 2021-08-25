@@ -13,32 +13,31 @@ import java.util.*;
  */
 public class _01_WordBreakCheck {
 
-    /**
-     *
-     * @param s
-     * @param wordDict
-     * @return
-     */
-    public static boolean isWordBreakPossibleDP(String s, List<String> wordDict) {
+    public static boolean isWordBreakPossibleDP(String s, List<String> wordDictList) {
+        if(s==null || s.length()==0){
+            return false;
+        }
+
         boolean[] DP = new boolean[s.length()+1];
-        Set<String> set = new HashSet<>(wordDict);
+        Set<String> wordDict = new HashSet<>(wordDictList);
         int maxWordLength = wordDict.stream().mapToInt(String::length).max().orElse(Integer.MAX_VALUE);
 
         DP[0] = true;
-        for (int i=1; i<=s.length(); i++){
-            for (int j=i-1; j>=0 && i-j<=maxWordLength && !DP[i]; j--){
-                DP[i] = DP[j] && set.contains(s.substring(j, i));
+        for(int sIndex=0; sIndex<s.length();sIndex++){
+            if(!DP[sIndex]){
+                continue;
+            }
+            StringBuilder sb = new StringBuilder();
+            for(int i=sIndex; i<s.length() && i-sIndex<maxWordLength;i++){
+                sb.append(s.charAt(i));
+                if(wordDict.contains(sb.toString())){
+                    DP[i+1]=true;
+                }
             }
         }
-        System.out.println(Arrays.toString(DP));
         return DP[s.length()];
     }
 
-
-    /**
-     *
-     * @param args
-     */
     public static void main(String [] args) {
 
         System.out.println(isWordBreakPossibleDP("catontree", Arrays.asList("a", "cat", "bat", "tree", "on")));
