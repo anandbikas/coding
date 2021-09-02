@@ -12,11 +12,10 @@ public class DisjointUnionSetsGeneric<T> {
     HashMap<T, Integer> rankMap = new HashMap<>();
 
     public void insert(T obj){
-        if(parentMap.containsKey(obj)){
-            return;
+        if(!parentMap.containsKey(obj)){
+            parentMap.put(obj,obj);
+            rankMap.put(obj,0);
         }
-        parentMap.put(obj,obj);
-        rankMap.put(obj,0);
     }
 
     /**
@@ -24,32 +23,39 @@ public class DisjointUnionSetsGeneric<T> {
      * @return
      */
     public int countSets(){
-        int count = 0;
-        for(T obj: parentMap.keySet()){
-            if(parentMap.get(obj) == obj){
-                count++;
-            }
-        }
-        return count;
+        return (int)parentMap.keySet().stream().filter(k -> parentMap.get(k)==k).count();
     }
 
     /**
      * Find the representative of element obj
     */
-    public T find(T obj) {
+    public T findRec(T obj) {
 
-        // i itself is the representative
-        if (parentMap.get(obj) == obj){
+        if (parentMap.get(obj) == obj) { // i itself is the representative
             return obj;
-        }
-        // Else recursively call find on its parent
-        else {
-            T rep = find(parentMap.get(obj));
+        } else { // Else recursively call find on its parent
+            T rep = findRec(parentMap.get(obj));
 
-            // Path Compression:
-            parentMap.put(obj, rep);
+            parentMap.put(obj, rep); // Path Compression:
             return rep;
         }
+    }
+
+    /**
+     * Find the representative of element i
+     */
+    public T find(T obj) {
+
+        T rep=obj;
+        for(; rep!=parentMap.get(obj); rep=parentMap.get(rep));
+
+        //Path Compression:
+        for(T k=obj; k!=parentMap.get(k);) {
+            T oldParentOfK = parentMap.get(k);
+            parentMap.put(k,rep);
+            k = oldParentOfK;
+        }
+        return rep;
     }
 
     /**
@@ -60,10 +66,7 @@ public class DisjointUnionSetsGeneric<T> {
      */
     public void union(T obj1, T obj2) {
 
-        // Find representative of of the set containing obj1
         T iRep = this.find(obj1);
-
-        // Find representative of of the set containing obj2
         T jRep = this.find(obj2);
 
         if(iRep==jRep){

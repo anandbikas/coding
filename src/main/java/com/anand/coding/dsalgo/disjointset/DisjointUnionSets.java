@@ -1,5 +1,7 @@
 package com.anand.coding.dsalgo.disjointset;
 
+import java.util.stream.IntStream;
+
 /**
  * N persons can become friends with one another.
  *
@@ -22,11 +24,8 @@ public class DisjointUnionSets {
         Parent = new int[n];
         Rank = new int[n];
 
-        // Creates n sets with single item in each
-        for (int i = 0; i < Parent.length; i++) {
-            // Initially, all elements are in their own set.
-            Parent[i] = i;
-        }
+        // Creates n sets with single item in each. Initially, all elements are in their own set.
+        for (int i = 0; i < Parent.length; Parent[i]=i++);
     }
 
     /**
@@ -34,31 +33,38 @@ public class DisjointUnionSets {
      * @return
      */
     public int countSets(){
-        int count = 0;
-        for(int i=0; i<Parent.length; i++){
-            if(Parent[i] == i){
-                count++;
-            }
-        }
-        return count;
+        return (int) IntStream.range(0, Parent.length).filter(i -> Parent[i]==i).count();
     }
 
     /**
      * Find the representative of element i
     */
+    public int findRec(int i) {
+
+        if (this.Parent[i] == i){ // i itself is the representative
+            return i;
+        } else { // Else recursively call find on its parent
+            int rep = findRec(this.Parent[i]);
+
+            return this.Parent[i] = rep; // Path Compression:
+        }
+    }
+
+    /**
+     * Find the representative of element i
+     */
     public int find(int i) {
 
-        // i itself is the representative
-        if (this.Parent[i] == i){
-            return i;
-        }
-        // Else recursively call find on its parent
-        else {
-            int rep = find(this.Parent[i]);
+        int iRep=i;
+        for(; iRep!=Parent[iRep]; iRep=Parent[iRep]);
 
-            // Path Compression:
-            return this.Parent[i] = rep;
+        //Path Compression:
+        for(int k=i; k!=Parent[k];) {
+            int oldParentOfK = Parent[k];
+            Parent[k] = iRep;
+            k = oldParentOfK;
         }
+        return iRep;
     }
 
     /**
@@ -69,10 +75,7 @@ public class DisjointUnionSets {
      */
     public void union(int i, int j) {
 
-        // Find representative of of the set containing i
         int iRep = this.find(i);
-
-        // Find representative of of the set containing i
         int jRep = this.find(j);
 
         if(iRep==jRep){
@@ -87,6 +90,29 @@ public class DisjointUnionSets {
             this.Parent[iRep] = jRep;
             Rank[jRep]++;
         }
+    }
+
+    /**
+     * Find max depth of union in a group.
+     * Recursively find the depth. Alternatively find max_of_rank + 1.
+     *
+     * @return
+     */
+    public int depth() {
+
+        int maxDepth=0;
+        boolean []visited = new boolean[Parent.length];
+
+        for(int i=0; i<Parent.length; i++){
+            if(visited[i]){
+                continue;
+            }
+            int depth=1;
+            for(int k=i; k!=Parent[k]; visited[k]=true, depth++, k=Parent[k]);
+
+            maxDepth = Math.max(maxDepth, depth);
+        }
+        return maxDepth;
     }
 
     /**
@@ -109,5 +135,7 @@ public class DisjointUnionSets {
         System.out.println(dus.find(1) == dus.find(0));
 
         System.out.println(dus.countSets());
+
+        System.out.println(dus.depth());
     }
 }
