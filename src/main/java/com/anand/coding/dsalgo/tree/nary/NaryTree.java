@@ -20,19 +20,9 @@ public class NaryTree <T extends Comparable<T>>{
     private NaryNode<T> root;
     private int N;
 
-    public NaryTree(int N){
-        super();
-        this.N = N;
-    }
-
-    /**
-     *
-     * @param data
-     * @param N
-     */
     public NaryTree(final T data, int N){
         this.N = N;
-        root = new NaryNode<T>(data, N);
+        root = new NaryNode<>(data, N);
 
     }
 
@@ -49,14 +39,14 @@ public class NaryTree <T extends Comparable<T>>{
      * Print in order root, children (left to right)
      * @param node
      */
-    private void preOrderTraversalRec(final NaryNode node){
+    private void preOrderTraversalRec(final NaryNode<T> node){
         if(node == null){
             return;
         }
         System.out.print(node.data + "  ");
 
         for(int i=0; i<N; i++){
-            preOrderTraversalRec(node.getChild(i));
+            preOrderTraversalRec(node.child[i]);
         }
     }
 
@@ -73,12 +63,12 @@ public class NaryTree <T extends Comparable<T>>{
      * Print in order children (left to right), root
      * @param node
      */
-    private void postOrderTraversalRec(final NaryNode node){
+    private void postOrderTraversalRec(final NaryNode<T> node){
         if(node == null){
             return;
         }
         for(int i=0; i<N; i++){
-            postOrderTraversalRec(node.getChild(i));
+            postOrderTraversalRec(node.child[i]);
         }
         System.out.print(node.data + "  ");
     }
@@ -90,18 +80,18 @@ public class NaryTree <T extends Comparable<T>>{
     public void preOrderTraversal(){
         System.out.println("preOrderTraversal");
 
-        Stack<NaryNode> stack = new Stack<>();
+        Stack<NaryNode<T>> stack = new Stack<>();
 
         if(root!=null){
             stack.push(root);
         }
         while(!stack.isEmpty()) {
-            NaryNode node = stack.pop();
+            NaryNode<T> node = stack.pop();
             System.out.print(node.data + "  ");
 
             for(int i=N-1; i>=0; i--){
-                if(node.getChild(i) != null) {
-                    stack.push(node.getChild(i));
+                if(node.child[i] != null) {
+                    stack.push(node.child[i]);
                 }
             }
         }
@@ -116,13 +106,13 @@ public class NaryTree <T extends Comparable<T>>{
     public void postOrderTraversal(){
         System.out.println("postOrderTraversal");
 
-        Stack<NaryNode> stack = new Stack<>();
+        Stack<NaryNode<T>> stack = new Stack<>();
 
         if(root != null){
             stack.push(root);
         }
         while(!stack.isEmpty()){
-            NaryNode node = stack.peek();
+            NaryNode<T> node = stack.peek();
 
             if(node==null){
                 //Process root node
@@ -134,8 +124,8 @@ public class NaryTree <T extends Comparable<T>>{
             //Push null to indicate a root needs to be processed from the stack
             stack.push(null);
             for(int i=N-1; i>=0; i--){
-                if(node.getChild(i) != null) {
-                    stack.push(node.getChild(i));
+                if(node.child[i] != null) {
+                    stack.push(node.child[i]);
                 }
             }
         }
@@ -150,19 +140,19 @@ public class NaryTree <T extends Comparable<T>>{
     public void levelOrderTraversal(){
         System.out.println("levelOrderTraversal");
 
-        Queue<NaryNode> queue = new ArrayDeque<>(); //new LinkedList<>();
+        Queue<NaryNode<T>> queue = new ArrayDeque<>(); //new LinkedList<>();
 
         if(root!=null){
             queue.add(root);
         }
 
         while(!queue.isEmpty()){
-            NaryNode node = queue.remove();
+            NaryNode<T> node = queue.remove();
             System.out.print(node.data + "  ");
 
             for(int i=0; i<N; i++){
-                if(node.getChild(i) != null) {
-                    queue.add(node.getChild(i));
+                if(node.child[i] != null) {
+                    queue.add(node.child[i]);
                 }
             }
         }
@@ -198,7 +188,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param level
      * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
      */
-    private void printLevel(NaryNode node, int level, int currentLevel){
+    private void printLevel(NaryNode<T> node, int level, int currentLevel){
         if(node == null || currentLevel > level){
             return;
         }
@@ -208,7 +198,7 @@ public class NaryTree <T extends Comparable<T>>{
         }
 
         for(int i=0; i<N; i++){
-            printLevel(node.getChild(i), level, currentLevel+1);
+            printLevel(node.child[i], level, currentLevel+1);
         }
     }
 
@@ -235,7 +225,7 @@ public class NaryTree <T extends Comparable<T>>{
         }
 
         for(int i=0; i<N; i++){
-            NaryNode<T> foundNode = searchRec(node.getChild(i), data);
+            NaryNode<T> foundNode = searchRec(node.child[i], data);
             if(foundNode != null){
                 return foundNode;
             }
@@ -259,7 +249,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param processingLevel decides how many levels have already been processed.
      * @return
      */
-    private int leftSideView(NaryNode node, int currentLevel, int processingLevel){
+    private int leftSideView(NaryNode<T> node, int currentLevel, int processingLevel){
         if(node== null){
             return processingLevel;
         }
@@ -270,7 +260,7 @@ public class NaryTree <T extends Comparable<T>>{
 
 
         for(int i=0; i<N; i++){
-            processingLevel = leftSideView(node.getChild(i), currentLevel+1, processingLevel);
+            processingLevel = leftSideView(node.child[i], currentLevel+1, processingLevel);
         }
         return processingLevel;
     }
@@ -291,7 +281,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param processingLevel decides how many levels have already been processed.
      * @return
      */
-    private int rightSideView(NaryNode node, int currentLevel, int processingLevel){
+    private int rightSideView(NaryNode<T> node, int currentLevel, int processingLevel){
         if(node== null){
             return processingLevel;
         }
@@ -302,7 +292,7 @@ public class NaryTree <T extends Comparable<T>>{
 
 
         for(int i=N-1; i>=0; i--){
-            processingLevel = rightSideView(node.getChild(i), currentLevel+1, processingLevel);
+            processingLevel = rightSideView(node.child[i], currentLevel+1, processingLevel);
         }
         return processingLevel;
     }
@@ -321,7 +311,7 @@ public class NaryTree <T extends Comparable<T>>{
      *
      * @param node
      */
-    private void printLeaves(final NaryNode node){
+    private void printLeaves(final NaryNode<T> node){
         if(node == null){
             return;
         }
@@ -330,7 +320,7 @@ public class NaryTree <T extends Comparable<T>>{
             return;
         }
         for(int i=0; i<N; i++){
-            printLeaves(node.getChild(i));
+            printLeaves(node.child[i]);
         }
     }
 
@@ -340,7 +330,7 @@ public class NaryTree <T extends Comparable<T>>{
     public void displayPaths() {
         System.out.println("displayPaths");
 
-        Stack<NaryNode> pathStack = new Stack<>();
+        Stack<NaryNode<T>> pathStack = new Stack<>();
         displayPaths(root, pathStack);
         System.out.println();
     }
@@ -351,7 +341,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param node
      * @param pathStack keep track of the nodes in the traversed path.
      */
-    private void displayPaths(final NaryNode node, final Stack<NaryNode> pathStack){
+    private void displayPaths(final NaryNode<T> node, final Stack<NaryNode<T>> pathStack){
         if(node == null){
             return;
         }
@@ -361,7 +351,7 @@ public class NaryTree <T extends Comparable<T>>{
             System.out.println(pathStack.toString());
         } else {
             for (int i = 0; i < N; i++) {
-                displayPaths(node.getChild(i), pathStack);
+                displayPaths(node.child[i], pathStack);
             }
         }
 
@@ -382,7 +372,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param node
      * @return
      */
-    public int height(NaryNode node){
+    public int height(NaryNode<T> node){
         if(node==null) {
             return 0;
         }
@@ -390,7 +380,7 @@ public class NaryTree <T extends Comparable<T>>{
         int maxHeightWithinChildren =0;
 
         for(int i=0; i<N; i++){
-            maxHeightWithinChildren = Math.max(height(node.getChild(i)),maxHeightWithinChildren);
+            maxHeightWithinChildren = Math.max(height(node.child[i]),maxHeightWithinChildren);
         }
         return maxHeightWithinChildren+1;
     }
@@ -426,7 +416,7 @@ public class NaryTree <T extends Comparable<T>>{
         int maxChildNodeDiameter = 0;
 
         for(int i=0; i<N; i++) {
-            HiDi childHidi = diameterCalculator(node.getChild(i));
+            HiDi childHidi = diameterCalculator(node.child[i]);
             if(childHidi.height>=maxChildNodeHeight){
                 secondMaxChildNodeHeight = maxChildNodeHeight;
                 maxChildNodeHeight = childHidi.height;
@@ -447,7 +437,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param tree
      * @return
      */
-    public boolean isSimilar(NaryTree tree){
+    public boolean isSimilar(NaryTree<T> tree){
         return isSimilar(this.root, tree.root);
     }
 
@@ -458,7 +448,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param node2
      * @return
      */
-    private boolean isSimilar(NaryNode node1, NaryNode node2){
+    private boolean isSimilar(NaryNode<T> node1, NaryNode<T> node2){
         if(node1 == null && node2 == null){
             return true;
         }
@@ -469,7 +459,7 @@ public class NaryTree <T extends Comparable<T>>{
 
         boolean isSimilar = true;
         for(int i=0; i<N && isSimilar; i++) {
-            isSimilar = isSimilar(node1.getChild(i), node2.getChild(i));
+            isSimilar = isSimilar(node1.child[i], node2.child[i]);
         }
 
         return isSimilar;
@@ -480,7 +470,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param tree
      * @return
      */
-    public boolean isCopy(NaryTree tree){
+    public boolean isCopy(NaryTree<T> tree){
         return isCopy(this.root, tree.root);
     }
 
@@ -491,7 +481,7 @@ public class NaryTree <T extends Comparable<T>>{
      * @param node2
      * @return
      */
-    private boolean isCopy(NaryNode node1, NaryNode node2){
+    private boolean isCopy(NaryNode<T> node1, NaryNode<T> node2){
         if(node1 == null && node2 == null){
             return true;
         }
@@ -503,7 +493,7 @@ public class NaryTree <T extends Comparable<T>>{
 
         boolean isCopy = node1.data.equals(node2.data);
         for(int i=0; i<N && isCopy; i++) {
-            isCopy = isCopy(node1.getChild(i), node2.getChild(i));
+            isCopy = isCopy(node1.child[i], node2.child[i]);
         }
 
         return isCopy;
@@ -523,14 +513,14 @@ public class NaryTree <T extends Comparable<T>>{
      * @param node
      * @return
      */
-    private int numberOfNodes(NaryNode node){
+    private int numberOfNodes(NaryNode<T> node){
         if(node==null){
             return 0;
         }
 
         int numberOfNodes = 1;
         for(int i=0; i<N; i++) {
-            numberOfNodes += numberOfNodes(node.getChild(i));
+            numberOfNodes += numberOfNodes(node.child[i]);
         }
         return numberOfNodes;
     }
@@ -562,22 +552,18 @@ public class NaryTree <T extends Comparable<T>>{
         }
         if(node.data.equals(nodeData)){
             final NaryNode<T> newNode = new NaryNode<>(data, N);
-            newNode.setChild(childIndex, node.getChild(childIndex));
-            node.setChild(childIndex, newNode);
+            newNode.child[childIndex] = node.child[childIndex];
+            node.child[childIndex] = newNode;
             return true;
         } else{
             boolean isInserted = false;
             for(int i=0; i<N && !isInserted; i++) {
-                isInserted = insertAsChild(node.getChild(i), data, nodeData, childIndex);
+                isInserted = insertAsChild(node.child[i], data, nodeData, childIndex);
             }
             return isInserted;
         }
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String toString() {
         return "NaryTree{" +
