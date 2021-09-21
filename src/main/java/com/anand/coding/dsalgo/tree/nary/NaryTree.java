@@ -22,7 +22,7 @@ public class NaryTree <T extends Comparable<T>>{
 
     public NaryTree(final T data, int N){
         this.N = N;
-        root = new NaryNode<>(data, N);
+        root = new NaryNode<T>(data, N, null);
 
     }
 
@@ -551,7 +551,7 @@ public class NaryTree <T extends Comparable<T>>{
             return false;
         }
         if(node.data.equals(nodeData)){
-            final NaryNode<T> newNode = new NaryNode<>(data, N);
+            final NaryNode<T> newNode = new NaryNode<>(data, N, node);
             newNode.child[childIndex] = node.child[childIndex];
             node.child[childIndex] = newNode;
             return true;
@@ -626,5 +626,12 @@ public class NaryTree <T extends Comparable<T>>{
 
         System.out.println(naryTree);
         System.out.println(naryTree.diameter());
+
+        //Lock/Unlock check
+        System.out.println(naryTree.root.child[1].child[0].lock() + " = true");
+        System.out.println(naryTree.root.child[1].child[0].lock() + " = false");
+
+        System.out.println(naryTree.root.child[1].lock() + " = false");
+        System.out.println(naryTree.root.child[0].lock() + " = true");
     }
 }
