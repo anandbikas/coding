@@ -1,5 +1,7 @@
 package com.anand.coding.dsalgo.tree.nary;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Queue;
 import java.util.ArrayDeque;
@@ -24,6 +26,25 @@ public class NaryTree <T extends Comparable<T>>{
         this.N = N;
         root = new NaryNode<T>(data, N, null);
 
+    }
+
+    public List<NaryNode<T>> preOrderTraversalRecNodeList() {
+        return preOrderTraversalRecNodeList(root);
+    }
+
+    public List<NaryNode<T>> preOrderTraversalRecNodeList(final NaryNode<T> node){
+        List<NaryNode<T>> nodeList = new ArrayList<>();
+        preOrderTraversalRecNodeList(node, nodeList);
+        return nodeList;
+    }
+
+    private void preOrderTraversalRecNodeList(final NaryNode<T> node, List<NaryNode<T>> nodeList){
+        if(node != null){
+            nodeList.add(node);
+            for(NaryNode<T> child: node.child){
+                if(child!=null) preOrderTraversalRecNodeList(child, nodeList);
+            }
+        }
     }
 
     /**

@@ -35,28 +35,24 @@ public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T
      * @return
      */
     public boolean lock(){
-
-        if(isLocked){
-            return false;
+        synchronized (this){
+            return !isLocked && lockedDescendants==0 && lockWithSynchronizedAncestor(this.parent);
         }
+    }
 
-        //Ancestors lock check
-        for(NaryNode<T> parent = this.parent; parent!=null; parent=parent.parent){
+    private boolean lockWithSynchronizedAncestor(final NaryNode<T>parent){
+
+        if(parent==null){
+            return this.isLocked = true;
+        }
+        synchronized (parent) {
             if(parent.isLocked) return false;
+            if(lockWithSynchronizedAncestor(parent.parent)){
+                parent.lockedDescendants++;
+                return true;
+            }
         }
-
-        //Descendant lock check
-        if(lockedDescendants>0){
-            return false;
-        }
-
-        isLocked=true;
-        //Provide lock details to all the ancestors
-        for(NaryNode<T> parent = this.parent; parent!=null ; parent=parent.parent){
-            parent.lockedDescendants++;
-        }
-
-        return true;
+        return false;
     }
 
     /**
@@ -65,17 +61,21 @@ public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T
      * @return
      */
     public boolean unLock(){
-
-        if(!isLocked){
-            return false;
+        synchronized (this){
+            return isLocked && unlockWithSynchronizedAncestor(this.parent);
         }
+    }
 
-        isLocked=false;
-        //Provide unlock details to all the ancestors
-        for(NaryNode<T> parent = this.parent; parent!=null ; parent=parent.parent){
+    private boolean unlockWithSynchronizedAncestor(final NaryNode<T>parent){
+
+        if(parent==null){
+            this.isLocked = false;
+            return true;
+        }
+        synchronized (parent) {
+            unlockWithSynchronizedAncestor(parent.parent);
             parent.lockedDescendants--;
         }
-
         return true;
     }
 
