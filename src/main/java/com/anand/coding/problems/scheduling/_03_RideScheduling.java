@@ -17,31 +17,39 @@ import java.util.Comparator;
  */
 public class _03_RideScheduling {
 
-    public static long getMaxEarning(int n, int[][] schedules) {
+    public static long getMaxEarning(int n, int[][] rides) {
 
         //sort in ascending order on end time
-        Arrays.sort(schedules,Comparator.comparingInt(interval -> interval[1]));
+        Arrays.sort(rides,Comparator.comparingInt(ride -> ride[1]));
 
         //Find maximum earning using DP
-        long [] profitArray = new long [n+1];
-        long currentEarning = 0;
+        long [] DP = new long [rides.length+1];
 
-        for(int [] schedule: schedules){
+        for (int j=1; j<=rides.length; j++) {
+            int [] ride = rides[j-1];
 
-            for(int j=schedule[1]; j>=0 && profitArray[j]==0; j--){
-                profitArray[j]=currentEarning;
-            }
-            currentEarning = profitArray[schedule[1]] =
-                    Math.max(schedule[1]-schedule[0]+schedule[2] + profitArray[schedule[0]], currentEarning);
+            int recentCompatibleEventIndex = floorLastOccurrence(rides, 0,j-2, ride[0]);
+            DP[j] = Math.max(DP[j-1], DP[recentCompatibleEventIndex+1] + ride[1]-ride[0]+ride[2]);
         }
 
-        for(int j=n; j>=0 && profitArray[j]==0;j--){
-            profitArray[j]=currentEarning;
-        }
-
-        return profitArray[n];
+        return DP[rides.length];
     }
 
+    public static int floorLastOccurrence(int [][]A, int left, int right, int key) {
+        if (key < A[left][1]) return -1;
+        if (key >= A[right][1]) return right;
+
+        while (left < right) {
+            int mid = left + (right-left)/2 +(right-left)%2; //Ceil
+            if (key >= A[mid][1]) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return (A[left][1] == key) ? left : right;
+    }
 
     /**
      *
@@ -57,5 +65,11 @@ public class _03_RideScheduling {
 
         int [][]C = {{1,6,1},{3,10,2},{10,12,3},{11,12,2},{12,15,2},{13,18,1}};
         System.out.println(getMaxEarning(20, C));
+
+        int [][]D = {{7,9,10},{3,7,7},{3,4,4},{5,8,10},{5,7,6}};
+        System.out.println(getMaxEarning(10, D));
+
+        int [][]E = {{5,7,2},{7,9,10},{3,7,7},{3,4,4},{4,5,2},{5,8,10},{2,6,2},{5,7,6}};
+        System.out.println(getMaxEarning(10, E));
     }
 }

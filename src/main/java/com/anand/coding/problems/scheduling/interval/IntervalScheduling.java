@@ -66,23 +66,32 @@ public class IntervalScheduling {
         intervals.sort(Comparator.comparingInt(interval -> interval.end.totalMinutes));
 
         //Find maximum working using DP
+        int [] DP = new int [intervals.size()+1];
 
-        int [] durationArray = new int [MINUTES_IN_TWENTY_FOUR_HOURS+1];
-        int currentDuration = 0;
+        for (int j=1; j<=intervals.size(); j++) {
+            Interval interval = intervals.get(j-1);
 
-        for(Interval interval: intervals) {
-            for(int j=interval.end.totalMinutes; j>=0 && durationArray[j]==0; j--){
-                durationArray[j]=currentDuration;
+            int recentCompatibleIntervalIndex = floorLastOccurrence(intervals, 0,j-2, interval.start.totalMinutes);
+            DP[j] = Math.max(DP[j-1], DP[recentCompatibleIntervalIndex+1] + interval.end.totalMinutes-interval.start.totalMinutes );
+        }
+
+        return DP[intervals.size()];
+    }
+
+    public static int floorLastOccurrence(List<Interval> intervals, int left, int right, int key) {
+        if (key < intervals.get(left).end.totalMinutes) return -1;
+        if (key >= intervals.get(right).end.totalMinutes) return right;
+
+        while (left < right) {
+            int mid = left + (right-left)/2 +(right-left)%2; //Ceil
+            if (key >= intervals.get(mid).end.totalMinutes) {
+                left = mid;
+            } else {
+                right = mid - 1;
             }
-            currentDuration = durationArray[interval.end.totalMinutes] =
-                    Math.max(interval.end.totalMinutes-interval.start.totalMinutes + durationArray[interval.start.totalMinutes], currentDuration);
         }
 
-        for(int j=MINUTES_IN_TWENTY_FOUR_HOURS; j>=0 && durationArray[j]==0;j--){
-            durationArray[j]=currentDuration;
-        }
-
-        return durationArray[MINUTES_IN_TWENTY_FOUR_HOURS];
+        return (intervals.get(left).end.totalMinutes == key) ? left : right;
     }
 
     /**

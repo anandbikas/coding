@@ -18,40 +18,46 @@ public class _02_JobScheduling {
     public static long jobScheduling(int[] startTime, int[] endTime, int[] profit) {
 
         int [][]schedules = new int [startTime.length][3];
-        int maxEndTime=0;
         for(int i=0; i<startTime.length; i++){
             schedules[i][0]=startTime[i];
             schedules[i][1]=endTime[i];
             schedules[i][2]=profit[i];
-            maxEndTime = Math.max(maxEndTime, endTime[i]);
         }
-        return getMaxEarning(maxEndTime,schedules);
+        return getMaxEarning(schedules);
     }
-    public static long getMaxEarning(int n, int[][] schedules) {
+    public static long getMaxEarning(int[][] schedules) {
 
         //sort in ascending order on end time
         Arrays.sort(schedules,Comparator.comparingInt(interval -> interval[1]));
 
         //Find maximum earning using DP
-        long [] profitArray = new long [n+1];
-        long currentEarning = 0;
+        long [] DP = new long [schedules.length+1];
 
-        for(int [] schedule: schedules){
+        for (int j=1; j<=schedules.length; j++) {
+            int [] schedule = schedules[j-1];
 
-            for(int j=schedule[1]; j>=0 && profitArray[j]==0; j--){
-                profitArray[j]=currentEarning;
-            }
-            currentEarning = profitArray[schedule[1]] =
-                    Math.max(schedule[2] + profitArray[schedule[0]], currentEarning);
+            int recentCompatibleEventIndex = floorLastOccurrence(schedules, 0,j-2, schedule[0]);
+            DP[j] = Math.max(DP[j-1], DP[recentCompatibleEventIndex+1] + schedule[2]);
         }
 
-        for(int j=n; j>=0 && profitArray[j]==0;j--){
-            profitArray[j]=currentEarning;
-        }
-
-        return profitArray[n];
+        return DP[schedules.length];
     }
 
+    public static int floorLastOccurrence(int [][]A, int left, int right, int key) {
+        if (key < A[left][1]) return -1;
+        if (key >= A[right][1]) return right;
+
+        while (left < right) {
+            int mid = left + (right-left)/2 +(right-left)%2; //Ceil
+            if (key >= A[mid][1]) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return (A[left][1] == key) ? left : right;
+    }
 
     /**
      *
