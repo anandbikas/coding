@@ -2,6 +2,7 @@ package com.anand.coding.problems.scheduling;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.TreeMap;
 
 /**
  * Job Scheduling:
@@ -33,11 +34,14 @@ public class _02_JobScheduling {
         //Find maximum earning using DP
         long [] DP = new long [schedules.length+1];
 
+        TreeMap<Integer, Integer> treeMap = new TreeMap<Integer,Integer>(){{put(-1,-1);}};
         for (int j=1; j<=schedules.length; j++) {
             int [] schedule = schedules[j-1];
 
-            int recentCompatibleEventIndex = floorLastOccurrence(schedules, 0,j-2, schedule[0]);
+            //Either use treemap or binary floorLastOccurrence method.
+            int recentCompatibleEventIndex = treeMap.floorEntry(schedule[0]).getValue(); //floorLastOccurrence(schedules, 0,j-2, schedule[0]);
             DP[j] = Math.max(DP[j-1], DP[recentCompatibleEventIndex+1] + schedule[2]);
+            treeMap.put(schedule[1],j);
         }
 
         return DP[schedules.length];
@@ -64,8 +68,6 @@ public class _02_JobScheduling {
      * @param args
      */
     public static void main(String [] args){
-
-        int [][]A = {{2,5,4},{1,5,1}};
 
         int [] startTime = {1,2,3,3}, endTime = {3,4,5,6}, profit = {50,10,40,70};
         System.out.println(jobScheduling(startTime, endTime, profit));
