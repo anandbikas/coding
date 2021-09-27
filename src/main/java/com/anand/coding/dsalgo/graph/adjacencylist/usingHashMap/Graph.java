@@ -319,12 +319,12 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Set<T> visited = new HashSet<>();
-        Set<T> inRecStack = new HashSet<>();
+        Set<T> visiting = new HashSet<>();
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
         for(T u : vertices.keySet()){
-            if(!visited.contains(u) && isCyclicDfsRec(u, visited, inRecStack)){
+            if(!visited.contains(u) && isCyclicDfsRec(u, visited, visiting)){
                 return true;
             }
         }
@@ -335,25 +335,25 @@ public class Graph<T extends Comparable<T>> {
      *
      * @param u
      * @param visited
-     * @param inRecStack
+     * @param visiting
      * @return
      */
-    private boolean isCyclicDfsRec(T u, Set<T> visited, Set<T> inRecStack){
+    private boolean isCyclicDfsRec(T u, Set<T> visited, Set<T> visiting){
 
-        inRecStack.add(u);
+        visiting.add(u);
         visited.add(u);
 
         for(Pair<T, Integer> v: vertices.get(u)){
-            if(inRecStack.contains(v.key)){
+            if(visiting.contains(v.key)){
                 return true;
             }
-            if(visited.contains(v.key)) {
-                if (isCyclicDfsRec(v.key, visited, inRecStack)) {
+            if(!visited.contains(v.key)) {
+                if (isCyclicDfsRec(v.key, visited, visiting)) {
                     return true;
                 }
             }
         }
-        inRecStack.remove(u);
+        visiting.remove(u);
         return false;
     }
 
