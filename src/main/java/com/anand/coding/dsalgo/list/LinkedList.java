@@ -1,8 +1,7 @@
 package com.anand.coding.dsalgo.list;
 
 import java.util.Stack;
-import com.anand.coding.dsalgo.tree.arraybased.BinaryMinHeap;
-
+import java.util.PriorityQueue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -157,23 +156,14 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> delete(T data){
 
-        if(start==null){
-            return null;
-        }
+        Node<T> header = new Node<>(null);
+        header.next = start;
 
-        if(start.data.equals(data)){
-            Node<T> deletedNode = start;
-            start=deletedNode.next;
-            length--;
-
-            deletedNode.next = null;
-            return deletedNode;
-        }
-
-        for(Node<T> node=start; node.next!=null; node=node.next){
+        for(Node<T> node=header; node.next!=null; node=node.next){
             if(node.next.data.equals(data)){
                 Node<T> deletedNode=node.next;
                 node.next = deletedNode.next;
+                start = header.next;
                 length--;
 
                 deletedNode.next = null;
@@ -191,25 +181,15 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> deleteAtIndex(final int index){
 
-        if(start==null){
-            return null;
-        }
+        Node<T> header = new Node<>(null);
+        header.next = start;
 
-        if(index==1){
-            Node<T> deletedNode = start;
-            start=deletedNode.next;
-            length--;
-
-            deletedNode.next = null;
-            return deletedNode;
-        }
-
-        int i;
-        Node<T> node;
-        for(node=start, i=2; node.next!=null; node=node.next, i++){
+        int i=1;
+        for(Node<T> node=header; node.next!=null; node=node.next, i++){
             if(index==i){
                 Node<T> deletedNode=node.next;
                 node.next = deletedNode.next;
+                start = header.next;
                 length--;
 
                 deletedNode.next = null;
@@ -326,25 +306,26 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @param k
      */
     public void swapAdjacentNodes(final int k){
+        //Assign a dummy Object so that start ==null check is not required.
+        Node<T> header = new Node<>(null);
+        header.next = start;
 
         if(start==null || start.next==null){
             return;
         }
 
-        Node<T> prevOfA=null;
+        Node<T> prevOfA=header;
         Node<T> a=start;
         for(int i=1; a.next!=null; i++, prevOfA=a, a=a.next){
             if(k==i){
                 Node<T> b = a.next;
                 a.next = b.next;
                 b.next = a;
-                if(prevOfA==null){
-                    start = b;
-                } else {
-                    prevOfA.next = b;
-                }
+                prevOfA.next = b;
+                break;
             }
         }
+        start = header.next;
     }
 
     /**
@@ -352,9 +333,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      *
      */
     public void bubbleSort() {
+        //Assign a dummy Object so that start ==null check is not required.
+        Node<T> header = new Node<>(null);
+        header.next = start;
 
         for (int i=0; i < length; i++) {
-            Node<T> prevOfA = null;
+            Node<T> prevOfA = header;
             Node<T> a = start;
 
             for(int j=0; j < length-1-i; j++){
@@ -363,11 +347,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
                 if(a.compareTo(b)>0){
                     a.next = b.next;
                     b.next = a;
-                    if(prevOfA==null){
-                        start = b;
-                    } else {
-                        prevOfA.next = b;
-                    }
+                    prevOfA.next = b;
                     prevOfA=b;
                 } else {
                     prevOfA=a;
@@ -375,6 +355,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
                 }
             }
         }
+        start = header.next;
     }
 
     /**
@@ -383,40 +364,33 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @param start2
      * @return start of sorted list.
      */
-    public Node mergeAsSorted(Node start1, Node start2){
+    private Node<T> mergeAsSorted(Node<T> start1, Node<T> start2){
 
         //Assign a dummy Object so that start ==null check is not required.
-        Node start3 = new Node<>(null);
-        Node end3 = start3;
+        Node<T> header = new Node<>(null);
+        Node<T> end = header;
 
         while(start1 != null && start2 !=null){
             if(start1.compareTo(start2) <=0){
-                end3.next = start1;
-                end3 = start1;
+                end = end.next = start1;
                 start1= start1.next;
-
             } else {
-                end3.next = start2;
-                end3 = start2;
+                end = end.next = start2;
                 start2= start2.next;
             }
         }
 
-        while(start1!=null){
-            end3.next = start1;
-            end3 = start1;
-            start1= start1.next;
+        for(;start1!=null;start1= start1.next){
+            end = end.next = start1;
         }
 
-        while(start2!=null){
-            end3.next = start2;
-            end3 = start2;
-            start2= start2.next;
+        for(;start2!=null; start2=start2.next){
+            end = end.next = start2;
         }
 
-        end3.next = null;
+        end.next = null;
 
-        return start3.next;
+        return header.next;
     }
 
     /**
@@ -484,7 +458,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      *
      * @param node
      */
-    public Node<T> reverseRec(Node<T> node){
+    private Node<T> reverseRec(Node<T> node){
 
         if(node == null || node.next==null){
             start = node;
@@ -792,31 +766,31 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void mergeKSortedLists(List<LinkedList<T>> listOfLists){
 
-        BinaryMinHeap<Node<T>> binaryMinHeap = new BinaryMinHeap<>(listOfLists.size());
+        PriorityQueue<Node<T>> heap = new PriorityQueue<>(listOfLists.size());
 
         for(LinkedList<T> list: listOfLists){
             if(list.start !=null){
-                binaryMinHeap.insert(list.start);
+                heap.add(list.start);
             }
             list.start=null;
         }
 
-        if(binaryMinHeap.isEmpty()){
+        if(heap.isEmpty()){
             return;
         }
 
-        start = binaryMinHeap.extractMin();
+        start = heap.remove();
         if(start.next!=null) {
-            binaryMinHeap.insert(start.next);
+            heap.add(start.next);
         }
 
         Node<T> temp = start;
-        while (!binaryMinHeap.isEmpty()){
-            temp.next = binaryMinHeap.extractMin();
+        while (!heap.isEmpty()){
+            temp.next = heap.remove();
             temp = temp.next;
 
             if(temp.next!=null){
-                binaryMinHeap.insert(temp.next);
+                heap.add(temp.next);
             }
         }
         temp.next = null;
