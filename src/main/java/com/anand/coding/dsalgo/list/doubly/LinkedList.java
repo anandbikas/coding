@@ -368,6 +368,7 @@ public class LinkedList<T extends Comparable<T>> {
                 } else {
                     temp.prev.next = temp;
                 }
+                break;
             }
         }
     }
@@ -378,32 +379,32 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void bubbleSort() {
 
-        final int length = length();
         for (int i=0; i < length; i++) {
-            Node<T> node = start;
+            Node<T> a = start;
+
             for(int j=0; j < length-1-i; j++){
-                if(node.compareTo(node.next)>0){
-                    Node<T> temp = node.next;
+                Node<T> b = a.next;
 
-                    node.next = temp.next;
+                if(a.compareTo(b)>0){
+                    a.next = b.next;
 
-                    if(node.next==null){
-                        end=node;
+                    if(a.next==null){
+                        end=a;
                     } else {
-                        node.next.prev = node;
+                        a.next.prev = a;
                     }
 
-                    temp.next = node;
-                    temp.prev = node.prev;
+                    b.next = a;
+                    b.prev = a.prev;
 
-                    node.prev = temp;
-                    if(temp.prev==null){
-                        start = temp;
+                    a.prev = b;
+                    if(b.prev==null){
+                        start = b;
                     } else {
-                        temp.prev.next = temp;
+                        b.prev.next = b;
                     }
                 } else {
-                    node=node.next;
+                    a=b;
                 }
             }
         }
@@ -421,7 +422,7 @@ public class LinkedList<T extends Comparable<T>> {
             node.next = node.prev;
             node.prev = temp;
 
-            node = node.prev;
+            node=temp;
         }
 
         Node<T> temp = start;
@@ -434,6 +435,7 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void resetList(){
         start=null;
+        end=null;
     }
 
     /**
