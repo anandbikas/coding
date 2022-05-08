@@ -1,13 +1,10 @@
 package com.anand.coding.dsalgo.queue;
 
-import com.anand.coding.dsalgo.exception.QueueEmptyException;
-import com.anand.coding.dsalgo.list.doubly.Node;
-
 /**
  *
  * @param <T>
  */
-public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
+public class DoublyLinkedQueue<T> implements Queue<T> {
 
     private Node<T> front;
     private Node<T> rear;
@@ -41,7 +38,7 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
      */
     public T delete(){
         if(front==null){
-            throw new QueueEmptyException();
+            return null;
         }
         Node<T> deletedNode = front;
         front = front.next;
@@ -81,32 +78,6 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
     }
 
     /**
-     * Move to front
-     *
-     * @return
-     */
-    public void moveToFront(Node<T> node){
-
-        if(node == front){
-            return;
-        }
-
-        if(node==rear){
-            rear=node.prev;
-            rear.next = null;
-        } else {
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
-        }
-
-        node.prev = null;
-        node.next = front;
-        front.prev = node;
-        front = node;
-    }
-
-
-    /**
      *
      * @return
      */
@@ -119,8 +90,8 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
      *
      */
     public void display(){
-        for(Node node=front; node!=null; node=node.next){
-            System.out.print(node.data+ ", ");
+        for(Node<T> node=front; node!=null; node=node.next){
+            System.out.print(node.data + ", ");
         }
         System.out.println();
     }
@@ -159,6 +130,20 @@ public class DoublyLinkedQueue<T extends Comparable<T>> implements Queue<T> {
         queue.delete();
         queue.insert(6);
         queue.display();
+    }
+
+    public static class Node<T> {
+        public T data;
+        public Node<T> prev, next;
+
+        public Node(T data) {
+            this.data = data;
+        }
+
+        @Override
+        public String toString() {
+            return data.toString();
+        }
     }
 
 }

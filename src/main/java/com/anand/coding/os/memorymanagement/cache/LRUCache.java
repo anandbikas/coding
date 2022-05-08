@@ -1,6 +1,5 @@
 package com.anand.coding.os.memorymanagement.cache;
 
-import com.anand.coding.dsalgo.list.doubly.Node;
 import com.anand.coding.dsalgo.queue.DoublyLinkedQueue;
 
 import java.util.HashMap;
@@ -12,27 +11,12 @@ import java.util.HashMap;
  * put(key,value)   : O(1)
  *
  */
-public class LRUCache<K extends Comparable<K>,V> {
+public class LRUCache<K,V> {
 
-    private static class Pair<K extends Comparable<K>,V> implements Comparable<Pair<K,V>> {
-        K key;
-        V value;
+    private final DoublyLinkedQueue<Pair<K,V>> queue = new DoublyLinkedQueue<>();
+    private final HashMap<K, DoublyLinkedQueue.Node<Pair<K,V>>> cacheMap = new HashMap<>();
 
-        public Pair(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        @Override
-        public int compareTo(Pair<K,V> o) {
-            return this.key.compareTo(o.key);
-        }
-    }
-
-    private DoublyLinkedQueue<Pair<K,V>>  queue = new DoublyLinkedQueue<>();
-    private HashMap<K, Node<Pair<K,V>>> cacheMap = new HashMap<>();
-
-    private int capacity;
+    private final int capacity;
 
     /**
      *
@@ -96,6 +80,16 @@ public class LRUCache<K extends Comparable<K>,V> {
         System.out.println(cache.get(3));    // returns 3
         System.out.println(cache.get(4));    // returns 4
 
+    }
+
+    private static class Pair<K, V>{
+        K key;
+        V value;
+
+        public Pair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
     }
 }
 
