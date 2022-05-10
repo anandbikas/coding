@@ -79,6 +79,30 @@ public class DoublyLinkedQueue<T> implements Queue<T> {
 
     /**
      *
+     * @param node
+     * @return
+     */
+    public Node<T> delete(Node<T> node){
+        if(front==rear){
+            front = rear = null;
+        } else if(node == rear){
+            rear=node.prev;
+            rear.next=null;
+        } else if(node==front){
+            front=node.next;
+            front.prev = null;
+        } else {
+            node.prev.next=node.next;
+            node.next.prev = node.prev;
+        }
+
+        node.next = node.prev =null;
+        length--;
+        return node;
+    }
+
+    /**
+     *
      * @return
      */
     public int length(){
