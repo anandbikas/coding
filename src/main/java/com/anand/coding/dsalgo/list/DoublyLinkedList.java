@@ -1,13 +1,13 @@
-package com.anand.coding.dsalgo.list.doubly;
+package com.anand.coding.dsalgo.list;
 
 /**
  * Generic Doubly Linked List implementation
  * @param <T>
  */
-public class LinkedList<T extends Comparable<T>> {
+public class DoublyLinkedList<T extends Comparable<T>> {
 
-    private Node<T> start;
-    private Node<T> end;
+    private DNode<T> start;
+    private DNode<T> end;
 
     int length=0;
 
@@ -16,9 +16,9 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node<T> insertStart(T data){
+    public DNode<T> insertStart(T data){
 
-        final Node<T> newNode = new Node<>(data);
+        final DNode<T> newNode = new DNode<>(data);
         newNode.next = start;
         start = newNode;
 
@@ -36,9 +36,9 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node<T> insertEnd(T data){
+    public DNode<T> insertEnd(T data){
 
-        final Node<T> newNode = new Node<>(data);
+        final DNode<T> newNode = new DNode<>(data);
         newNode.prev = end;
         end = newNode;
 
@@ -56,7 +56,7 @@ public class LinkedList<T extends Comparable<T>> {
      *
      * @param newNode
      */
-    private void fixNextAndPrevInsertion(final Node<T> newNode){
+    private void fixNextAndPrevInsertion(final DNode<T> newNode){
 
         if(newNode.next==null){
             end = newNode;
@@ -77,11 +77,11 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node<T> insertAtIndex(int index, T data){
+    public DNode<T> insertAtIndex(int index, T data){
 
-        final Node<T> newNode = new Node<>(data);
+        final DNode<T> newNode = new DNode<>(data);
         int i;
-        Node<T> node;
+        DNode<T> node;
         for(node=start, i=1; node!=null && i<index; node=node.next, i++);
 
         if(index==i){
@@ -103,11 +103,11 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node<T> insertSorted(T data){
+    public DNode<T> insertSorted(T data){
 
-        final Node<T> newNode = new Node<>(data);
+        final DNode<T> newNode = new DNode<>(data);
 
-        Node<T> node;
+        DNode<T> node;
         for(node=start; node!=null && node.data.compareTo(data)<0; node=node.next);
 
         newNode.next = node;
@@ -123,13 +123,13 @@ public class LinkedList<T extends Comparable<T>> {
      *
      * @return
      */
-    public Node<T> deleteStart(){
+    public DNode<T> deleteStart(){
 
         if(start==null){
             return null;
         }
 
-        Node<T> deletedNode = start;
+        DNode<T> deletedNode = start;
         start=deletedNode.next;
         start.prev = null;
 
@@ -146,13 +146,13 @@ public class LinkedList<T extends Comparable<T>> {
      *
      * @return
      */
-    public Node<T> deleteEnd(){
+    public DNode<T> deleteEnd(){
 
         if(end==null){
             return null;
         }
 
-        Node<T> deletedNode = end;
+        DNode<T> deletedNode = end;
         end=deletedNode.prev;
         end.next = null;
 
@@ -170,7 +170,7 @@ public class LinkedList<T extends Comparable<T>> {
      *
      * @param deletedNode
      */
-    public void fixNextAndPrevDeletion(final Node<T> deletedNode){
+    public void fixNextAndPrevDeletion(final DNode<T> deletedNode){
 
         if(deletedNode.next==null){
             end = deletedNode.prev;
@@ -195,11 +195,11 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node<T> delete(T data){
+    public DNode<T> delete(T data){
 
-        for(Node<T> node=start; node!=null; node=node.next){
+        for(DNode<T> node = start; node!=null; node=node.next){
             if(node.data==data){
-                Node<T> deletedNode=node;
+                DNode<T> deletedNode=node;
                 fixNextAndPrevDeletion(deletedNode);
 
                 length--;
@@ -214,14 +214,14 @@ public class LinkedList<T extends Comparable<T>> {
      * @param index
      * @return
      */
-    public Node<T> deleteAtIndex(final int index){
+    public DNode<T> deleteAtIndex(final int index){
 
         int i;
-        Node<T> node;
+        DNode<T> node;
         for(node=start, i=1; node!=null && i<index; node=node.next, i++);
 
         if(node!=null){
-            Node<T> deletedNode=node;
+            DNode<T> deletedNode=node;
             fixNextAndPrevDeletion(deletedNode);
 
             length--;
@@ -235,9 +235,9 @@ public class LinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public Node<T> search(T data){
+    public DNode<T> search(T data){
 
-        Node<T> node;
+        DNode<T> node;
         for(node=start; node!=null && !node.data.equals(data); node=node.next);
 
         return node;
@@ -250,7 +250,7 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public int findIndexFromStart(T data){
 
-        Node<T> node;
+        DNode<T> node;
         int i=1;
         for(node=start; node!=null && !node.data.equals(data); node=node.next, i++);
 
@@ -267,7 +267,7 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public int findIndexFromEnd(T data){
 
-        Node<T> node;
+        DNode<T> node;
         int i=1;
         for(node=end; node!=null && !node.data.equals(data); node=node.prev, i++);
 
@@ -282,9 +282,9 @@ public class LinkedList<T extends Comparable<T>> {
      * @param index
      * @return
      */
-    public Node<T> getElementAtIndexFromStart(final int index){
+    public DNode<T> getElementAtIndexFromStart(final int index){
 
-        Node<T> node;
+        DNode<T> node;
         int i=1;
         for(node=start; node!=null && i<index; node=node.next, i++);
 
@@ -296,9 +296,9 @@ public class LinkedList<T extends Comparable<T>> {
      * @param index
      * @return
      */
-    public Node<T> getElementAtIndexFromEnd(final int index){
+    public DNode<T> getElementAtIndexFromEnd(final int index){
 
-        Node<T> node;
+        DNode<T> node;
         int i=1;
         for(node=end; node!=null && i<index; node=node.prev, i++);
 
@@ -311,7 +311,7 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void display(){
         System.out.println("Linked list: ");
-        for(Node node=start; node!=null; node=node.next){
+        for(DNode node = start; node!=null; node=node.next){
             System.out.print(node.data + ", ");
         }
         System.out.println();
@@ -322,7 +322,7 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void displayReverse(){
         System.out.println("Linked list (reversed): ");
-        for(Node node=end; node!=null; node=node.prev){
+        for(DNode node = end; node!=null; node=node.prev){
             System.out.print(node.data + ", ");
         }
         System.out.println();
@@ -346,10 +346,10 @@ public class LinkedList<T extends Comparable<T>> {
             return;
         }
 
-        Node<T> node=start;
+        DNode<T> node=start;
         for(int i=1; node.next!=null; i++, node=node.next){
             if(k==i){
-                Node<T> temp = node.next;
+                DNode<T> temp = node.next;
 
                 node.next = temp.next;
 
@@ -380,10 +380,10 @@ public class LinkedList<T extends Comparable<T>> {
     public void bubbleSort() {
 
         for (int i=0; i < length; i++) {
-            Node<T> a = start;
+            DNode<T> a = start;
 
             for(int j=0; j < length-1-i; j++){
-                Node<T> b = a.next;
+                DNode<T> b = a.next;
 
                 if(a.compareTo(b)>0){
                     a.next = b.next;
@@ -415,17 +415,17 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public void reverse(){
 
-        Node<T> node = start;
+        DNode<T> node = start;
 
         while(node!=null ){
-            Node<T> temp = node.next;
+            DNode<T> temp = node.next;
             node.next = node.prev;
             node.prev = temp;
 
             node=temp;
         }
 
-        Node<T> temp = start;
+        DNode<T> temp = start;
         start = end;
         end = temp;
     }
@@ -444,7 +444,7 @@ public class LinkedList<T extends Comparable<T>> {
      */
     public static void main(String [] args){
 
-        final LinkedList<Integer> list = new LinkedList<>();
+        final DoublyLinkedList<Integer> list = new DoublyLinkedList<>();
 
         for(int i=6; i<=10; i++){
             list.insertEnd(i);

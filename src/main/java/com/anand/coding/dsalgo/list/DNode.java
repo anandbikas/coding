@@ -1,17 +1,17 @@
-package com.anand.coding.dsalgo.list.doubly;
+package com.anand.coding.dsalgo.list;
 
 
 /**
  * Generic Node Class
  * @param <T>
  */
-public class Node<T extends Comparable<T>> implements Comparable<Node<T>>  {
+public class DNode<T extends Comparable<T>> implements Comparable<DNode<T>>  {
 
     public T data;
-    public Node<T> prev;
-    public Node<T> next;
+    public DNode<T> prev;
+    public DNode<T> next;
 
-    public Node(T data) {
+    public DNode(T data) {
         this.data = data;
     }
 
@@ -21,7 +21,7 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>  {
      * @return
      */
     @Override
-    public int compareTo(Node<T> that) {
+    public int compareTo(DNode<T> that) {
         return this.data.compareTo(that.data);
     }
 
