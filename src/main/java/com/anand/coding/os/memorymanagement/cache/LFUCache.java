@@ -38,10 +38,9 @@ public class LFUCache<K,V> {
             DoublyLinkedQueue.Node<Pair<K,V>> node = cacheMap.get(key);
 
             frequencyMap.get(node.data.frequency).delete(node);
-            if (frequencyMap.get(node.data.frequency).isEmpty()){
-                leastFrequency = node.data.frequency == leastFrequency ? node.data.frequency + 1
-                                        : Math.min(leastFrequency, node.data.frequency);
-
+            if (node.data.frequency==leastFrequency
+                    && frequencyMap.get(node.data.frequency).isEmpty()){
+                leastFrequency++;
             }
 
             node.data.frequency++;
