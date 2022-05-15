@@ -1,6 +1,4 @@
-package com.anand.coding.dsalgo.tree.arraybased;
-
-import com.anand.coding.dsalgo.exception.HeapEmptyException;
+package com.anand.coding.dsalgo.heap;
 
 import java.util.Comparator;
 
@@ -9,38 +7,33 @@ import java.util.Comparator;
  *
  * @param <T>
  */
-public class BinaryHeapWithComparator<T>{
+public class BinaryHeap<T>{
 
     private T [] A;
+    private int size=0;
     private Comparator<T> comparator;
 
-    private int size=0;
-
-    public BinaryHeapWithComparator(){
+    public BinaryHeap(){
         this(1, null);
     }
 
-    public BinaryHeapWithComparator(int initialSize){
+    public BinaryHeap(int initialSize){
         this(initialSize, null);
     }
 
-    public BinaryHeapWithComparator(Comparator<T> comparator){
+    public BinaryHeap(Comparator<T> comparator){
         this(1, comparator);
     }
 
     @SuppressWarnings("unchecked")
-    public BinaryHeapWithComparator(int initialSize, Comparator<T> comparator){
-        this.A = (T[])new Object[initialSize];
-
-        if(comparator==null){
-            comparator = Comparator.comparingInt(Object::hashCode);
-        }
-        this.comparator = comparator;
+    public BinaryHeap(int initialSize, Comparator<T> comparator){
+        A = (T[])new Comparable[initialSize];
+        this.comparator = (comparator==null) ? Comparator.comparingInt(Object::hashCode) : comparator;
     }
 
     @SuppressWarnings("unchecked")
     public void alterSize(int newSize){
-        T[] T = (T[])new Object[newSize];
+        T[] T = (T[])new Comparable[newSize];
 
         System.arraycopy(A, 0, T, 0, this.size);
         A = T;
@@ -57,35 +50,29 @@ public class BinaryHeapWithComparator<T>{
     private void swap(int i, int j){ T temp = A[i]; A[i] = A[j]; A[j] = temp;}
 
     /**
-     * fix Heap property by comparing with parent, bottom up
-     * @param child
-     */
-    private void heapUp(int child){
-
-        while (child>0 && comparator.compare(A[child],A[parent(child)])<0){
-            swap(child, parent(child));
-            child = parent(child);
-        }
-    }
-
-    /**
-     * fix Heap property by comparing with children, top down.
+     * Fix Heap property.
      * @param i
      */
     private void heapify(int i){
 
-        int left=left(i), right=right(i), smallest = i;
+        if(i>0 && comparator.compare(A[i], A[parent(i)])<0){
+            // compare with parent, bottom up.
+            for (int child=i; child > 0 && comparator.compare(A[child], A[parent(child)]) < 0; child = parent(child)) {
+                swap(child, parent(child));
+            }
 
-        if(left<size && comparator.compare(A[left],A[smallest])<0){
-            smallest = left;
-        }
-        if(right<size && comparator.compare(A[right],A[smallest])<0){
-            smallest = right;
-        }
-
-        if(smallest!=i){
-            swap(i, smallest);
-            heapify(smallest);
+        } else {
+            // compare with children, top down.
+            while(true) {
+                int lc = left(i), rc = right(i), smallest = i;
+                if (lc < size && comparator.compare(A[lc], A[smallest]) < 0) smallest = lc;
+                if (rc < size && comparator.compare(A[rc], A[smallest]) < 0) smallest = rc;
+                if(smallest==i) {
+                    break;
+                }
+                swap(i, smallest);
+                i = smallest;
+            }
         }
     }
 
@@ -93,14 +80,13 @@ public class BinaryHeapWithComparator<T>{
      *
      * @param data
      */
-    public void insert(T data){
+    public T insert(T data){
         //Dynamic size increase.
-        if(A.length==size){
-            alterSize(A.length*2);
-        }
+        if(A.length==size) alterSize(A.length*2);
 
         A[size]=data;
-        heapUp(size++);
+        heapify(size++);
+        return data;
     }
 
     /**
@@ -108,11 +94,7 @@ public class BinaryHeapWithComparator<T>{
      * @param i
      */
     public T view(int i){
-        if(i>=size){
-            throw new IllegalArgumentException("Index out of size: " + i);
-        }
-
-        return A[i];
+        return (i<size) ? A[i] : null;
     }
 
     /**
@@ -121,15 +103,14 @@ public class BinaryHeapWithComparator<T>{
      */
     public T extract(){
         if(size==0){
-            throw new HeapEmptyException();
+            return null;
         }
 
         final T deletedNode=A[0];   A[0]=A[--size];     A[size]=null;
         heapify(0);
 
         //Dynamic size decrease.
-        if(size==A.length/4)
-            alterSize(A.length/2);
+        if(size==A.length/4) alterSize(A.length/2);
 
         return deletedNode;
     }
@@ -140,15 +121,14 @@ public class BinaryHeapWithComparator<T>{
      */
     public T delete(int i){
         if(i>=size){
-            throw new IllegalArgumentException("Index out of size: " + i);
+            return null;
         }
 
         final T deletedNode=A[i];   A[i]=A[--size];     A[size]=null;
-        if(i>0 && comparator.compare(A[i], A[parent(i)])<0) heapUp(i); else heapify(i);
+        heapify(i);
 
         //Dynamic size decrease.
-        if(size==A.length/4)
-            alterSize(A.length/2);
+        if(size==A.length/4) alterSize(A.length/2);
 
         return deletedNode;
     }
@@ -162,11 +142,11 @@ public class BinaryHeapWithComparator<T>{
      */
     public T replace(int i, T data){
         if(i>=size){
-            throw new IllegalArgumentException("Index out of size: " + i);
+            return null;
         }
 
         final T oldData=A[i];   A[i]=data;
-        if(i>0 && comparator.compare(A[i],A[parent(i)])<0) heapUp(i); else heapify(i);
+        heapify(i);
 
         return oldData;
     }
@@ -184,8 +164,7 @@ public class BinaryHeapWithComparator<T>{
      */
     public static void main(String args[]){
 
-        final BinaryHeapWithComparator<Integer> binaryHeap =
-                new BinaryHeapWithComparator<>(Comparator.comparingInt(Integer::intValue).reversed());
+        final BinaryHeap<Integer> binaryHeap = new BinaryHeap<>(Comparator.comparingInt(Integer::intValue));
 
         binaryHeap.insert(5);
         binaryHeap.insert(4);

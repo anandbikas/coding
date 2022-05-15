@@ -1,6 +1,4 @@
-package com.anand.coding.dsalgo.tree.arraybased;
-
-import com.anand.coding.dsalgo.exception.HeapEmptyException;
+package com.anand.coding.dsalgo.heap;
 
 /**
  * A BinaryHeap is a complete BinaryTree.
@@ -16,7 +14,7 @@ import com.anand.coding.dsalgo.exception.HeapEmptyException;
  *
  * Array represents level order traversal of the tree.
  *
- * TODO: Application:
+ * Applications:
  *      1. HeapSort O(nLog n).
  *
  *      2. Sort an almost sorted array.
@@ -66,35 +64,29 @@ public class BinaryMinHeap<T extends Comparable<T>>{
     private void swap(int i, int j){ T temp = A[i]; A[i] = A[j]; A[j] = temp;}
 
     /**
-     * fix MinHeap property by comparing with parent, bottom up
-     * @param child
-     */
-    private void heapUp(int child){
-
-        while (child>0 && A[child].compareTo(A[parent(child)])<0){
-            swap(child, parent(child));
-            child = parent(child);
-        }
-    }
-
-    /**
-     * fix MinHeap property by comparing with children, top down.
+     * Fix MinHeap property.
      * @param i
      */
     private void heapify(int i){
 
-        int left=left(i), right=right(i), smallest = i;
+        if(i>0 && A[i].compareTo(A[parent(i)])<0){
+            // compare with parent, bottom up.
+            for (int child=i; child > 0 && A[child].compareTo(A[parent(child)]) < 0; child = parent(child)) {
+                swap(child, parent(child));
+            }
 
-        if(left<size && A[left].compareTo(A[smallest])<0){
-            smallest = left;
-        }
-        if(right<size && A[right].compareTo(A[smallest])<0){
-            smallest = right;
-        }
-
-        if(smallest!=i){
-            swap(i, smallest);
-            heapify(smallest);
+        } else {
+            // compare with children, top down.
+            while(true) {
+                int lc = left(i), rc = right(i), smallest = i;
+                if (lc < size && A[lc].compareTo(A[smallest]) < 0) smallest = lc;
+                if (rc < size && A[rc].compareTo(A[smallest]) < 0) smallest = rc;
+                if(smallest==i) {
+                    break;
+                }
+                swap(i, smallest);
+                i = smallest;
+            }
         }
     }
 
@@ -102,14 +94,13 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      *
      * @param data
      */
-    public void insert(T data){
+    public T insert(T data){
         //Dynamic size increase.
-        if(A.length==size){
-            alterSize(A.length*2);
-        }
+        if(A.length==size) alterSize(A.length*2);
 
         A[size]=data;
-        heapUp(size++);
+        heapify(size++);
+        return data;
     }
 
     /**
@@ -117,28 +108,23 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      * @param i
      */
     public T view(int i){
-        if(i>=size){
-            throw new IllegalArgumentException("Index out of size: " + i);
-        }
-
-        return A[i];
+        return (i<size) ? A[i] : null;
     }
 
     /**
      *
      * @return
      */
-    public T extractMin(){
+    public T extract(){
         if(size==0){
-            throw new HeapEmptyException();
+            return null;
         }
 
         final T deletedNode=A[0];   A[0]=A[--size];     A[size]=null;
         heapify(0);
 
         //Dynamic size decrease.
-        if(size==A.length/4)
-            alterSize(A.length/2);
+        if(size==A.length/4) alterSize(A.length/2);
 
         return deletedNode;
     }
@@ -149,15 +135,14 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      */
     public T delete(int i){
         if(i>=size){
-            throw new IllegalArgumentException("Index out of size: " + i);
+            return null;
         }
 
         final T deletedNode=A[i];   A[i]=A[--size];     A[size]=null;
-        if(i>0 && A[i].compareTo(A[parent(i)])<0) heapUp(i); else heapify(i);
+        heapify(i);
 
         //Dynamic size decrease.
-        if(size==A.length/4)
-            alterSize(A.length/2);
+        if(size==A.length/4) alterSize(A.length/2);
 
         return deletedNode;
     }
@@ -171,11 +156,11 @@ public class BinaryMinHeap<T extends Comparable<T>>{
      */
     public T replace(int i, T data){
         if(i>=size){
-            throw new IllegalArgumentException("Index out of size: " + i);
+            return null;
         }
 
         final T oldData=A[i];   A[i]=data;
-        if(i>0 && A[i].compareTo(A[parent(i)])<0) heapUp(i); else heapify(i);
+        heapify(i);
 
         return oldData;
     }
@@ -211,13 +196,13 @@ public class BinaryMinHeap<T extends Comparable<T>>{
         // Heap now: 1, 5, 2, 6
         binaryMinHeap.display();
 
-        System.out.println(binaryMinHeap.extractMin());
+        System.out.println(binaryMinHeap.extract());
         System.out.println("Capacity: " + binaryMinHeap.getCapacity());
 
         // Heap now: 2, 5, 6
         binaryMinHeap.display();
 
-        binaryMinHeap.extractMin();
+        binaryMinHeap.extract();
 
         // Heap now: 5, 6
         binaryMinHeap.display();

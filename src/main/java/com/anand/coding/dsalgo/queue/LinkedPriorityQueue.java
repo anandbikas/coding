@@ -1,15 +1,12 @@
 package com.anand.coding.dsalgo.queue;
 
-import com.anand.coding.dsalgo.exception.QueueEmptyException;
-import com.anand.coding.dsalgo.list.Node;
-
 /**
  *
  * @param <T>
  */
 public class LinkedPriorityQueue<T> implements Queue<T> {
 
-    private Node<PriorityObject<T>> front;
+    private PNode<T> front;
     private int length=0;
 
     /**
@@ -17,7 +14,7 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      *
      * @param data
      */
-    public Node<PriorityObject<T>> insert(T data){
+    public PNode<T> insert(T data){
         return insert(data, Integer.MAX_VALUE);
     }
 
@@ -27,18 +24,17 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      * @param data
      * @param priority
      */
-    public Node<PriorityObject<T>> insert(T data, int priority){
+    public PNode<T> insert(T data, int priority){
 
-        final Node<PriorityObject<T>> newNode = new Node<>(new PriorityObject<>(data, priority));
+        final PNode<T> newNode = new PNode<>(data, priority);
 
-        if(front==null || front.data.getPriority()>priority){
+        if(front==null || front.priority>priority){
             newNode.next = front;
             front=newNode;
 
         } else {
-            Node<PriorityObject<T>> node;
-            for (node = front; node.next != null && node.next.data.getPriority() <= priority;
-                        node = node.next) ;
+            PNode<T> node;
+            for (node = front; node.next != null && node.next.priority <= priority; node = node.next) ;
             newNode.next = node.next;
             node.next = newNode;
         }
@@ -54,9 +50,9 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      */
     public T delete(){
         if(front==null){
-            throw new QueueEmptyException();
+            return null;
         }
-        T data = front.data.getObject();
+        T data = front.data;
         front = front.next;
         length--;
         return data;
@@ -77,28 +73,19 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      */
     private T deleteAtIndex(final int index){
 
-        if(front==null){
-            return null;
-        }
+        PNode<T> header = new PNode<>(null);
+        header.next = front;
 
-        if(index==1){
-            Node<PriorityObject<T>> deletedNode = front;
-            front=deletedNode.next;
-            length--;
-
-            deletedNode.next = null;
-            return deletedNode.data.getObject();
-        }
-
-        int i;
-        Node<PriorityObject<T>> node;
-        for(node=front, i=2; node.next!=null; node=node.next, i++){
+        int i=1;
+        for(PNode<T> node=header; node.next!=null; node=node.next, i++){
             if(index==i){
-                Node<PriorityObject<T>> deletedNode=node.next;
+                PNode<T> deletedNode=node.next;
                 node.next = deletedNode.next;
+                front = header.next;
                 length--;
+
                 deletedNode.next = null;
-                return deletedNode.data.getObject();
+                return deletedNode.data;
             }
         }
 
@@ -118,8 +105,8 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      *
      */
     public void display(){
-        for(Node node=front; node!=null; node=node.next){
-            System.out.print(node.data + ", ");
+        for(PNode<T> node = front; node!=null; node=node.next){
+            System.out.print(node + ", ");
         }
         System.out.println();
     }
@@ -164,9 +151,11 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
 
         priorityQueue.insert("Obj6", 6);
         priorityQueue.insert("Obj7");
-        priorityQueue.display();
 
+        //Update priority
         priorityQueue.updatePriority(3, 0);
+
+        priorityQueue.display();
 
         while(!priorityQueue.isEmpty()) {
             System.out.println(priorityQueue.delete());
