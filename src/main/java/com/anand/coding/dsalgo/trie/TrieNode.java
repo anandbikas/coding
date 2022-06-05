@@ -1,12 +1,12 @@
-package com.anand.coding.dsalgo.tree.trie;
+package com.anand.coding.dsalgo.trie;
 
 /**
  * TrieNode for dictionary
  */
-public class TrieNode<T> {
+public class TrieNode {
 
-    public TrieNode<T> [] children;
-    T value; // used to store value for key-value pair
+    TrieNode [] children;
+    Object value; //value for key-value pair
 
     public TrieNode(int size) {
         this.children = new TrieNode[size];;
