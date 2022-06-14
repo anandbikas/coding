@@ -1,5 +1,6 @@
 package com.anand.coding.dsalgo.list;
 
+import java.util.HashSet;
 import java.util.Stack;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
@@ -683,8 +684,31 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         * reversePair
         * reverseK
         * oddEven
-        * intersectingNode
      */
+
+    /**
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public Node<T> intersectingNode(Node<T> s1, Node<T> s2) {
+        HashSet<Node<T>> visited = new HashSet<>();
+
+        while(s1!=null){
+            visited.add(s1);
+            s1 = s1.next;
+        }
+
+        while(s2!=null){
+            if(visited.contains(s2)){
+                return s2;
+            }
+            s2 = s2.next;
+        }
+
+        return null;
+    }
 
     /**
      * Add 1 to the number represented by the list.
