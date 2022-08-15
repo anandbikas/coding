@@ -1,14 +1,14 @@
-package com.anand.coding.webbrowser;
+package com.anand.coding.design;
 
 /**
  * BrowserHistory : visit, back, forward
  *
  */
-public class BrowserHistory {
+public class _02_BrowserHistory {
 
     private DNode<String> cursor;
 
-    public BrowserHistory(String homepage) {
+    public _02_BrowserHistory(String homepage) {
         cursor = new DNode<>(homepage);
     }
 
@@ -40,7 +40,7 @@ public class BrowserHistory {
     }
 
     public static void main(String []args){
-        BrowserHistory browserHistory = new BrowserHistory("google.com");
+        _02_BrowserHistory browserHistory = new _02_BrowserHistory("google.com");
 
         browserHistory.visit("abc.com");
         browserHistory.visit("def.com");
