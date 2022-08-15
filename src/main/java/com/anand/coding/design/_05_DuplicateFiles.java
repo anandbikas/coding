@@ -1,4 +1,4 @@
-package com.anand.coding.os.files;
+package com.anand.coding.design;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,77 +6,78 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Discover DuplicateFileGroupList among all the files in a directory recursively.
  */
-public class DuplicateFiles {
-
-    private File file;
-    private int depth;
-
-    private Map<String, List<File>> hashFileListMap = new HashMap<>();
-    private List<DuplicateFileGroup> dfgList= new ArrayList<>();
-
-    private Set<String> processedDirectorySet = new HashSet<>();
+public class _05_DuplicateFiles {
 
     /**
      *
      * @param directoryPath
+     * @param depth
+     * @return
      */
-    public DuplicateFiles(final String directoryPath, int depth) {
-        this.depth = depth;
-        this.file = new File(directoryPath);
+    public List<DuplicateFileGroup> findDuplicates(final String directoryPath, int depth) {
+        File file = new File(directoryPath);
 
         if(!(file.exists() || file.isDirectory())){
             System.out.println("WARN: Provided path doesn't exist or is not a directory!");
-            return;
+            return new ArrayList<>();
         }
-        processDirectory(file, 0);
-        calculateDuplicateFileGroupList();
-    }
 
-    /**
-     *
-     * @return
-     */
-    public List<DuplicateFileGroup> getDfgList() {
-        return dfgList;
+        final Map<String, List<File>> hashFileListMap = new HashMap<>();
+        processDirectory(file, 0, depth, hashFileListMap, new HashSet<>());
+
+        //Create duplicateFileGroup list
+        return hashFileListMap.values().stream().filter(list -> list.size()>1)
+                .map(DuplicateFileGroup::new).collect(Collectors.toList());
+
     }
 
     /**
      *
      * @param file
      * @param currentDepth
+     * @param depth
+     * @param hashFileListMap
+     * @param processed
      */
-    private void processDirectory(File file, int currentDepth){
-		
+    private void processDirectory(File file,
+                                  final int currentDepth,
+                                  final int depth,
+                                  final Map<String, List<File>> hashFileListMap,
+                                  final Set<String> processed){
+
+        if(currentDepth>depth){
+            return;
+        }
 
         File childFile = null;
         try {
+
             //For symbolic link and loop avoidance, use real path.
             file = file.toPath().toRealPath().toFile();
-            if (processedDirectorySet.contains(file.getAbsolutePath())) {
-                return;
-            }
-            processedDirectorySet.add(file.getAbsolutePath());
+            final String absPath = file.getAbsolutePath();
 
-            if(currentDepth>depth){
+            if (processed.contains(absPath)) {
                 return;
             }
+            processed.add(absPath);
 
             String[] directoryListing = file.list();
             if (directoryListing == null) {
                 return;
             }
 			
-			System.out.println("Processing directory: " + file.getAbsolutePath() + "...");
+			System.out.println("INFO: Processing directory: " + absPath + "...");
             for (String name : directoryListing) {
 
-                childFile = new File(String.format("%s/%s", file.getAbsolutePath(),name));
+                childFile = new File(String.format("%s/%s", absPath, name));
 
                 if (childFile.isDirectory()) {
-                    processDirectory(childFile, currentDepth+1);
+                    processDirectory(childFile, currentDepth+1, depth, hashFileListMap, processed);
                 } else {
                     //create hash of the childFile and add to hashFileListMap
                     final String fileHash = getMD5Hash(childFile);
@@ -90,24 +91,8 @@ public class DuplicateFiles {
                 }
             }
         } catch (Exception e){
-            System.out.println(String.format("ERROR: error occurred while processing directory: %s, file: %s",
-                    file.getAbsolutePath(), childFile == null? null : childFile.getName()));
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public void calculateDuplicateFileGroupList(){
-
-        //Create duplicateFileGroup list
-        for(String fileHash: hashFileListMap.keySet()){
-            if(hashFileListMap.get(fileHash).size()>1) {
-                DuplicateFileGroup dfg = new DuplicateFileGroup();
-                dfg.files = hashFileListMap.get(fileHash);
-                dfgList.add(dfg);
-            }
+            System.out.printf("ERROR: error occurred while processing directory: %s, file: %s%n",
+                    file.getAbsolutePath(), childFile == null ? null : childFile.getName());
         }
     }
 
@@ -126,7 +111,7 @@ public class DuplicateFiles {
         //MessageDigest md = MessageDigest.getInstance("SHA-1");
 
         byte[] byteArray = new byte[1024];
-        int bytesCount = 0;
+        int bytesCount;
 
         try {
             //Read file data and update in message digest
@@ -157,8 +142,12 @@ public class DuplicateFiles {
     /**
      *
      */
-    private class DuplicateFileGroup {
+    private static class DuplicateFileGroup {
         List<File> files;
+
+        public DuplicateFileGroup(List<File> files) {
+            this.files = files;
+        }
 
         @Override
         public String toString() {
@@ -173,11 +162,11 @@ public class DuplicateFiles {
     public static void main(String []args) {
 
         final String directoryPath = args.length >0 ? args[0].trim() : "/tmp/bikas";
-        final int depth = args.length >1 ? Integer.valueOf(args[1].trim()) : 10;
+        final int depth = args.length >1 ? Integer.parseInt(args[1].trim()) : 10;
 
-        DuplicateFiles duplicateFiles = new DuplicateFiles(directoryPath, depth);
+        _05_DuplicateFiles duplicateFiles = new _05_DuplicateFiles();
 
-        System.out.println(duplicateFiles.getDfgList().toString()
+        System.out.println(duplicateFiles.findDuplicates(directoryPath, depth).toString()
                 .replace(", ", ",\n")
                 .replace("[", "[\n")
                 .replace("]", "\n]"));
@@ -206,16 +195,7 @@ public class DuplicateFiles {
             hashFileListMap.get(fileHash).add(file);
         }
 
-        //Create duplicateFileGroup list
-        List<DuplicateFileGroup> dfgList = new ArrayList<>();
-        for(String fileHash: hashFileListMap.keySet()){
-            if(hashFileListMap.get(fileHash).size()>1) {
-                DuplicateFileGroup dfg = new DuplicateFileGroup();
-                dfg.files = hashFileListMap.get(fileHash);
-                dfgList.add(dfg);
-            }
-        }
-
-        return dfgList;
+        return hashFileListMap.values().stream().filter(list -> list.size()>1)
+                .map(DuplicateFileGroup::new).collect(Collectors.toList());
     }
 }
