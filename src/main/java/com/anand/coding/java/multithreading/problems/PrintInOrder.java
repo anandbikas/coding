@@ -8,33 +8,36 @@ import java.util.stream.IntStream;
  */
 public class PrintInOrder{
 
-    private int x=0;
+    private Integer x=1;
+    private final AtomicInteger atomicInt = new AtomicInteger(1);
 
-    AtomicInteger atomicInt = new AtomicInteger(0);
+    private synchronized void display(int n) {
+        try {
+            while (x != n) {
+                wait();
+            }
+            System.out.println(n + " ");
 
-    private synchronized void display(int n) throws InterruptedException {
-
-        while(x!=n-1){
-            wait();
+            x++;
+            notifyAll();
+        } catch (InterruptedException ex) {
         }
-        System.out.println(n + " ");
-        //System.out.print(atomicInt.incrementAndGet() + " ");
-
-        x = (x+1)%3;
-        notifyAll();
 
     }
 
-    public static void main(String[] args){
+    private synchronized void displayAtomicInt() {
+        //Synchronized is required for the println method.
+        System.out.println(atomicInt.getAndIncrement() + " ");
+    }
+
+    public static void main(String[] args) {
+
         PrintInOrder printInOrder = new PrintInOrder();
 
-        IntStream.range(1,4).forEach(n->
-            new Thread(() -> {
-                try{
-                    printInOrder.display(n);
-                } catch(InterruptedException e){
-                }
-            }).start());
+        IntStream.rangeClosed(1, 3).forEach(n ->
+                new Thread(() -> printInOrder.display(n)).start());
 
+        IntStream.rangeClosed(1,3).forEach(n->
+                new Thread(printInOrder::displayAtomicInt).start());
     }
 }
