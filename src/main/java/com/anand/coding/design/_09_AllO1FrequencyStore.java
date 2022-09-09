@@ -1,4 +1,4 @@
-package com.anand.coding.problems.list;
+package com.anand.coding.design;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.Set;
  * getMaxKey()      : O(1)
  *
  */
-public class AllO1FrequencyStore {
+public class _09_AllO1FrequencyStore {
 
     public static class Node {
         int frequency;
@@ -29,7 +29,7 @@ public class AllO1FrequencyStore {
     private Node start, end;
     private final Map<String, Node> cacheMap = new HashMap<>();
 
-    public AllO1FrequencyStore() {
+    public _09_AllO1FrequencyStore() {
         start = new Node(0);
         end   = new Node(Integer.MAX_VALUE);
         start.next=end;
@@ -101,7 +101,7 @@ public class AllO1FrequencyStore {
      */
     public static void main(String[] args) {
 
-        AllO1FrequencyStore allOne = new AllO1FrequencyStore();
+        _09_AllO1FrequencyStore allOne = new _09_AllO1FrequencyStore();
 
         allOne.inc("a");
         allOne.inc("b");
