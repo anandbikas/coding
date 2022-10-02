@@ -57,6 +57,49 @@ public class Trie {
      * @param key
      * @return
      */
+    public Object searchWithDot(final String key) {
+        return searchWithDot(root, key, 0);
+    }
+
+    /**
+     *
+     * @param rt
+     * @param key
+     * @param x
+     * @return
+     */
+    private Object searchWithDot(TrieNode rt, final String key, int x) {
+
+        if(x==key.length()){
+            return rt.value;
+        }
+
+        char c = key.charAt(x);
+        if (c =='.') {
+            for (short i = 0; i < size; i++) {
+                TrieNode trieNode = rt.children[i];
+                if(trieNode!=null) {
+                    Object res = searchWithDot(trieNode, key, x+1);
+                    if(res!=null) {
+                        return res;
+                    }
+                }
+            }
+            return null;
+        }
+
+        TrieNode trieNode = rt.children[c - start];
+        if (trieNode == null) {
+            return null;
+        }
+        return searchWithDot(trieNode, key, x+1);
+    }
+
+    /**
+     *
+     * @param key
+     * @return
+     */
     public void delete(final String key) {
 
         TrieNode trieNode = root;
@@ -182,5 +225,8 @@ public class Trie {
 
         System.out.println("trie.search(elephant): " + trie.search("elephant"));
         System.out.println("trie.search(boot): " + trie.search("boot"));
+
+        System.out.println("trie.searchWithDot(elephant): " + trie.searchWithDot("ele.hant"));
+
     }
 }
