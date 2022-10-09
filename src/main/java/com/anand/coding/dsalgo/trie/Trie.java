@@ -151,6 +151,23 @@ public class Trie {
      * @param prefix
      * @return
      */
+    public boolean startsWith(String prefix) {
+
+        TrieNode trieNode = root;
+        for(char c: prefix.toCharArray()){
+            trieNode = trieNode.children[c-start];
+            if(trieNode==null){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param prefix
+     * @return
+     */
     public List<String> wordsWithPrefix(String prefix) {
 
         List<String> list = new ArrayList<>();
@@ -228,5 +245,6 @@ public class Trie {
 
         System.out.println("trie.searchWithDot(elephant): " + trie.searchWithDot("ele.hant"));
 
+        System.out.println("trie.startsWith(ele): " + trie.startsWith("ele"));
     }
 }
