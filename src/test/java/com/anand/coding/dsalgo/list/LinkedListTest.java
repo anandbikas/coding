@@ -15,31 +15,31 @@ public class LinkedListTest {
         list = new LinkedList<>();
 
         for(int i=6; i<=count; i++){
-            list.insertEnd(i);
+            list.add(i);
         }
 
         for(int i=5; i>0; i--){
-            list.insertStart(i);
+            list.addStart(i);
         }
     }
 
     @Test
     private void testInsertionDeletion(){
 
-        list.insertAtIndex(6, 0);
-        Assert.assertEquals(list.findIndex(0), 6);
+        list.add(6, 0);
+        Assert.assertEquals(list.indexOf(0), 6);
 
-        Assert.assertEquals(list.length(),count+1);
+        Assert.assertEquals(list.size(),count+1);
 
-        list.delete(0);
+        list.remove(0);
         Assert.assertNull(list.search(0));
 
-        list.delete(5);
-        list.insertSorted(5);
-        Assert.assertEquals(list.findIndex(5), 5);
+        list.remove(5);
+        list.addSorted(5);
+        Assert.assertEquals(list.indexOf(5), 5);
 
-        Assert.assertEquals(list.deleteEnd().data, (Integer)10);
-        Assert.assertEquals(list.deleteStart().data, (Integer)1);
+        Assert.assertEquals(list.removeLast().data, (Integer)10);
+        Assert.assertEquals(list.removeFirst().data, (Integer)1);
 
         list.display();
     }
@@ -47,27 +47,27 @@ public class LinkedListTest {
     @Test
     private void testSorting(){
 
-        list.swapAdjacentNodes(1);
-        Assert.assertEquals(list.findIndex(1), 2);
+        list.swapAdjacent(1);
+        Assert.assertEquals(list.indexOf(1), 2);
 
-        list.insertAtIndex(6, 0);
-        Assert.assertEquals(list.findIndex(0), 6);
+        list.add(6, 0);
+        Assert.assertEquals(list.indexOf(0), 6);
 
         list.bubbleSort();
-        Assert.assertEquals(list.findIndex(0), 1);
+        Assert.assertEquals(list.indexOf(0), 1);
     }
 
     @Test
     private void testMergeSort(){
 
-        list.swapAdjacentNodes(1);
-        Assert.assertEquals(list.findIndex(1), 2);
+        list.swapAdjacent(1);
+        Assert.assertEquals(list.indexOf(1), 2);
 
-        list.insertAtIndex(6, 0);
-        Assert.assertEquals(list.findIndex(0), 6);
+        list.add(6, 0);
+        Assert.assertEquals(list.indexOf(0), 6);
 
         list.mergeSort();
-        Assert.assertEquals(list.findIndex(0), 1);
+        Assert.assertEquals(list.indexOf(0), 1);
     }
 
     @Test
@@ -76,13 +76,13 @@ public class LinkedListTest {
 
         int data=10;
         for(int index=1; index<=10; index++){
-            Assert.assertEquals(list.findIndex(data--), index);
+            Assert.assertEquals(list.indexOf(data--), index);
         }
 
         list.reverse();
         data=1;
         for(int index=1; index<=10; index++){
-            Assert.assertEquals(list.findIndex(data++), index);
+            Assert.assertEquals(list.indexOf(data++), index);
         }
 
     }
@@ -103,15 +103,15 @@ public class LinkedListTest {
     @Test
     private void testNodeIndexes(){
 
-        Assert.assertEquals(list.minValueNode().data, (Integer)1);
-        Assert.assertEquals(list.maxValueNode().data, (Integer)10);
+        Assert.assertEquals(list.min().data, (Integer)1);
+        Assert.assertEquals(list.max().data, (Integer)10);
 
         Assert.assertEquals(list.kthNodeFromEnd(7), list.search(4));
 
-        Assert.assertEquals(list.findIndex(list.getMiddleNode().data), 6);
+        Assert.assertEquals(list.indexOf(list.getMiddleNode().data), 6);
 
-        list.insertEnd(11);
-        Assert.assertEquals(list.findIndex(list.getMiddleNode().data), 6);
+        list.add(11);
+        Assert.assertEquals(list.indexOf(list.getMiddleNode().data), 6);
     }
 
     @Test
@@ -123,16 +123,16 @@ public class LinkedListTest {
         LinkedList<Integer> list1 = new LinkedList<>();
 
         for(int i=5; i>0; i--){
-            list1.insertStart(i);
+            list1.addStart(i);
         }
 
         for(int i=1; i<=5; i++){
-            list1.insertStart(i);
+            list1.addStart(i);
         }
         Assert.assertTrue(list1.isPalindromeUsingStack());
         Assert.assertTrue(list1.isPalindrome());
         Assert.assertTrue(list1.isPalindromeRec());
 
-        Assert.assertEquals(list.length(),count);
+        Assert.assertEquals(list.size(),count);
     }
 }
