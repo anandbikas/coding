@@ -688,12 +688,71 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         start=null;
     }
 
-    /* TODO:
-        *
-        * reversePair
-        * reverseK
-        * oddEven
+    /**
+     *
      */
+    public void reversePairs() {
+        if(start==null) {
+            return;
+        }
+        Node<T> newStart = start.next;
+
+        Node<T> header = new Node<>(null);
+        header.next = start;
+
+        for(; header.next!=null && header.next.next!=null;){
+            Node<T> a = header.next;
+            Node<T> b = a.next;
+            a.next = b.next;
+            b.next = a;
+            header.next=b;
+            header = a;
+        }
+
+        if(newStart!=null){
+            start = newStart;
+        }
+    }
+
+    /**
+     *
+     */
+    public void reverseKGroup(int k) {
+
+        Node<T> header = new Node<>(null);
+        header.next = start;
+
+        Node<T> s=start;
+        while(s!=null) {
+            Node<T> kThNode = s;
+            for (int i=1; i < k && kThNode != null; i++, kThNode = kThNode.next);
+            if(kThNode==null) {
+                header.next = s;
+                break;
+            }
+
+            Node<T> nextS = kThNode.next;
+            kThNode.next = null;
+
+            if(s==start){
+                start = kThNode;
+            } else {
+                header.next = kThNode;
+            }
+            header = s;
+
+            Node<T> node = s;
+            s=null;
+            while(node!=null ){
+                Node<T> temp = node.next;
+                node.next = s;
+                s=node;
+                node=temp;
+            }
+
+            s = nextS;
+        }
+    }
 
     /**
      *
@@ -850,6 +909,14 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         LinkedList<Integer> linkedList = new LinkedList<>();
         linkedList.mergeKSortedLists(list);
         linkedList.display();
+
+        linkedList.reversePairs();
+        linkedList.display();
+        System.out.println();
+
+        linkedList.reverseKGroup(4);
+        linkedList.display();
+        System.out.println();
 
         //Test addOne to the number list, 939
         LinkedList<Integer> numberList = new LinkedList<>();
