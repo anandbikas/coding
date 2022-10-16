@@ -660,6 +660,29 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     /**
      *
+     * @param k
+     */
+    public void removeKthNodeFromEnd(final int k){
+
+        Node<T> node = start;
+        for(int i=1; node!=null && i<k; node=node.next, i++);
+
+        if(node!=null){
+            Node<T> prevOfKth = null;
+            Node<T> kthNodeFromEnd = start;
+            for(; node.next!=null; node=node.next, prevOfKth=kthNodeFromEnd, kthNodeFromEnd=kthNodeFromEnd.next);
+
+            if(prevOfKth!=null){
+                prevOfKth.next = kthNodeFromEnd.next;
+            }
+            if(kthNodeFromEnd==start){
+                start = kthNodeFromEnd.next;
+            }
+        }
+    }
+
+    /**
+     *
      */
     public void resetList(){
         start=null;
@@ -835,6 +858,9 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         numberList.addStart(9);
         numberList.display();
         numberList.addOne();
+        numberList.display();
+
+        numberList.removeKthNodeFromEnd(2);
         numberList.display();
     }
 }
