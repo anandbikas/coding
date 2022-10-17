@@ -934,6 +934,23 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     /**
      *
      */
+    public void deleteDuplicatesSorted(){
+
+        Node<T> header = new Node<>(null);
+        Node<T> end = header;
+
+        for(Node<T> node=start; node!=null; node=node.next){
+            if(!node.data.equals(end.data)){
+                end=end.next=node;
+            }
+        }
+        end.next=null;
+        start = header.next;
+    }
+
+    /**
+     *
+     */
     public void deleteAllDuplicatesSorted(){
 
         Node<T> header = new Node<>(null);
@@ -1014,6 +1031,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         l6.display();
 
         LinkedList<Integer> l7 = new LinkedList<>();
+        Arrays.stream(new int[]{1,2,2,3,3,4,5,5,6}).forEach(l7::add);
+        l7.display();
+        l7.deleteDuplicatesSorted();
+        l7.display();
+
+        l7 = new LinkedList<>();
         Arrays.stream(new int[]{1,2,2,3,3,4,5,5,6}).forEach(l7::add);
         l7.display();
         l7.deleteAllDuplicatesSorted();
