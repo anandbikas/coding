@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.list;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
@@ -911,6 +912,22 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         temp.next = null;
     }
 
+    public void deleteDuplicates(){
+        Set<T> set = new HashSet<>();
+
+        Node<T> header = new Node<>(null);
+        Node<T> end = header;
+
+        for(Node<T> node=start; node!=null; node=node.next){
+            if(!set.contains(node.data)){
+                set.add(node.data);
+                end = end.next = node;
+            }
+        }
+        end.next = null;
+        start = header.next;
+    }
+
     /**
      *
      * @param args
@@ -966,5 +983,11 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         l5.display();
         l5.insertionSort();
         l5.display();
+
+        LinkedList<Integer> l6 = new LinkedList<>();
+        Arrays.stream(new int[]{1,4,2,2,3,4}).forEach(l6::add);
+        l6.display();
+        l6.deleteDuplicates();
+        l6.display();
     }
 }
