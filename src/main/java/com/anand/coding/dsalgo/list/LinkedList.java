@@ -484,6 +484,41 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     /**
      *
+     */
+    public void reverse(int left, int right){
+
+        Node<T> header = new Node<>(null);
+        header.next = start;
+
+        int i=1;
+        for(Node<T> node1=header; node1.next!=null; node1=node1.next, i++){
+            if(i==left) {
+                int j=i;
+                for(Node<T> node2=node1.next; node2!=null; node2=node2.next, j++) {
+                    if(j==right){
+                        Node<T> node3 = node2.next;
+                        node2.next = null;
+
+                        // Reverse the sub list from node1.next to node2
+                        Node<T> node = node1.next;
+                        Node<T> s = node3;
+                        while(node!=null) {
+                            Node<T> temp = node.next;
+                            node.next = s;
+                            s=node;
+                            node=temp;
+                        }
+                        node1.next = s;
+                        break;
+                    }
+                }
+            }
+        }
+        start = header.next;
+    }
+
+    /**
+     *
      * @return
      */
     public Node<T> getMiddleNode(){
@@ -1041,5 +1076,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         l7.display();
         l7.deleteAllDuplicatesSorted();
         l7.display();
+
+        l7 = new LinkedList<>();
+        Arrays.stream(new int[]{1,2,2,3,3,4,5,5,6}).forEach(l7::add);
+        l7.display();
+        l7.reverse(3,6);
+        l7.display();
+
     }
 }
