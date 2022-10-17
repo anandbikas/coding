@@ -912,6 +912,9 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         temp.next = null;
     }
 
+    /**
+     *
+     */
     public void deleteDuplicates(){
         Set<T> set = new HashSet<>();
 
@@ -925,6 +928,26 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             }
         }
         end.next = null;
+        start = header.next;
+    }
+
+    /**
+     *
+     */
+    public void deleteAllDuplicatesSorted(){
+
+        Node<T> header = new Node<>(null);
+        Node<T> end = header;
+
+        Node<T> node=start;
+        for(; node!=null && node.next!=null; node=node.next){
+            if(node.data.equals(node.next.data)){
+                for(;node.next!=null && node.data.equals(node.next.data); node=node.next);
+            } else {
+                end=end.next=node;
+            }
+        }
+        end.next=node;
         start = header.next;
     }
 
@@ -989,5 +1012,11 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         l6.display();
         l6.deleteDuplicates();
         l6.display();
+
+        LinkedList<Integer> l7 = new LinkedList<>();
+        Arrays.stream(new int[]{1,2,2,3,3,4,5,5,6}).forEach(l7::add);
+        l7.display();
+        l7.deleteAllDuplicatesSorted();
+        l7.display();
     }
 }
