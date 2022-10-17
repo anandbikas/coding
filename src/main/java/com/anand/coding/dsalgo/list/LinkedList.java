@@ -105,6 +105,31 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     /**
      *
+     */
+    public void insertionSort() {
+
+        if(start==null) {
+            return;
+        }
+        Node<T> header = new Node<T>(null);
+        header.next = start;
+        start = start.next;
+        header.next.next=null;
+
+        while (start!=null) {
+            Node<T> newNode = start;
+            start = start.next;
+
+            Node<T> node;
+            for (node = header; node.next != null && node.next.data.compareTo(newNode.data) < 0; node = node.next) ;
+            newNode.next = node.next;
+            node.next = newNode;
+        }
+        start = header.next;
+    }
+
+    /**
+     *
      * @return
      */
     public Node<T> removeFirst(){
@@ -935,5 +960,11 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         l4.display();
         l4.mergeSort();
         l4.display();
+
+        LinkedList<Integer> l5 = new LinkedList<>();
+        Arrays.stream(new int[]{4,2,1,3}).forEach(l5::add);
+        l5.display();
+        l5.insertionSort();
+        l5.display();
     }
 }
