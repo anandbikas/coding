@@ -362,7 +362,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         Node<T> header = new Node<>(null);
 
         Node<T> end = header;
-        while(start1 != null && start2 !=null){
+        while(start1 != null && start2 != null){
             if(start1.compareTo(start2) <=0){
                 end = end.next = start1;
                 start1= start1.next;
@@ -396,7 +396,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     /**
      *
      */
-    public Node<T> mergeSort(Node<T> start, int length){
+    private Node<T> mergeSort(Node<T> start, int length){
 
         // List is empty or has only one element
         if(start == null || start.next==null){
@@ -413,8 +413,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         Node<T> list2 = mid.next;
         mid.next = null;
 
-        mergeSort(list1, middle);
-        mergeSort(list2, length-middle);
+        list1 = mergeSort(list1, middle);
+        list2 = mergeSort(list2, length-middle);
         return mergeAsSorted(list1, list2);
     }
 
@@ -929,5 +929,11 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         numberList.removeKthNodeFromEnd(2);
         numberList.display();
+
+        LinkedList<Integer> l4 = new LinkedList<>();
+        Arrays.stream(new int[]{4,2,1,3}).forEach(l4::add);
+        l4.display();
+        l4.mergeSort();
+        l4.display();
     }
 }
