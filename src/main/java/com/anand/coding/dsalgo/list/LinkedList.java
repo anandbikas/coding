@@ -538,6 +538,34 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      *
      * @return
      */
+    public Node<T> removeMiddleNode() {
+        if(start==null) {
+            return null;
+        }
+
+        Node<T> header = new Node<>(null);
+        header.next = start;
+        Node<T> mid = header;
+
+        Node<T> slowPointer, fastPointer;
+
+        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.next!=null; ) {
+            mid = slowPointer;
+            slowPointer=slowPointer.next;
+            fastPointer=fastPointer.next.next;
+        }
+
+        mid.next = slowPointer.next;
+        start = header.next;
+
+        slowPointer.next = null;
+        return slowPointer;
+    }
+
+    /**
+     *
+     * @return
+     */
     public boolean isPalindrome(){
         if(start==null || start.next==null){
             return true;
@@ -1081,6 +1109,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         Arrays.stream(new int[]{1,2,2,3,3,4,5,5,6}).forEach(l7::add);
         l7.display();
         l7.reverse(3,6);
+        l7.display();
+
+        l7 = new LinkedList<>();
+        Arrays.stream(new int[]{1,2,3}).forEach(l7::add);
+        l7.display();
+        l7.removeMiddleNode();
         l7.display();
 
     }
