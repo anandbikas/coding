@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.list;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.PriorityQueue;
@@ -1092,5 +1093,26 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         l7.removeMiddleNode();
         l7.display();
 
+    }
+
+    public static class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
+
+        public T data;
+        public Node<T> next;
+
+        public Node(T data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o!=null
+                    && this.getClass() == o.getClass()
+                    && data.equals(((Node<?>) o).data);
+        }
+
+        @Override public int compareTo(Node<T> that) { return this.data.compareTo(that.data);}
+        @Override public String toString() { return data.toString(); }
+        @Override public int hashCode() { return Objects.hash(data, next); }
     }
 }

@@ -1,7 +1,7 @@
 package com.anand.coding.dsalgo.queue;
 
 import com.anand.coding.dsalgo.exception.QueueEmptyException;
-import com.anand.coding.dsalgo.list.Node;
+import static com.anand.coding.dsalgo.list.LinkedList.Node;
 
 /**
  *
