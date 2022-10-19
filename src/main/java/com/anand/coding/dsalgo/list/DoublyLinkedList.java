@@ -1,33 +1,36 @@
 package com.anand.coding.dsalgo.list;
 
+import java.util.Objects;
+import java.util.stream.IntStream;
+
 /**
- * Generic Doubly Linked List implementation
+ * Generic Linked List implementation
+ *  To reduce start==null/end==null check complexity, use a header node with header.next=start;
+ *  and a tailer node with tailer.prev=end;
  * @param <T>
  */
-public class DoublyLinkedList<T extends Comparable<T>> {
+public class DoublyLinkedList<T extends Comparable<T>>{
 
-    private DNode<T> start;
-    private DNode<T> end;
+    private final Node<T> header = new Node<>(null);
+    private final Node<T> tailer = new Node<>(null);
+    private int size = 0;
 
-    int length=0;
+    public DoublyLinkedList() {
+        header.next=tailer;
+        tailer.prev=header;
+    }
 
     /**
      *
      * @param data
      * @return
      */
-    public DNode<T> insertStart(T data){
-
-        final DNode<T> newNode = new DNode<>(data);
-        newNode.next = start;
-        start = newNode;
-
-        if(end==null){
-            end = newNode;
-        } else{
-            newNode.next.prev= newNode;
-        }
-        length++;
+    public Node<T> addStart(T data){
+        final Node<T> newNode = new Node<>(data);
+        newNode.next = header.next;
+        newNode.prev = header;
+        newNode.next.prev = newNode.prev.next = newNode;
+        size++;
         return newNode;
     }
 
@@ -36,39 +39,13 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public DNode<T> insertEnd(T data){
-
-        final DNode<T> newNode = new DNode<>(data);
-        newNode.prev = end;
-        end = newNode;
-
-        if(start==null){
-            start=newNode;
-        } else{
-            newNode.prev.next = newNode;
-        }
-
-        length++;
+    public Node<T> add(T data){
+        final Node<T> newNode = new Node<>(data);
+        newNode.next = tailer;
+        newNode.prev = tailer.prev;
+        newNode.next.prev = newNode.prev.next = newNode;
+        size++;
         return newNode;
-    }
-
-    /**
-     *
-     * @param newNode
-     */
-    private void fixNextAndPrevInsertion(final DNode<T> newNode){
-
-        if(newNode.next==null){
-            end = newNode;
-        } else {
-            newNode.next.prev = newNode;
-        }
-
-        if(newNode.prev == null) {
-            start = newNode;
-        } else {
-            newNode.prev.next = newNode;
-        }
     }
 
     /**
@@ -77,45 +54,37 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public DNode<T> insertAtIndex(int index, T data){
+    public Node<T> add(int index, T data){
+        final Node<T> newNode = new Node<>(data);
 
-        final DNode<T> newNode = new DNode<>(data);
-        int i;
-        DNode<T> node;
-        for(node=start, i=1; node!=null && i<index; node=node.next, i++);
+        Node<T> node=header;
+        for(int i=1; node!=tailer && i<index; node=node.next, i++);
 
-        if(index==i){
-            newNode.next = node;
-            newNode.prev = node==null? end : node.prev;
-
-            fixNextAndPrevInsertion(newNode);
-
-            length++;
+        if(node!=tailer){
+            newNode.next = node.next;
+            newNode.prev = node;
+            newNode.next.prev = newNode.prev.next = newNode;
+            size++;
             return newNode;
         }
 
-        return null;
+        throw new IndexOutOfBoundsException();
     }
 
     /**
-     * insert in sorted fashion
      *
      * @param data
      * @return
      */
-    public DNode<T> insertSorted(T data){
+    public Node<T> addSorted(T data){
+        final Node<T> newNode = new Node<>(data);
 
-        final DNode<T> newNode = new DNode<>(data);
-
-        DNode<T> node;
-        for(node=start; node!=null && node.data.compareTo(data)<0; node=node.next);
-
-        newNode.next = node;
-        newNode.prev = node==null? end : node.prev;
-
-        fixNextAndPrevInsertion(newNode);
-        length++;
-
+        Node<T> node;
+        for(node=header; node.next!=tailer && node.next.data.compareTo(newNode.data)<0; node=node.next);
+        newNode.next = node.next;
+        newNode.prev = node;
+        newNode.next.prev = newNode.prev.next = newNode;
+        size++;
         return newNode;
     }
 
@@ -123,22 +92,17 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      *
      * @return
      */
-    public DNode<T> deleteStart(){
-
-        if(start==null){
+    public Node<T> removeFirst(){
+        if(header.next==tailer){
             return null;
         }
 
-        DNode<T> deletedNode = start;
-        start=deletedNode.next;
-        start.prev = null;
+        Node<T> deletedNode = header.next;
+        header.next=deletedNode.next;
+        header.next.prev=header;
+        size--;
 
-        if(start==null){
-            end = null;
-        }
-        length--;
-
-        deletedNode.next = null;
+        deletedNode.next = deletedNode.prev = null;
         return deletedNode;
     }
 
@@ -146,48 +110,18 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      *
      * @return
      */
-    public DNode<T> deleteEnd(){
-
-        if(end==null){
+    public Node<T> removeLast(){
+        if(header.next==tailer){
             return null;
         }
 
-        DNode<T> deletedNode = end;
-        end=deletedNode.prev;
-        end.next = null;
+        Node<T> deletedNode = tailer.prev;
+        tailer.prev = deletedNode.prev;
+        tailer.prev.next = tailer;
+        size--;
 
-        if(end==null){
-            start = null;
-        }
-
-        deletedNode.prev = null;
-
-        length--;
+        deletedNode.next = deletedNode.prev = null;
         return deletedNode;
-    }
-
-    /**
-     *
-     * @param deletedNode
-     */
-    public void fixNextAndPrevDeletion(final DNode<T> deletedNode){
-
-        if(deletedNode.next==null){
-            end = deletedNode.prev;
-            end.next = null;
-        } else {
-            deletedNode.next.prev = deletedNode.prev;
-        }
-
-        if(deletedNode.prev == null) {
-            start = deletedNode.next;
-            start.prev = null;
-        } else {
-            deletedNode.prev.next = deletedNode.next;
-        }
-
-        deletedNode.prev = null;
-        deletedNode.next = null;
     }
 
     /**
@@ -195,17 +129,20 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public DNode<T> delete(T data){
+    public Node<T> remove(T data){
 
-        for(DNode<T> node = start; node!=null; node=node.next){
-            if(node.data==data){
-                DNode<T> deletedNode=node;
-                fixNextAndPrevDeletion(deletedNode);
+        for(Node<T> node=header; node.next!=tailer; node=node.next){
+            if(node.next.data.equals(data)){
+                Node<T> deletedNode=node.next;
+                node.next = deletedNode.next;
+                node.next.prev = node;
+                deletedNode.next = deletedNode.prev = null;
+                size--;
 
-                length--;
                 return deletedNode;
             }
         }
+
         return null;
     }
 
@@ -214,19 +151,24 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param index
      * @return
      */
-    public DNode<T> deleteAtIndex(final int index){
+    public Node<T> removeIndex(int index){
+        if(index<1) {
+            return null;
+        }
 
-        int i;
-        DNode<T> node;
-        for(node=start, i=1; node!=null && i<index; node=node.next, i++);
+        Node<T> node=header;
+        for(int i=1; node.next!=tailer && i<index; node=node.next, i++);
 
-        if(node!=null){
-            DNode<T> deletedNode=node;
-            fixNextAndPrevDeletion(deletedNode);
+        if(node.next!=tailer){
+            Node<T> deletedNode=node.next;
+            node.next = deletedNode.next;
+            node.next.prev = node;
+            deletedNode.next = deletedNode.prev = null;
+            size--;
 
-            length--;
             return deletedNode;
         }
+
         return null;
     }
 
@@ -235,10 +177,10 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public DNode<T> search(T data){
+    public Node<T> search(T data){
 
-        DNode<T> node;
-        for(node=start; node!=null && !node.data.equals(data); node=node.next);
+        Node<T> node;
+        for(node=header.next; node!=null && !data.equals(node.data); node=node.next);
 
         return node;
     }
@@ -248,16 +190,13 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public int findIndexFromStart(T data){
+    public int indexOf(T data){
 
-        DNode<T> node;
+        Node<T> node=header.next;
         int i=1;
-        for(node=start; node!=null && !node.data.equals(data); node=node.next, i++);
+        for(; node!=tailer && !node.data.equals(data); node=node.next, i++);
 
-        if(node==null){
-            return -1;
-        }
-        return i;
+        return (node==tailer) ? -1 : i;
     }
 
     /**
@@ -265,16 +204,29 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param data
      * @return
      */
-    public int findIndexFromEnd(T data){
+    public int indexOfFromEnd(T data){
 
-        DNode<T> node;
+        Node<T> node=tailer.prev;
         int i=1;
-        for(node=end; node!=null && !node.data.equals(data); node=node.prev, i++);
+        for(; node!=null && !node.data.equals(data); node=node.prev, i++);
 
-        if(node==null){
-            return -1;
+        return (node==null) ? -1 : i;
+    }
+
+    /**
+     *
+     * @param index
+     * @return
+     */
+    public Node<T> node(int index){
+        if(index<1) {
+            return null;
         }
-        return i;
+
+        Node<T> node=header.next;
+        for(int i=1; node!=tailer && i<index; node=node.next, i++);
+
+        return node==tailer ? null : node;
     }
 
     /**
@@ -282,27 +234,12 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      * @param index
      * @return
      */
-    public DNode<T> getElementAtIndexFromStart(final int index){
+    public Node<T> nodeFromEnd(int index){
 
-        DNode<T> node;
-        int i=1;
-        for(node=start; node!=null && i<index; node=node.next, i++);
+        Node<T> node=tailer.prev;
+        for(int i=1; node!=header && i<index; node=node.prev, i++);
 
-        return node;
-    }
-
-    /**
-     *
-     * @param index
-     * @return
-     */
-    public DNode<T> getElementAtIndexFromEnd(final int index){
-
-        DNode<T> node;
-        int i=1;
-        for(node=end; node!=null && i<index; node=node.prev, i++);
-
-        return node;
+        return node==header ? null : node;
     }
 
 
@@ -311,7 +248,7 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      */
     public void display(){
         System.out.println("Linked list: ");
-        for(DNode node = start; node!=null; node=node.next){
+        for(Node<T> node=header.next; node!=tailer; node=node.next){
             System.out.print(node.data + ", ");
         }
         System.out.println();
@@ -322,7 +259,7 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      */
     public void displayReverse(){
         System.out.println("Linked list (reversed): ");
-        for(DNode node = end; node!=null; node=node.prev){
+        for(Node<T> node=tailer.prev; node!=header; node=node.prev){
             System.out.print(node.data + ", ");
         }
         System.out.println();
@@ -332,44 +269,26 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      *
      * @return
      */
-    public int length(){
-        return length;
+    public int size(){
+        return size;
     }
 
     /**
      * Swap k and k+1 th nodes if present
      * @param k
      */
-    public void swapAdjacentNodes(final int k){
+    public void swapAdjacent(final int k){
+        Node<T> node=header;
+        for(int i=1; node.next!=tailer && i<k; i++, node=node.next);
 
-        if(start==null || start.next==null){
-            return;
-        }
+        if(node.next!=tailer && node.next.next!=tailer){
+            Node<T> a = node.next;
+            Node<T> b = a.next;
+            a.next = b.next;
+            b.next = a.next.prev = a;
 
-        DNode<T> node=start;
-        for(int i=1; node.next!=null; i++, node=node.next){
-            if(k==i){
-                DNode<T> temp = node.next;
-
-                node.next = temp.next;
-
-                if(node.next==null){
-                    end=node;
-                } else {
-                    node.next.prev = node;
-                }
-
-                temp.next = node;
-                temp.prev = node.prev;
-
-                node.prev = temp;
-                if(temp.prev==null){
-                    start = temp;
-                } else {
-                    temp.prev.next = temp;
-                }
-                break;
-            }
+            b.prev = node;
+            a.prev = b.prev.next = b;
         }
     }
 
@@ -379,30 +298,19 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      */
     public void bubbleSort() {
 
-        for (int i=0; i < length; i++) {
-            DNode<T> a = start;
+        for (int i=0; i < size; i++) {
+            Node<T> a = header.next;
 
-            for(int j=0; j < length-1-i; j++){
-                DNode<T> b = a.next;
+            for(int j=0; j < size-1-i; j++){
+                Node<T> b = a.next;
 
                 if(a.compareTo(b)>0){
+                    Node<T> node = a.prev;
                     a.next = b.next;
+                    b.next = a.next.prev = a;
 
-                    if(a.next==null){
-                        end=a;
-                    } else {
-                        a.next.prev = a;
-                    }
-
-                    b.next = a;
-                    b.prev = a.prev;
-
-                    a.prev = b;
-                    if(b.prev==null){
-                        start = b;
-                    } else {
-                        b.prev.next = b;
-                    }
+                    b.prev = node;
+                    a.prev = b.prev.next = b;
                 } else {
                     a=b;
                 }
@@ -415,27 +323,36 @@ public class DoublyLinkedList<T extends Comparable<T>> {
      */
     public void reverse(){
 
-        DNode<T> node = start;
+        Node<T> node = header.next;
 
-        while(node!=null ){
-            DNode<T> temp = node.next;
+        while(node!=tailer){
+            Node<T> temp = node.next;
             node.next = node.prev;
             node.prev = temp;
-
-            node=temp;
+            node = temp;
         }
 
-        DNode<T> temp = start;
-        start = end;
-        end = temp;
+        Node<T> temp = header.next;
+        header.next = tailer.prev;
+        tailer.prev = temp;
+
+        header.next.prev = header;
+        tailer.prev.next = tailer;
     }
 
     /**
      *
      */
     public void resetList(){
-        start=null;
-        end=null;
+        header.next=tailer.prev=null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isEmpty(){
+        return(header.next==null);
     }
 
     /**
@@ -446,16 +363,15 @@ public class DoublyLinkedList<T extends Comparable<T>> {
 
         final DoublyLinkedList<Integer> list = new DoublyLinkedList<>();
 
-        for(int i=6; i<=10; i++){
-            list.insertEnd(i);
-        }
+        IntStream.rangeClosed(1,6).forEach(list::add);
         for(int i=5; i>0; i--){
-            list.insertStart(i);
+            list.addStart(i);
         }
 
-        list.insertAtIndex(6, 0);
-        list.deleteAtIndex(11);
+        list.add(6, 0);
+        list.removeIndex(11);
         System.out.println(list.search(0));
+        System.out.println(list.indexOf(0));
 
         list.display();
         list.bubbleSort();
@@ -465,15 +381,37 @@ public class DoublyLinkedList<T extends Comparable<T>> {
         list.display();
 
         list.bubbleSort();
-
-        list.swapAdjacentNodes(1);
         list.display();
 
-        list.deleteEnd();
-        list.deleteStart();
-        list.delete(5);
+        list.swapAdjacent(1);
+        list.display();
+
+        list.removeLast();
+        list.removeFirst();
+        list.remove(5);
         list.display();
 
         list.displayReverse();
+    }
+
+    public static class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
+
+        public T data;
+        public Node<T> prev, next;
+
+        public Node(T data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o!=null
+                    && this.getClass() == o.getClass()
+                    && data.equals(((Node<?>) o).data);
+        }
+
+        @Override public int compareTo(Node<T> that) { return this.data.compareTo(that.data);}
+        @Override public String toString() { return data.toString(); }
+        @Override public int hashCode() { return Objects.hash(data, next); }
     }
 }
