@@ -12,13 +12,12 @@ import java.util.List;
 
 /**
  * Generic Linked List implementation
- *
  *  To reduce start==null check complexity, use a header node with header.next=start;
  * @param <T>
  */
 public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
-    private Node<T> start;
+    private final Node<T> header = new Node<>(null);
     private int size = 0;
 
     /**
@@ -28,8 +27,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> addStart(T data){
         final Node<T> newNode = new Node<>(data);
-        newNode.next = start;
-        start = newNode;
+        newNode.next = header.next;
+        header.next = newNode;
         size++;
         return newNode;
     }
@@ -42,15 +41,10 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     public Node<T> add(T data){
         final Node<T> newNode = new Node<>(data);
 
-        Node<T> header = new Node<>(null);
-        header.next = start;
-
         Node<T> node;
         for(node=header; node.next!=null; node=node.next);
-        node.next=newNode;
+        node.next = newNode;
         size++;
-
-        start = header.next;
         return newNode;
     }
 
@@ -63,9 +57,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     public Node<T> add(int index, T data){
         final Node<T> newNode = new Node<>(data);
 
-        Node<T> header = new Node<>(null);
-        header.next = start;
-
         Node<T> node=header;
         for(int i=1; node!=null && i<index; node=node.next, i++);
 
@@ -73,8 +64,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             newNode.next = node.next;
             node.next = newNode;
             size++;
-
-            start = header.next;
             return newNode;
         }
 
@@ -86,19 +75,14 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @param data
      * @return
      */
-    public Node<T> addSorted(T data) {
+    public Node<T> addSorted(T data){
         final Node<T> newNode = new Node<>(data);
 
-        Node<T> header = new Node<>(null);
-        header.next = start;
-
         Node<T> node;
-        for (node=header; node.next != null && node.next.data.compareTo(newNode.data) < 0; node = node.next);
+        for(node=header; node.next!=null && node.next.data.compareTo(newNode.data)<0; node=node.next);
         newNode.next = node.next;
         node.next = newNode;
         size++;
-
-        start = header.next;
         return newNode;
     }
 
@@ -107,12 +91,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public Node<T> removeFirst(){
-        if(start==null){
+        if(header.next==null){
             return null;
         }
 
-        Node<T> deletedNode = start;
-        start=deletedNode.next;
+        Node<T> deletedNode = header.next;
+        header.next=deletedNode.next;
         size--;
 
         deletedNode.next = null;
@@ -124,12 +108,9 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public Node<T> removeLast(){
-        if(start==null){
+        if(header.next==null){
             return null;
         }
-
-        Node<T> header = new Node<>(null);
-        header.next = start;
 
         Node<T> node;
         for(node=header; node.next.next!=null; node=node.next);
@@ -137,7 +118,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         node.next = null;
 
         size--;
-        start = header.next;
+
+        deletedNode.next = null;
         return deletedNode;
     }
 
@@ -148,9 +130,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> remove(T data){
 
-        Node<T> header = new Node<>(null);
-        header.next = start;
-
         for(Node<T> node=header; node.next!=null; node=node.next){
             if(node.next.data.equals(data)){
                 Node<T> deletedNode=node.next;
@@ -158,7 +137,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
                 deletedNode.next = null;
                 size--;
 
-                start = header.next;
                 return deletedNode;
             }
         }
@@ -176,9 +154,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             return null;
         }
 
-        Node<T> header = new Node<>(null);
-        header.next = start;
-
         Node<T> node=header;
         for(int i=1; node.next!=null && i<index; node=node.next, i++);
 
@@ -188,7 +163,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             deletedNode.next = null;
             size--;
 
-            start = header.next;
             return deletedNode;
         }
 
@@ -203,7 +177,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     public Node<T> search(T data){
 
         Node<T> node;
-        for(node=start; node!=null && !node.data.equals(data); node=node.next);
+        for(node=header.next; node!=null && !node.data.equals(data); node=node.next);
 
         return node;
     }
@@ -215,7 +189,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public int indexOf(T data){
 
-        Node<T> node=start;
+        Node<T> node=header.next;
         int i=1;
         for(; node!=null && !node.data.equals(data); node=node.next, i++);
 
@@ -232,7 +206,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             return null;
         }
 
-        Node<T> node=start;
+        Node<T> node=header.next;
         for(int i=1; node!=null && i<index; node=node.next, i++);
 
         return node;
@@ -243,7 +217,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void display(){
         System.out.println("Linked list: ");
-        for(Node<T> node=start; node!=null; node=node.next){
+        for(Node<T> node=header.next; node!=null; node=node.next){
             System.out.print(node.data + ", ");
         }
         System.out.println();
@@ -263,8 +237,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> max(){
 
-        Node<T> maxNode=start;
-        for(Node<T> node=start; node!=null; node=node.next) {
+        Node<T> maxNode=header.next;
+        for(Node<T> node=header.next; node!=null; node=node.next) {
             if (maxNode.compareTo(node) < 0) {
                 maxNode = node;
             }
@@ -278,8 +252,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> min(){
 
-        Node<T> minNode=start;
-        for(Node<T> node=start; node!=null; node=node.next){
+        Node<T> minNode=header.next;
+        for(Node<T> node=header.next; node!=null; node=node.next){
             if(minNode.compareTo(node)>0){
                 minNode = node;
             }
@@ -292,9 +266,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @param k
      */
     public void swapAdjacent(final int k){
-        Node<T> header = new Node<>(null);
-        header.next = start;
-
         Node<T> node=header;
         for(int i=1; node.next!=null && i<k; i++, node=node.next);
 
@@ -303,10 +274,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             Node<T> b = a.next;
             a.next = b.next;
             b.next = a;
-            header.next = b;
+            node.next = b;
         }
-
-        start = header.next;
     }
 
     /**
@@ -314,7 +283,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void insertionSort() {
 
-        Node<T> header = new Node<>(null);
+        Node<T> start = header.next;
+        header.next = null;
 
         while (start!=null) {
             Node<T> newNode = start;
@@ -325,7 +295,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             newNode.next = node.next;
             node.next = newNode;
         }
-        start = header.next;
     }
 
     /**
@@ -333,12 +302,10 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      *
      */
     public void bubbleSort() {
-        Node<T> header = new Node<>(null);
-        header.next = start;
 
         for (int i=0; i < size; i++) {
-            Node<T> prevOfA = header;
-            Node<T> a = start;
+            Node<T> node = header;
+            Node<T> a = header.next;
 
             for(int j=0; j < size-1-i; j++){
                 Node<T> b = a.next;
@@ -346,15 +313,14 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
                 if(a.compareTo(b)>0){
                     a.next = b.next;
                     b.next = a;
-                    prevOfA.next = b;
-                    prevOfA=b;
+                    node.next = b;
+                    node=b;
                 } else {
-                    prevOfA=a;
+                    node=a;
                     a=b;
                 }
             }
         }
-        start = header.next;
     }
 
     /**
@@ -365,7 +331,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     private Node<T> mergeAsSorted(Node<T> start1, Node<T> start2){
 
-        Node<T> header = new Node<>(null);
+        final Node<T> header = new Node<>(null);
 
         Node<T> end = header;
         while(start1 != null && start2 != null){
@@ -396,7 +362,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public void mergeSort() {
-        this.start = mergeSort(start, size());
+        header.next = mergeSort(header.next, size());
     }
 
     /**
@@ -429,25 +395,26 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void reverse(){
 
-        Node<T> node = start;
-        start=null;
+        Node<T> node = header.next;
+        Node<T> start=null;
 
-        while(node!=null ){
+        while(node!=null){
             Node<T> temp = node.next;
             node.next = start;
-            start=node;
-            node=temp;
+            start = node;
+            node = temp;
         }
+        header.next = start;
     }
 
     /**
      *
      */
     public void reverseRec() {
-        if(start==null){
+        if(header.next==null){
             return;
         }
-        reverseRec(start).next = null;
+        reverseRec(header.next).next = null;
     }
 
     /**
@@ -457,7 +424,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     private Node<T> reverseRec(Node<T> node){
 
         if(node.next==null){
-            return start = node;
+            return header.next = node;
         }
         return reverseRec(node.next).next = node;
     }
@@ -466,9 +433,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      *
      */
     public void reverse(int left, int right){
-
-        Node<T> header = new Node<>(null);
-        header.next = start;
 
         int i=1;
         for(Node<T> node1=header; node1.next!=null; node1=node1.next, i++){
@@ -492,9 +456,9 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
                         break;
                     }
                 }
+                break;
             }
         }
-        start = header.next;
     }
 
     /**
@@ -503,15 +467,14 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> getMiddleNode(){
 
-        Node<T> slowPointer;
-        Node<T> fastPointer;
+        Node<T> slowPtr, fastPtr;
 
-        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.next!=null; ){
-            slowPointer=slowPointer.next;
-            fastPointer=fastPointer.next.next;
+        for(slowPtr=fastPtr=header.next; fastPtr!=null && fastPtr.next!=null; ){
+            slowPtr=slowPtr.next;
+            fastPtr=fastPtr.next.next;
         }
 
-        return slowPointer;
+        return slowPtr;
     }
 
     /**
@@ -519,27 +482,23 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public Node<T> removeMiddleNode() {
-        if(start==null) {
+        if(header.next==null) {
             return null;
         }
 
-        Node<T> header = new Node<>(null);
-        header.next = start;
-        Node<T> mid = header;
+        Node<T> prevOfslowPtr = header;
+        Node<T> slowPtr, fastPtr;
 
-        Node<T> slowPointer, fastPointer;
-
-        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.next!=null; ) {
-            mid = slowPointer;
-            slowPointer=slowPointer.next;
-            fastPointer=fastPointer.next.next;
+        for(slowPtr=fastPtr=header.next; fastPtr!=null && fastPtr.next!=null; ) {
+            prevOfslowPtr = slowPtr;
+            slowPtr=slowPtr.next;
+            fastPtr=fastPtr.next.next;
         }
 
-        mid.next = slowPointer.next;
-        start = header.next;
+        prevOfslowPtr.next = slowPtr.next;
 
-        slowPointer.next = null;
-        return slowPointer;
+        slowPtr.next = null;
+        return slowPtr;
     }
 
     /**
@@ -547,39 +506,36 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public boolean isPalindrome(){
+        final Node<T> start = header.next;
         if(start==null || start.next==null){
             return true;
         }
 
         boolean isPalindrome = true;
-        Node<T> prevOfSlowPointer = null;
-        Node<T> slowPointer;
-        Node<T> fastPointer;
+        Node<T> prevOfslowPtr = header;
+        Node<T> slowPtr, fastPtr;
 
-        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.next!=null; ){
-            prevOfSlowPointer = slowPointer;
-            slowPointer=slowPointer.next;
-            fastPointer=fastPointer.next.next;
+        for(slowPtr=fastPtr=start; fastPtr!=null && fastPtr.next!=null; ){
+            prevOfslowPtr = slowPtr;
+            slowPtr=slowPtr.next;
+            fastPtr=fastPtr.next.next;
         }
 
-        Node<T> middleNode=slowPointer;
-        Node<T> prevOfMiddleNode=prevOfSlowPointer;
-
-        prevOfMiddleNode.next = null;
+        prevOfslowPtr.next = null;
 
         LinkedList<T> list1 = new LinkedList<>();
-        list1.start = middleNode;
+        list1.header.next = slowPtr;
         list1.reverse();
 
         Node<T> node1, node2;
-        for(node1=this.start, node2=list1.start; node1!=null; node1=node1.next, node2=node2.next){
+        for(node1=start, node2=list1.header.next; node1!=null; node1=node1.next, node2=node2.next){
             if(!node1.equals(node2)) {
                 isPalindrome =  false;
                 break;
             }
         }
         list1.reverse();
-        prevOfMiddleNode.next = middleNode;
+        prevOfslowPtr.next = slowPtr;
         return isPalindrome;
     }
 
@@ -591,11 +547,11 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         Stack<Node<T>> stack = new Stack<>();
 
-        for(Node<T> node=start; node!=null; node=node.next){
+        for(Node<T> node=header.next; node!=null; node=node.next){
             stack.push(node);
         }
 
-        for(Node<T> node=start; node!=null; node=node.next){
+        for(Node<T> node=header.next; node!=null; node=node.next){
             if(!stack.pop().equals(node)) {
                 return false;
             }
@@ -608,23 +564,22 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public boolean isPalindromeRec() {
-        LinkedList<T> list = new LinkedList<>();
-        list.start = start;
-        return isPalindromeRec(list, start);
+        final NodeHolder leftNodeHolder = new NodeHolder(header.next);
+        return isPalindromeRec(leftNodeHolder, header.next);
     }
 
     /**
      *
      * @return
      */
-    private boolean isPalindromeRec(LinkedList<T> list, Node<T> rightNode){
+    private boolean isPalindromeRec(final NodeHolder leftNode, Node<T> rightNode){
         if(rightNode==null){
             return true;
         }
 
-        boolean isPalindrome = isPalindromeRec(list, rightNode.next)
-                                    && list.start.equals(rightNode);
-        list.start = list.start.next;
+        boolean isPalindrome = isPalindromeRec(leftNode, rightNode.next)
+                                    && leftNode.node.equals(rightNode);
+        leftNode.node = leftNode.node.next;
         return isPalindrome;
     }
 
@@ -635,14 +590,13 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public boolean hasLoop(){
 
-        Node<T> slowPointer;
-        Node<T> fastPointer;
+        Node<T> slowPtr,fastPtr;
 
-        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.next!=null; ){
-            slowPointer=slowPointer.next;
-            fastPointer=fastPointer.next.next;
+        for(slowPtr=fastPtr=header.next; fastPtr!=null && fastPtr.next!=null; ){
+            slowPtr=slowPtr.next;
+            fastPtr=fastPtr.next.next;
 
-            if(slowPointer==fastPointer){
+            if(slowPtr==fastPtr){
                 return true;
             }
         }
@@ -655,17 +609,15 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> getStartNodeOfLoop(){
 
-        Node<T> slowPointer;
-        Node<T> fastPointer;
+        Node<T> slowPtr, fastPtr;
 
-        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.next!=null; ){
-            slowPointer=slowPointer.next;
-            fastPointer=fastPointer.next.next;
+        for(slowPtr=fastPtr=header.next; fastPtr!=null && fastPtr.next!=null; ){
+            slowPtr=slowPtr.next;
+            fastPtr=fastPtr.next.next;
 
-            if(slowPointer==fastPointer){
-                for(slowPointer=start; slowPointer!=fastPointer;
-                        slowPointer=slowPointer.next,fastPointer=fastPointer.next);
-                return slowPointer;
+            if(slowPtr==fastPtr){
+                for(slowPtr=header.next; slowPtr!=fastPtr; slowPtr=slowPtr.next,fastPtr=fastPtr.next);
+                return slowPtr;
             }
         }
         return null;
@@ -677,15 +629,14 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public int getLoopLength(){
 
-        Node<T> slowPointer;
-        Node<T> fastPointer;
+        Node<T> slowPtr, fastPtr;
 
         int loopLength=0;
-        for(slowPointer=fastPointer=start; fastPointer!=null && fastPointer.next!=null; loopLength++){
-            slowPointer=slowPointer.next;
-            fastPointer=fastPointer.next.next;
+        for(slowPtr=fastPtr=header.next; fastPtr!=null && fastPtr.next!=null; loopLength++){
+            slowPtr=slowPtr.next;
+            fastPtr=fastPtr.next.next;
 
-            if(slowPointer==fastPointer){
+            if(slowPtr==fastPtr){
                return loopLength+1;
             }
         }
@@ -713,11 +664,11 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public Node<T> kthNodeFromEnd(final int k){
 
-        Node<T> node = start;
+        Node<T> node = header.next;
         for(int i=1; node!=null && i<k; node=node.next, i++);
 
         if(node!=null){
-            Node<T> kthNodeFromEnd = start;
+            Node<T> kthNodeFromEnd = header.next;
             for(; node.next!=null; node=node.next, kthNodeFromEnd=kthNodeFromEnd.next);
 
             return kthNodeFromEnd;
@@ -730,55 +681,51 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      *
      * @param k
      */
-    public void removeKthNodeFromEnd(final int k){
+    public Node<T> removeKthNodeFromEnd(final int k){
 
-        Node<T> node = start;
+        Node<T> node = header.next;
         for(int i=1; node!=null && i<k; node=node.next, i++);
 
         if(node!=null){
-            Node<T> prevOfKth = null;
-            Node<T> kthNodeFromEnd = start;
+            Node<T> prevOfKth = header;
+            Node<T> kthNodeFromEnd = header.next;
             for(; node.next!=null; node=node.next, prevOfKth=kthNodeFromEnd, kthNodeFromEnd=kthNodeFromEnd.next);
 
-            if(prevOfKth!=null){
-                prevOfKth.next = kthNodeFromEnd.next;
-            }
-            if(kthNodeFromEnd==start){
-                start = kthNodeFromEnd.next;
-            }
+            prevOfKth.next = kthNodeFromEnd.next;
+            kthNodeFromEnd.next = null;
+            return kthNodeFromEnd;
         }
+
+        return null;
     }
 
     /**
      *
      */
     public void resetList(){
-        start=null;
+        header.next=null;
     }
 
     /**
      *
      */
     public void reversePairs() {
-        if(start==null) {
+        if(header.next==null) {
             return;
         }
-        Node<T> newStart = start.next;
+        Node<T> _2ndNode = header.next.next;
 
-        Node<T> header = new Node<>(null);
-        header.next = start;
-
-        for(; header.next!=null && header.next.next!=null;){
-            Node<T> a = header.next;
+        for(Node<T> node = header; node.next!=null && node.next.next!=null;){
+            Node<T> a = node.next;
             Node<T> b = a.next;
             a.next = b.next;
             b.next = a;
-            header.next=b;
-            header = a;
+            node.next=b;
+            node = a;
         }
 
-        if(newStart!=null){
-            start = newStart;
+        if(_2ndNode!=null){
+            header.next = _2ndNode;
         }
     }
 
@@ -787,13 +734,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void reverseKGroup(int k) {
 
-        Node<T> header = new Node<>(null);
         Node<T> end = header;
 
-        Node<T> s=start;
+        Node<T> s=header.next;
         while(s!=null) {
             Node<T> kThNode = s;
-            for (int i=1; i < k && kThNode != null; i++, kThNode = kThNode.next);
+            for (int i=1; i < k && kThNode != null; i++, kThNode=kThNode.next);
             if(kThNode==null) {
                 end.next = s;
                 break;
@@ -807,7 +753,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
             Node<T> node = s;
             s=null;
-            while(node!=null ){
+            while(node!=null){
                 Node<T> temp = node.next;
                 node.next = s;
                 s=node;
@@ -816,7 +762,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
             s = nextS;
         }
-        start = header.next;
     }
 
     /**
@@ -856,7 +801,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     public void addOne(){
 
         Node<Integer> none9Node=null;
-        for(Node<Integer> node = (Node<Integer>)start; node!=null; node=node.next){
+        for(Node<Integer> node = (Node<Integer>)header.next; node!=null; node=node.next){
             if(!node.data.equals(9)){
                 none9Node = node;
             }
@@ -864,8 +809,8 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         if(none9Node==null) {
             none9Node = new Node<>(0);
-            none9Node.next = (Node<Integer>) start;
-            start = (Node<T>) none9Node;
+            none9Node.next = (Node<Integer>) header.next;
+            header.next = (Node<T>) none9Node;
             size++;
         }
 
@@ -888,7 +833,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     private class LinkedListIterator implements Iterator<T> {
 
-        Node<T> node = start;
+        Node<T> node = header.next;
         public boolean hasNext() {
             return node!=null;
         }
@@ -909,7 +854,7 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      * @return
      */
     public boolean isEmpty(){
-        return(start==null);
+        return(header.next==null);
     }
 
 
@@ -924,31 +869,22 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         PriorityQueue<Node<T>> heap = new PriorityQueue<>(listOfLists.size());
 
         for(LinkedList<T> list: listOfLists){
-            if(list.start!=null){
-                heap.add(list.start);
+            if(list.header.next!=null){
+                heap.add(list.header.next);
             }
-            list.start=null;
+            list.header.next=null;
         }
 
-        if(heap.isEmpty()){
-            return;
-        }
-
-        start = heap.remove();
-        if(start.next!=null) {
-            heap.add(start.next);
-        }
-
-        Node<T> temp = start;
+        Node<T> end = header;
         while (!heap.isEmpty()){
-            temp.next = heap.remove();
-            temp = temp.next;
+            end.next = heap.remove();
+            end = end.next;
 
-            if(temp.next!=null){
-                heap.add(temp.next);
+            if(end.next!=null){
+                heap.add(end.next);
             }
         }
-        temp.next = null;
+        end.next = null;
     }
 
     /**
@@ -957,17 +893,15 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     public void deleteDuplicates(){
         Set<T> set = new HashSet<>();
 
-        Node<T> header = new Node<>(null);
         Node<T> end = header;
 
-        for(Node<T> node=start; node!=null; node=node.next){
+        for(Node<T> node=header.next; node!=null; node=node.next){
             if(!set.contains(node.data)){
                 set.add(node.data);
                 end = end.next = node;
             }
         }
         end.next = null;
-        start = header.next;
     }
 
     /**
@@ -975,16 +909,14 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void deleteDuplicatesSorted(){
 
-        Node<T> header = new Node<>(null);
         Node<T> end = header;
 
-        for(Node<T> node=start; node!=null; node=node.next){
+        for(Node<T> node=header.next; node!=null; node=node.next){
             if(!node.data.equals(end.data)){
                 end=end.next=node;
             }
         }
         end.next=null;
-        start = header.next;
     }
 
     /**
@@ -992,10 +924,9 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void deleteAllDuplicatesSorted(){
 
-        Node<T> header = new Node<>(null);
         Node<T> end = header;
 
-        Node<T> node=start;
+        Node<T> node=header.next;
         for(; node!=null && node.next!=null; node=node.next){
             if(node.data.equals(node.next.data)){
                 for(;node.next!=null && node.data.equals(node.next.data); node=node.next);
@@ -1004,7 +935,6 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
             }
         }
         end.next=node;
-        start = header.next;
     }
 
     /**
@@ -1115,4 +1045,12 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
         @Override public String toString() { return data.toString(); }
         @Override public int hashCode() { return Objects.hash(data, next); }
     }
+
+    private class NodeHolder {
+        Node<T> node;
+        public NodeHolder(Node<T> node) {
+            this.node = node;
+        }
+    }
+
 }
