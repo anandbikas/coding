@@ -688,15 +688,41 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
         if(node!=null){
             Node<T> prevOfKth = header;
-            Node<T> kthNodeFromEnd = header.next;
-            for(; node.next!=null; node=node.next, prevOfKth=kthNodeFromEnd, kthNodeFromEnd=kthNodeFromEnd.next);
+            for(; node.next!=null; node=node.next, prevOfKth=prevOfKth.next);
 
+            Node<T> kthNodeFromEnd = prevOfKth.next;
             prevOfKth.next = kthNodeFromEnd.next;
             kthNodeFromEnd.next = null;
             return kthNodeFromEnd;
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @param k
+     */
+    public void rotate( int k){
+        if(header.next==null){
+            return;
+        }
+
+        k%=size;
+        if(k<1) return;
+
+        Node<T> node = header.next;
+        for(int i=1; node!=null && i<k; node=node.next, i++);
+
+        if(node!=null){
+            Node<T> prevOfKth = header;
+            for(; node.next!=null; node=node.next, prevOfKth=prevOfKth.next);
+
+            Node<T> kthNodeFromEnd = prevOfKth.next;
+            prevOfKth.next = null;
+            node.next = header.next;
+            header.next=kthNodeFromEnd;
+        }
     }
 
     /**
