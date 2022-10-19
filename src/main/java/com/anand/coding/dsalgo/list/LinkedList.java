@@ -822,6 +822,39 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     /**
      *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public Node<Integer> addTwoNumbers(Node<Integer> l1, Node<Integer> l2) {
+
+        Node<Integer> resultHeader = new Node<>(null);
+        Node<Integer> l3 = resultHeader;
+
+        int rem=0,sum;
+
+        for(; !(l1==null || l2==null); l1=l1.next,l2=l2.next){
+            sum = l1.data+l2.data + rem;
+            l3 = l3.next = new Node<>(sum%10);
+            rem = sum/10;
+        }
+
+        if(l1==null) l1=l2;
+        for(; l1!=null; l1=l1.next){
+            sum = l1.data + rem;
+            l3 = l3.next = new Node<>(sum%10);
+            rem = sum/10;
+        }
+
+        if(rem>0){
+            l3.next = new Node<>(rem);
+        }
+
+        return resultHeader.next;
+    }
+
+    /**
+     *
      * @return
      */
     public Iterator<T> iterator() {
