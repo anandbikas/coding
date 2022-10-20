@@ -262,6 +262,29 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     }
 
     /**
+     *
+     */
+    public void partitionLessThanX(T x) {
+
+        Node<T> leftHeader = new Node<>(null);
+        Node<T> endLeft = leftHeader;
+
+        Node<T> endRight = header;
+
+        while(endRight.next!=null) {
+            if(endRight.next.data.compareTo(x)<0){
+                Node<T> node = endRight.next;
+                 endRight.next = node.next;
+                endLeft = endLeft.next = node;
+            } else {
+                endRight = endRight.next;
+            }
+        }
+        endLeft.next = header.next;
+        header.next = leftHeader.next;
+    }
+
+    /**
      * Swap k and k+1 th nodes if present
      * @param k
      */
