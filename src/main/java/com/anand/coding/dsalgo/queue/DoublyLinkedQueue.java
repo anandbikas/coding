@@ -1,65 +1,60 @@
 package com.anand.coding.dsalgo.queue;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+
 /**
  *
  * @param <T>
  */
 public class DoublyLinkedQueue<T> implements Queue<T> {
 
-    private Node<T> front;
-    private Node<T> rear;
-
-    private int length=0;
+    private Node<T> front, rear;
+    private int size = 0;
 
     /**
-     * Insert at end (rear).
      *
      * @param data
+     * @return
      */
-    public Node<T> insert(T data){
-
+    public Node<T> add(T data){
         final Node<T> newNode = new Node<>(data);
         if(rear==null){
             front=rear=newNode;
         } else {
-            rear.next = newNode;
-            newNode.prev = rear;
-            rear = newNode;
+            newNode.prev=rear;
+            rear=rear.next=newNode;
         }
-
-        length++;
+        size++;
         return newNode;
     }
 
     /**
-     * Delete from start(front)
      *
      * @return
      */
-    public T delete(){
+    public T remove(){
         if(front==null){
-            return null;
+            throw new NoSuchElementException();
         }
         Node<T> deletedNode = front;
-        front = front.next;
+        front = deletedNode.next;
         if(front==null){
             rear = null;
         } else {
             front.prev = null;
         }
-        length--;
-
+        size--;
         return deletedNode.data;
     }
 
     /**
-     * Move to rear
      *
      * @return
      */
     public void moveToRear(Node<T> node){
 
-        if(node == rear){
+        if(node==rear){
             return;
         }
 
@@ -73,8 +68,7 @@ public class DoublyLinkedQueue<T> implements Queue<T> {
 
         node.next = null;
         node.prev = rear;
-        rear.next = node;
-        rear = node;
+        rear = rear.next = node;
     }
 
     /**
@@ -84,7 +78,7 @@ public class DoublyLinkedQueue<T> implements Queue<T> {
      */
     public Node<T> delete(Node<T> node){
         if(front==rear){
-            front = rear = null;
+            front=rear=null;
         } else if(node == rear){
             rear=node.prev;
             rear.next=null;
@@ -92,12 +86,12 @@ public class DoublyLinkedQueue<T> implements Queue<T> {
             front=node.next;
             front.prev = null;
         } else {
-            node.prev.next=node.next;
+            node.prev.next = node.next;
             node.next.prev = node.prev;
         }
 
         node.next = node.prev =null;
-        length--;
+        size--;
         return node;
     }
 
@@ -105,8 +99,8 @@ public class DoublyLinkedQueue<T> implements Queue<T> {
      *
      * @return
      */
-    public int length(){
-       return length;
+    public int size(){
+       return size;
     }
 
 
@@ -138,21 +132,28 @@ public class DoublyLinkedQueue<T> implements Queue<T> {
 
     /**
      *
+     * @return
+     */
+    public T peek(){
+        return front==null ? null : front.data;
+    }
+
+    /**
+     *
      * @param args
      */
     public static void main(String args[]){
         Queue<Integer> queue = new DoublyLinkedQueue<>();
 
-        queue.insert(1);
-        queue.insert(2);
-        queue.insert(3);
-        queue.insert(4);
+        Arrays.stream(new int[]{1,2,3,4}).forEach(queue::add);
+        queue.display();
 
-        System.out.println(queue.delete());
+        System.out.println(queue.remove());
+        System.out.println(queue.peek());
 
-        queue.insert(5);
-        queue.delete();
-        queue.insert(6);
+        queue.add(5);
+        queue.remove();
+        queue.add(6);
         queue.display();
     }
 
@@ -164,10 +165,6 @@ public class DoublyLinkedQueue<T> implements Queue<T> {
             this.data = data;
         }
 
-        @Override
-        public String toString() {
-            return data.toString();
-        }
+        @Override public String toString() { return data.toString();}
     }
-
 }

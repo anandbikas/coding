@@ -1,21 +1,26 @@
 package com.anand.coding.dsalgo.queue;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 /**
  *
  * @param <T>
  */
 public class LinkedPriorityQueue<T> implements Queue<T> {
 
-    private PNode<T> front;
-    private int length=0;
+    private Node<T> front;
+    private int size = 0;
 
     /**
      * insert as lowest priority
      *
      * @param data
+     * @return
      */
-    public PNode<T> insert(T data){
-        return insert(data, Integer.MAX_VALUE);
+    public Node<T> add(T data){
+        return add(data, Integer.MAX_VALUE);
     }
 
     /**
@@ -24,37 +29,34 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      * @param data
      * @param priority
      */
-    public PNode<T> insert(T data, int priority){
+    public Node<T> add(T data, int priority){
 
-        final PNode<T> newNode = new PNode<>(data, priority);
+        final Node<T> newNode = new Node<>(data, priority);
 
         if(front==null || front.priority>priority){
             newNode.next = front;
             front=newNode;
-
         } else {
-            PNode<T> node;
-            for (node = front; node.next != null && node.next.priority <= priority; node = node.next) ;
+            Node<T> node;
+            for (node = front; node.next != null && node.next.priority <= priority; node = node.next);
             newNode.next = node.next;
             node.next = newNode;
         }
-
-        length++;
+        size++;
         return newNode;
     }
 
     /**
-     * Delete from start(front)
      *
      * @return
      */
-    public T delete(){
+    public T remove(){
         if(front==null){
-            return null;
+            throw new NoSuchElementException();
         }
         T data = front.data;
         front = front.next;
-        length--;
+        size--;
         return data;
     }
 
@@ -62,8 +64,8 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      *
      * @return
      */
-    public int length(){
-        return length;
+    public int size(){
+        return size;
     }
 
     /**
@@ -71,21 +73,21 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      * @param index
      * @return
      */
-    private T deleteAtIndex(final int index){
+    private Node<T> removeIndex(int index){
 
-        PNode<T> header = new PNode<>(null);
+        Node<T> header = new Node<>(null);
         header.next = front;
 
         int i=1;
-        for(PNode<T> node=header; node.next!=null; node=node.next, i++){
+        for(Node<T> node = header; node.next!=null; node=node.next, i++){
             if(index==i){
-                PNode<T> deletedNode=node.next;
+                Node<T> deletedNode=node.next;
                 node.next = deletedNode.next;
-                front = header.next;
-                length--;
-
                 deletedNode.next = null;
-                return deletedNode.data;
+                size--;
+
+                front = header.next;
+                return deletedNode;
             }
         }
 
@@ -98,14 +100,17 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
      * @param priority
      */
     public void updatePriority(int queueIndex, int priority){
-        insert(deleteAtIndex(queueIndex), priority);
+        Node<T> node = removeIndex(queueIndex);
+        if(node!=null){
+            add(node.data, priority);
+        }
     }
 
     /**
      *
      */
     public void display(){
-        for(PNode<T> node = front; node!=null; node=node.next){
+        for(Node<T> node=front; node!=null; node=node.next){
             System.out.print(node + ", ");
         }
         System.out.println();
@@ -127,39 +132,63 @@ public class LinkedPriorityQueue<T> implements Queue<T> {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
+    public T peek(){
+        return front==null ? null : front.data;
+    }
 
     /**
      *
      * @param args
      */
-    public static void main(String args[]){
+    public static void main(String [] args){
+        LinkedPriorityQueue<String> queue = new LinkedPriorityQueue<>();
 
-        LinkedPriorityQueue<String> priorityQueue = new LinkedPriorityQueue<>();
+        queue.add("Obj1", 7);
+        queue.add("Obj2", 1);
+        queue.add("Obj3", 2);
+        queue.add("Obj4", 4);
+        queue.display();
 
-        priorityQueue.insert("Obj1", 7);
-        priorityQueue.insert("Obj2", 1);
-        priorityQueue.insert("Obj3", 2);
-        priorityQueue.insert("Obj4", 4);
+        System.out.println(queue.remove());
+        System.out.println(queue.peek());
+        queue.display();
 
-        priorityQueue.display();
-
-        System.out.println(priorityQueue.delete());
-        priorityQueue.display();
-
-        priorityQueue.insert("Obj5", 2);
-        priorityQueue.display();
-
-        priorityQueue.insert("Obj6", 6);
-        priorityQueue.insert("Obj7");
+        queue.add("Obj5", 2);
+        queue.display();
+        queue.add("Obj6", 6);
+        queue.add("Obj7");
 
         //Update priority
-        priorityQueue.updatePriority(3, 0);
+        queue.updatePriority(3, 0);
+        queue.display();
 
-        priorityQueue.display();
-
-        while(!priorityQueue.isEmpty()) {
-            System.out.println(priorityQueue.delete());
+        while(!queue.isEmpty()) {
+            System.out.println(queue.remove());
         }
+        queue.display();
     }
 
+    public static class Node<T> implements Comparable<Node<T>> {
+
+        public T data;
+        public Node<T> next;
+        public int priority;
+
+        public Node(T data) {
+            this(data,Integer.MIN_VALUE);
+        }
+
+        public Node(T data, int priority) {
+            this.data = data;
+            this.priority = priority;
+        }
+
+        @Override public int compareTo(Node<T> that) {return Integer.compare(this.priority, that.priority);}
+        @Override public String toString() {return String.format("(%s,%s)", data.toString(), priority);}
+        @Override public int hashCode() {return Objects.hash(data, next, priority);}
+    }
 }

@@ -51,10 +51,10 @@ public class LRUCache<K,V> {
         } else {
             //If capacity is full, remove LRU element
             if(cacheMap.size() == capacity) {
-                cacheMap.remove(queue.delete().key);
+                cacheMap.remove(queue.remove().key);
             }
 
-            cacheMap.put(key, queue.insert(new Pair<>(key, value)));
+            cacheMap.put(key, queue.add(new Pair<>(key, value)));
         }
     }
 

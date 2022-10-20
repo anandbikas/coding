@@ -47,7 +47,7 @@ public class LFUCache<K,V> {
             if(!frequencyMap.containsKey(node.data.frequency)){
                 frequencyMap.put(node.data.frequency, new DoublyLinkedQueue<>());
             }
-            cacheMap.put(key, frequencyMap.get(node.data.frequency).insert(node.data));
+            cacheMap.put(key, frequencyMap.get(node.data.frequency).add(node.data));
 
             return node.data.value;
         }
@@ -70,10 +70,10 @@ public class LFUCache<K,V> {
         } else {
             //If capacity is full, remove LRU element
             if(cacheMap.size() == capacity) {
-                cacheMap.remove(frequencyMap.get(leastFrequency).delete().key);
+                cacheMap.remove(frequencyMap.get(leastFrequency).remove().key);
             }
             leastFrequency=1;
-            cacheMap.put(key, frequencyMap.get(1).insert(new Pair<>(key, value)));
+            cacheMap.put(key, frequencyMap.get(1).add(new Pair<>(key, value)));
 
         }
     }

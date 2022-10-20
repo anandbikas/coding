@@ -1,7 +1,7 @@
 package com.anand.coding.dsalgo.queue;
 
-import com.anand.coding.dsalgo.exception.QueueEmptyException;
-import static com.anand.coding.dsalgo.list.LinkedList.Node;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -9,55 +9,48 @@ import static com.anand.coding.dsalgo.list.LinkedList.Node;
  */
 public class LinkedQueue<T extends Comparable<T>> implements Queue<T> {
 
-    private Node<T> front;
-    private Node<T> rear;
-
-    private int length=0;
+    private Node<T> front, rear;
+    private int size = 0;
 
     /**
-     * Insert at end (rear).
      *
      * @param data
+     * @return
      */
-    public Node<T> insert(T data){
-
+    public Node<T> add(T data){
         final Node<T> newNode = new Node<>(data);
         if(rear==null){
             front=rear=newNode;
         } else {
-            rear.next = newNode;
-            rear = newNode;
+            rear=rear.next=newNode;
         }
-
-        length++;
+        size++;
         return newNode;
     }
 
     /**
-     * Delete from start(front)
      *
      * @return
      */
-    public T delete(){
+    public T remove(){
         if(front==null){
-            throw new QueueEmptyException();
+            throw new NoSuchElementException();
         }
-        Node<T> deletedNode = front;
+        T data = front.data;
         front = front.next;
         if(front==null){
             rear = null;
         }
-        length--;
-
-        return deletedNode.data;
+        size--;
+        return data;
     }
 
     /**
      *
      * @return
      */
-    public int length(){
-       return length;
+    public int size(){
+        return size;
     }
 
 
@@ -65,7 +58,7 @@ public class LinkedQueue<T extends Comparable<T>> implements Queue<T> {
      *
      */
     public void display(){
-        for(Node node=front; node!=null; node=node.next){
+        for(Node<T> node=front; node!=null; node=node.next){
             System.out.print(node.data + ", ");
         }
         System.out.println();
@@ -89,22 +82,39 @@ public class LinkedQueue<T extends Comparable<T>> implements Queue<T> {
 
     /**
      *
+     * @return
+     */
+    public T peek(){
+        return front==null ? null : front.data;
+    }
+
+    /**
+     *
      * @param args
      */
     public static void main(String args[]){
         Queue<Integer> queue = new LinkedQueue<>();
 
-        queue.insert(1);
-        queue.insert(2);
-        queue.insert(3);
-        queue.insert(4);
+        Arrays.stream(new int[]{1,2,3,4}).forEach(queue::add);
+        queue.display();
 
-        System.out.println(queue.delete());
+        System.out.println(queue.remove());
+        System.out.println(queue.peek());
 
-        queue.insert(5);
-        queue.delete();
-        queue.insert(6);
+        queue.add(5);
+        queue.remove();
+        queue.add(6);
         queue.display();
     }
 
+    public static class Node<T> {
+        public T data;
+        public Node<T> next;
+
+        public Node(T data) {
+            this.data = data;
+        }
+
+        @Override public String toString() {return data.toString();}
+    }
 }

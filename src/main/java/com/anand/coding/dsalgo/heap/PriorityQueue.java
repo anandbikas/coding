@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.heap;
 
 import com.anand.coding.dsalgo.queue.Queue;
+import java.util.Objects;
 
 /**
  * PriorityQueue implementation using BinaryMinHeap
@@ -9,15 +10,16 @@ import com.anand.coding.dsalgo.queue.Queue;
  *
  * @param <T>
  */
-public class PriorityQueue<T> extends BinaryMinHeap<PObject<T>> implements Queue<T> {
+public class PriorityQueue<T> extends BinaryMinHeap<PriorityQueue.Node<T>> implements Queue<T> {
 
     public PriorityQueue(){ super(); }
     public PriorityQueue(int size){ super(size); }
 
-    public T insert(T data){ return super.insert(new PObject<>(data)).object; }
-    public T insert(T data, int priority){ return super.insert(new PObject<>(data, priority)).object; }
-    public T delete(){ return super.extract().object; }
-    public int length(){ return getSize(); }
+    public T add(T data){ return super.insert(new Node<>(data)).data; }
+    public T add(T data, int priority){ return super.insert(new Node<>(data, priority)).data; }
+    public T remove(){ return super.extract().data; }
+    public int size(){ return getSize(); }
+    public T peek(){ throw new UnsupportedOperationException();}
 
     /**
      *
@@ -26,7 +28,7 @@ public class PriorityQueue<T> extends BinaryMinHeap<PObject<T>> implements Queue
      */
     public void updatePriority(int queueIndex, int priority){
 
-        PObject<T> object = view(queueIndex);
+        Node<T> object = view(queueIndex);
         object.priority = priority;
         replace(queueIndex, object);
     }
@@ -36,36 +38,51 @@ public class PriorityQueue<T> extends BinaryMinHeap<PObject<T>> implements Queue
      * @param args
      */
     public static void main(String [] args){
-       
-        PriorityQueue<String> priorityQueue = new PriorityQueue<>(10);
+        PriorityQueue<String> queue = new PriorityQueue<>(10);
 
-        priorityQueue.insert("Obj1", 7);
-        priorityQueue.insert("Obj2", 1);
-        priorityQueue.insert("Obj3", 2);
-        priorityQueue.insert("Obj4", 4);
+        queue.add("Obj1", 7);
+        queue.add("Obj2", 1);
+        queue.add("Obj3", 2);
+        queue.add("Obj4", 4);
+        queue.display();
 
-        priorityQueue.display();
+        System.out.println(queue.remove());
+        System.out.println(queue.peek());
+        queue.display();
 
-        System.out.println(priorityQueue.delete());
-        priorityQueue.display();
-
-        priorityQueue.insert("Obj5", 2);
-
-        priorityQueue.display();
-
-        priorityQueue.insert("Obj6", 6);
-        priorityQueue.insert("Obj7", Integer.MAX_VALUE);
-        priorityQueue.display();
+        queue.add("Obj5", 2);
+        queue.display();
+        queue.add("Obj6", 6);
+        queue.add("Obj7");
 
         //Update priority
-        priorityQueue.updatePriority(3, 0);
+        queue.updatePriority(3, 0);
+        queue.display();
 
-        priorityQueue.display();
+        while(!queue.isEmpty()) {
+            System.out.println(queue.remove());
+        }
+        queue.display();
 
-        while(!priorityQueue.isEmpty()) {
-            System.out.println(priorityQueue.delete());
+        System.out.println("Capacity: " + queue.getCapacity());
+    }
+
+    public static class Node<T> implements Comparable<Node<T>> {
+
+        public T data;
+        public int priority;
+
+        public Node(T data) {
+            this(data,Integer.MIN_VALUE);
         }
 
-        System.out.println("Capacity: " + priorityQueue.getCapacity());
+        public Node(T data, int priority) {
+            this.data = data;
+            this.priority = priority;
+        }
+
+        @Override public int compareTo(Node<T> that) {return Integer.compare(this.priority, that.priority);}
+        @Override public String toString() {return String.format("(%s,%s)", data.toString(), priority);}
+        @Override public int hashCode() {return Objects.hash(data, priority);}
     }
 }

@@ -1,75 +1,66 @@
 package com.anand.coding.dsalgo.queue;
 
-import com.anand.coding.dsalgo.exception.QueueEmptyException;
-import com.anand.coding.dsalgo.exception.QueueFullException;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 /**
  * for convenience of circular queue empty/full condition, one element is wasted.
- * So declare one extra space than the size.
+ * So declare one extra element than the size.
  * @param <T>
  */
 public class ArrayCircularQueue<T> implements Queue<T> {
 
-    private static final int DEFAULT_SIZE = 100+1;
+    private T [] A;
+    private int front=0, rear=0;
+    private int capacity = 20;
 
-    private T [] queueArr;
-
-    private int front=0;
-    private int rear=0;
-
-    /**
-     *
-     */
     public ArrayCircularQueue(){
-        this(DEFAULT_SIZE);
+        A = (T[])new Object[capacity+1];
     }
 
-    /**
-     *
-     * @param size
-     */
-    @SuppressWarnings("unchecked")
-    public ArrayCircularQueue(int size){
-        queueArr = (T[])new Object[size+1];
+    public ArrayCircularQueue(int capacity){
+        this.capacity = capacity;
+        A = (T[])new Object[capacity+1];
     }
 
     /**
      *
      * @param data
+     * @return state
      */
-    public T insert(T data){
+    public T add(T data){
         if(isFull()){
-            throw new QueueFullException();
+            throw new IllegalStateException();
         }
-        queueArr[rear] = data;
-        rear = (rear+1)%queueArr.length;
+        A[rear] = data;
+        rear = (rear+1)%A.length;
 
         return data;
     }
 
     /**
      *
-     * @return
+     * @return data
      */
-    public T delete(){
+    public T remove(){
         if(isEmpty()){
-            throw new QueueEmptyException();
+            throw new NoSuchElementException();
         }
-        T data = queueArr[front];
-        queueArr[front]=null;
-        front = (front+1)%queueArr.length;
+        T data = A[front];
+        A[front]=null;
+        front = (front+1)%A.length;
         return data;
     }
 
     /**
      *
-     * @return
+     * @return size
      */
-    public int length(){
+    public int size(){
         if(front <= rear){
             return rear-front;
         } else {
-            return queueArr.length-(front-rear);
+            return A.length-(front-rear);
         }
     }
 
@@ -77,8 +68,8 @@ public class ArrayCircularQueue<T> implements Queue<T> {
      *
      */
     public void display(){
-        for(int i=front; i!=rear; i = (i+1)%queueArr.length){
-            System.out.print(queueArr[i] + ", ");
+        for(int i=front; i!=rear; i = (i+1)%A.length){
+            System.out.print(A[i] + ", ");
         }
     }
 
@@ -95,7 +86,15 @@ public class ArrayCircularQueue<T> implements Queue<T> {
      * @return
      */
     public boolean isFull(){
-        return((rear+1)%queueArr.length==front);
+        return((rear+1)%A.length==front);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public T peek(){
+        return A[front];
     }
 
     /**
@@ -105,16 +104,15 @@ public class ArrayCircularQueue<T> implements Queue<T> {
     public static void main(String args[]){
         Queue<Integer> queue = new ArrayCircularQueue<>(5);
 
-        queue.insert(1);
-        queue.insert(2);
-        queue.insert(3);
-        queue.insert(4);
+        Arrays.stream(new int[]{1,2,3,4}).forEach(queue::add);
+        queue.display();
 
-        System.out.println(queue.delete());
+        System.out.println(queue.remove());
+        System.out.println(queue.peek());
 
-        queue.insert(5);
-        queue.delete();
-        queue.insert(6);
+        queue.add(5);
+        queue.remove();
+        queue.add(6);
         queue.display();
     }
 

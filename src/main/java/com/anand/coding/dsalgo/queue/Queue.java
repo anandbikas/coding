@@ -7,10 +7,11 @@ package com.anand.coding.dsalgo.queue;
  */
 public interface Queue<T> {
 
-    public Object insert(T data);
-    public T delete();
+    public Object add(T data);
+    public T remove();
     public boolean isEmpty();
     public boolean isFull();
     public void display();
-    public int length();
+    public int size();
+    public T peek();
 }
