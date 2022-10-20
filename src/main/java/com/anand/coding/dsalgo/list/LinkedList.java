@@ -146,6 +146,23 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     /**
      *
+     * @param data
+     * @return
+     */
+    public void removeAll(T data){
+
+        for(Node<T> node=header; node.next!=null;){
+            if(node.next.data.equals(data)){
+                node.next = node.next.next;
+                size--;
+            } else {
+                node=node.next;
+            }
+        }
+    }
+
+    /**
+     *
      * @param index
      * @return
      */
