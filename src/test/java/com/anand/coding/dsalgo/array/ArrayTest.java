@@ -16,7 +16,7 @@ public class ArrayTest {
             ArraySearch array = new ArraySearch(IntStream.rangeClosed(1, k).toArray());
 
             System.out.println("Running pivotElementIndex test for: " + array);
-            for (int i = 1; i <= array.getSize(); i++) {
+            for (int i = 1; i <= array.size(); i++) {
 
 
                 array.rotate(1);

@@ -1,8 +1,5 @@
 package com.anand.coding.dsalgo.array;
 
-import com.anand.coding.dsalgo.exception.ArrayEmptyException;
-import com.anand.coding.dsalgo.exception.ArrayFullException;
-
 import java.util.*;
 
 /**
@@ -10,40 +7,29 @@ import java.util.*;
  */
 public class Array {
 
-    protected static final int DEFAULT_CAPACITY = 100;
-
     protected int [] A;
     protected int size=0;
+    protected int capacity=20;
 
-    /**
-     *
-     */
     public Array(){
-        this(DEFAULT_CAPACITY);
-    }
-
-    /**
-     *
-     * @param capacity
-     */
-    public Array(int capacity){
         A = new int[capacity];
     }
 
-    /**
-     *
-     * @param A
-     */
+    public Array(int capacity){
+        this.capacity = capacity;
+        A = new int[capacity];
+    }
+
     public Array(int [] A){
         this.A = A;
-        size=A.length;
+        capacity=size=A.length;
     }
 
     /**
      *
      * @return
      */
-    public int getSize() {
+    public int size() {
         return size;
     }
 
@@ -51,29 +37,30 @@ public class Array {
      *
      * @param data
      */
-    public void insertEnd(final int data){
-        insert(data, size);
+    public void addEnd(int data){
+        add(size, data);
     }
 
     /**
      *
      * @param data
      */
-    public void insertStart(final int data){
-        insert(data, 0);
+    public void addStart(int data){
+        add(0, data);
     }
 
     /**
      *
+     * @param index
      * @param data
      */
-    public void insert(final int data, int index){
+    public void add(int index, int data){
         if( index<0 || index>=A.length){
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
         if(size==A.length){
-            throw new ArrayFullException();
+            throw new IllegalStateException();
         }
 
         //Make space for index position by shifting all elements to right;
@@ -102,8 +89,8 @@ public class Array {
      */
     public void insertAsSorted(int left, int right, int data) {
 
-        if(right==size-1){
-            throw new ArrayFullException();
+        if(size==A.length){
+            throw new IllegalStateException();
         }
 
         int j;
@@ -138,7 +125,7 @@ public class Array {
         }
 
         if(size==0){
-            throw new ArrayEmptyException();
+            throw new NoSuchElementException();
         }
 
         int data = A[index];
@@ -156,13 +143,8 @@ public class Array {
      */
     public void deleteDuplicates(){
 
-        if(size==0){
-            return;
-        }
-
-        int k=1;
-        for(int i=1; i<size; i++){
-
+        int k=0;
+        for(int i=0; i<size; i++){
             int j=0;
             for(; j<k && A[j]!=A[i]; j++);
             if(j==k){
@@ -197,7 +179,7 @@ public class Array {
 
         Set<Integer> set = new HashSet<>();
 
-        for(int i=0; i<A.length; i++){
+        for(int i=0; i<size; i++){
             if(set.contains(A[i])){
                 return true;
             }
@@ -210,18 +192,17 @@ public class Array {
      * If already sorted in ascending order. O(n)
      */
     public void deleteDuplicatesSortedArray(){
-
         if(size<2){
             return;
         }
 
-        int n=0;
-        for(int i=1; i<A.length; i++){
-            if(A[i]>A[n]){
-                A[++n]=A[i];
+        int k=0;
+        for(int i=1; i<size; i++){
+            if(A[i]>A[k]){
+                A[++k]=A[i];
             }
         }
-        size = n+1;
+        size = k+1;
     }
 
     /**
@@ -249,7 +230,7 @@ public class Array {
         StringBuilder sb = new StringBuilder();
         sb.append("[ ");
 
-        for (int i = 0; i<size; i++) {
+        for (int i=0; i<size; i++) {
             sb.append(A[i]).append(", ");
         }
         sb.append("]");
@@ -260,35 +241,24 @@ public class Array {
      *
      */
     public void display(){
-        System.out.println(toString());
+        System.out.println(this);
     }
 
     /**
-     *  -ve means left rotate
-     *  +ve means right rotate
+     *  Left rotate (-ve), right rotate (+ve)
      *
      * @param n
      */
     public void rotate(int n){
-
-        if(size==0 || n==0){
+        if(size==0 || n%size==0){
             return;
         }
-        if(n<0){
-            n = n*-1;
-            n = size - n%size;
-        } else {
-            n %= size;
-        }
+        n %= size;
+        if(n<0) n = size + n;
 
         int [] tempArr = new int[n];
         System.arraycopy(A, size-n, tempArr, 0, n);
         System.arraycopy(A, 0, A, n, size-n);
-
-//        int k=size-1;
-//        for(int i=size-n-1; i>=0; i--){
-//            A[k--] = A[i];
-//        }
 
         System.arraycopy(tempArr, 0, A, 0, n);
     }
