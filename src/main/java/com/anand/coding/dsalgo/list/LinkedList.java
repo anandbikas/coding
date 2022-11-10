@@ -187,6 +187,22 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
     }
 
     /**
+     * Remove a node without knowing its previous.
+     * Shift data a step left upto end.
+     * @param someNode
+     */
+    public void remove(Node<T> someNode) {
+
+        Node<T> node=new Node<>(null);
+        node.next = someNode;
+        while(node.next.next!=null){
+            node=node.next;
+            node.data = node.next.data;
+        }
+        node.next = null;
+    }
+
+    /**
      *
      * @param data
      * @return
