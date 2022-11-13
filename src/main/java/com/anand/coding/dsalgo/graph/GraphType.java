@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * GraphType Enumeration: DIRECTED/UNDIRECTED
+ * GraphType Enum: DIRECTED/UNDIRECTED
  */
 public enum GraphType {
     DIRECTED("Directed"),
@@ -12,11 +12,7 @@ public enum GraphType {
 
     private final String graphType;
 
-    /**
-     *
-     * @param graphType
-     */
-    private GraphType(final String graphType) {
+    GraphType(final String graphType) {
         this.graphType = graphType;
     }
 
@@ -27,12 +23,6 @@ public enum GraphType {
         }
     }
 
-    /**
-     * String value to graph type.
-     *
-     * @param value the graph type value to specify the type.
-     * @return GraphType
-     */
     public static GraphType fromValue(final String value) {
         if (!GRAPH_TYPE_MAP.containsKey(value)) {
             throw new IllegalArgumentException(value);
@@ -40,18 +30,10 @@ public enum GraphType {
         return GRAPH_TYPE_MAP.get(value);
     }
 
-    /**
-     *
-     * @return
-     */
     public String getValue() {
         return graphType;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String toString() {
         return graphType;

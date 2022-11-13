@@ -305,12 +305,12 @@ public class Graph<T> {
         }
 
         boolean []visited = new boolean[size];
-        boolean []visiting = new boolean[size];
+        boolean []inPathStack = new boolean[size];
 
         // In case of disconnected graph, there can be DFS forest.
         // Loop through all nodes in such cases.
         for(int u=0; u<size; u++) {
-            if(!visited[u] && isCyclicDfsRec(u, visited, visiting)){
+            if(!visited[u] && isCyclicDfsRec(u, visited, inPathStack)){
                 return true;
             }
         }
@@ -321,25 +321,25 @@ public class Graph<T> {
      *
      * @param u
      * @param visited
-     * @param visiting
+     * @param inPathStack
      * @return
      */
-    private boolean isCyclicDfsRec(int u, boolean []visited, boolean []visiting){
+    private boolean isCyclicDfsRec(int u, boolean []visited, boolean []inPathStack){
 
-        visiting[u] = true;
+        inPathStack[u] = true;
         visited[u] = true;
 
         for(Pair<Integer, Integer> v: adjListArray.get(u)){
-            if(visiting[v.key]){
+            if(inPathStack[v.key]){
                 return true;
             }
             if(!visited[v.key]) {
-                if (isCyclicDfsRec(v.key, visited, visiting)) {
+                if (isCyclicDfsRec(v.key, visited, inPathStack)) {
                     return true;
                 }
             }
         }
-        visiting[u] = false;
+        inPathStack[u] = false;
         return false;
     }
 
