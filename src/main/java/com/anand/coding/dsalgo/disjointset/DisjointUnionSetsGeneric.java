@@ -7,14 +7,13 @@ import java.util.HashMap;
  */
 public class DisjointUnionSetsGeneric<T> {
 
-    //TODO: parent and rank can be put in one hash map using object.
-    HashMap<T, T> parentMap = new HashMap<>();
-    HashMap<T, Integer> rankMap = new HashMap<>();
+    HashMap<T, T> Parent = new HashMap<>();
+    HashMap<T, Integer> Rank = new HashMap<>();
 
     public void insert(T obj){
-        if(!parentMap.containsKey(obj)){
-            parentMap.put(obj,obj);
-            rankMap.put(obj,0);
+        if(!Parent.containsKey(obj)){
+            Parent.put(obj,obj);
+            Rank.put(obj,0);
         }
     }
 
@@ -23,64 +22,62 @@ public class DisjointUnionSetsGeneric<T> {
      * @return
      */
     public int countSets(){
-        return (int)parentMap.keySet().stream().filter(k -> parentMap.get(k)==k).count();
+        return (int) Parent.keySet().stream().filter(k -> Parent.get(k)==k).count();
+    }
+
+    /**
+     * Find the representative/parent of element obj
+    */
+    public T findRec(T obj) {
+        if (Parent.get(obj) == obj) { // i itself is the representative
+            return obj;
+        }
+
+        T rep = findRec(Parent.get(obj)); // Else recursively call find on its parent
+        return Parent.put(obj, rep); // Path Compression:
     }
 
     /**
      * Find the representative of element obj
-    */
-    public T findRec(T obj) {
-
-        if (parentMap.get(obj) == obj) { // i itself is the representative
-            return obj;
-        } else { // Else recursively call find on its parent
-            T rep = findRec(parentMap.get(obj));
-
-            parentMap.put(obj, rep); // Path Compression:
-            return rep;
-        }
-    }
-
-    /**
-     * Find the representative of element i
      */
     public T find(T obj) {
 
         T rep=obj;
-        for(; rep!=parentMap.get(obj); rep=parentMap.get(rep));
+        for(; rep!=Parent.get(obj); rep=Parent.get(rep));
 
         //Path Compression:
-        for(T k=obj; k!=parentMap.get(k);) {
-            T oldParentOfK = parentMap.get(k);
-            parentMap.put(k,rep);
+        for(T k=obj; k!=Parent.get(k);) {
+            T oldParentOfK = Parent.get(k);
+            Parent.put(k,rep);
             k = oldParentOfK;
         }
         return rep;
     }
 
     /**
-     *  Unite two disjoint sets containing elements i and j respectively.
+     *  Unite two disjoint sets containing elements obj1 and obj2 respectively.
      *
      * @param obj1
      * @param obj2
      */
-    public void union(T obj1, T obj2) {
+    public boolean union(T obj1, T obj2) {
 
         T iRep = this.find(obj1);
         T jRep = this.find(obj2);
 
-        if(iRep==jRep){
-            return;
+        if(iRep==jRep) {
+            return false;
         }
 
-        if(rankMap.get(iRep) < rankMap.get(jRep)){
-            parentMap.put(iRep, jRep);
-        } else if (rankMap.get(iRep)>rankMap.get(jRep)){
-            parentMap.put(jRep, iRep);
+        if(Rank.get(iRep) < Rank.get(jRep)) {
+            Parent.put(iRep, jRep);
+        } else if (Rank.get(iRep) > Rank.get(jRep)) {
+            Parent.put(jRep, iRep);
         } else {
-            parentMap.put(iRep, jRep);
-            rankMap.put(jRep,rankMap.get(jRep)+1);
+            Parent.put(iRep, jRep);
+            Rank.put(jRep,Rank.get(jRep)+1);
         }
+        return true;
     }
 
     /**
@@ -92,9 +89,7 @@ public class DisjointUnionSetsGeneric<T> {
         // dus for 5 persons with ids: 0, 1, 2, 3 and 4
         DisjointUnionSetsGeneric<String> dus = new DisjointUnionSetsGeneric<>();
 
-        for(int i=0; i< 5; i++){
-            dus.insert("person" + i);
-        }
+        for(int i=0; i< 5; i++) dus.insert("person" + i);
 
         dus.union("person0", "person2");
         dus.union("person4", "person2");

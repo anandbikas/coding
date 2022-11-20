@@ -18,48 +18,39 @@ same set means X is related to Y either directly or indirectly.
 
 #### Operations:
 
-- **Find**: Find the representative/parent of element i.
+- **Find**: Find the representative/parent of element i
     ```java
-    class DisjointSet{
-        // Find the representative of element i
+    class DisjointSet {
         int find(int i) {
-            int rep;
-            // i itself is the representative
-            if (this.Parent[i] == i){
-                rep = i;
-            } 
-            // Else recursively call find on its parent
-            else {
-                rep =  find(this.Parent[i]);
-              
-                // Path Compression: 
-                this.Parent[i] = rep;
+            if (this.Parent[i] == i) { // i itself is the representative
+                return i;
             }
-            return rep;
+
+            int rep = find(this.Parent[i]); // Else recursively call find on its parent
+            return this.Parent[i] = rep; // Path Compression:
         }
     }
     ```
     
     **Improvement**: Path Compression (parent caching).
-    1. If the same element is used again and again we can compress the path
-       by simply changing the parent. Its like caching the parent. See the above code.
+    1. If the same element is used again and again, we can compress the path
+       by simply changing the parent. It's like caching the parent. See the above code.
     
 
 - **Union**: Unite two disjoint sets containing elements i and j respectively.
     ```java
     class DisjointSet{
+        boolean union(int i, int j) {
+            
+            int iRep = this.find(i); // Find rep of the set containing i
+            int jRep = this.find(j); // Find rep of the set containing i
 
-        //Unite two disjoint sets containing elements i and j respectively.
-        void union(int i, int j) {
-      
-            // Find representative of of the set containing i
-            int iRep = this.find(i);
-        
-            // Find representative of of the set containing i    
-            int jRep = this.find(j);
-        
-            // Replace parent of iRep to parent of jRep.
-            this.Parent[irep] = jRep;
+            if(iRep==jRep) {
+                return false;
+            }
+            
+            this.Parent[irep] = jRep; // Replace parent of iRep to parent of jRep.
+            return true;
         }
     }
     ```
@@ -75,28 +66,24 @@ same set means X is related to Y either directly or indirectly.
  
     ```java
      class DisjointSet{
- 
-         //Unite two disjoint sets containing elements i and j respectively.
-         void union(int i, int j) {
+        boolean union(int i, int j) {
        
-             // Find representative of of the set containing i
              int iRep = this.find(i);
-         
-             // Find representative of of the set containing i    
-             int jRep = this.find(j);    
-           
-             if(iRep==jRep){
-                  return;
+             int jRep = this.find(j);
+
+             if(iRep==jRep) {
+                  return false;
              }
 
-             if(Rank[iRep] < Rank [jRep]){
-                  this.parent[iRep] = jRep;
-             } else if (Rank[iRep] > Rank [jRep]){
-                  this.parent[jRep] = iRep;
+             if(Rank[iRep] < Rank[jRep]) {
+                  Parent[iRep] = jRep;
+             } else if (Rank[iRep] > Rank[jRep]) {
+                  Parent[jRep] = iRep;
              } else {
-                  this.parent[iRep] = jRep;
+                  Parent[iRep] = jRep;
                   Rank[jRep]++;
-              }
+             }
+             return true;
          }
      }
      ```

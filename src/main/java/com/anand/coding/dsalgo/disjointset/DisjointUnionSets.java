@@ -37,17 +37,15 @@ public class DisjointUnionSets {
     }
 
     /**
-     * Find the representative of element i
+     * Find the representative/parent of element i
     */
     public int findRec(int i) {
-
-        if (this.Parent[i] == i){ // i itself is the representative
+        if (this.Parent[i] == i) { // i itself is the representative
             return i;
-        } else { // Else recursively call find on its parent
-            int rep = findRec(this.Parent[i]);
-
-            return this.Parent[i] = rep; // Path Compression:
         }
+
+        int rep = findRec(this.Parent[i]); // Else recursively call find on its parent
+        return this.Parent[i] = rep; // Path Compression:
     }
 
     /**
@@ -72,24 +70,26 @@ public class DisjointUnionSets {
      *
      * @param i
      * @param j
+     * @return false if union already present, else true
      */
-    public void union(int i, int j) {
+    public boolean union(int i, int j) {
 
         int iRep = this.find(i);
         int jRep = this.find(j);
 
-        if(iRep==jRep){
-            return;
+        if(iRep==jRep) {
+            return false;
         }
 
-        if(Rank[iRep] < Rank[jRep]){
-            this.Parent[iRep] = jRep;
-        } else if (Rank[iRep] > Rank[jRep]){
-            this.Parent[jRep] = iRep;
+        if(Rank[iRep] < Rank[jRep]) {
+            Parent[iRep] = jRep;
+        } else if (Rank[iRep] > Rank[jRep]) {
+            Parent[jRep] = iRep;
         } else {
-            this.Parent[iRep] = jRep;
+            Parent[iRep] = jRep;
             Rank[jRep]++;
         }
+        return true;
     }
 
     /**
