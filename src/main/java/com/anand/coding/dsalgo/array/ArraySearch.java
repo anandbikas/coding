@@ -5,11 +5,6 @@ package com.anand.coding.dsalgo.array;
  */
 public class ArraySearch extends Array {
 
-
-    /**
-     *
-     * @param A
-     */
     public ArraySearch(int [] A){
         super(A);
     }
@@ -68,31 +63,14 @@ public class ArraySearch extends Array {
 
         while (left < right) {
             int mid = left + (right-left) / 2;
-            if (key <= A[mid]) {
-                right = mid;
-            } else {
+            if (key > A[mid]) {
                 left = mid + 1;
+            } else {
+                right = mid;
             }
         }
 
-        return (A[left] == key) ? left : -1;
-
-//        while (left <= right) {
-//            int mid = left + (right-left)/2;
-//
-//            if (key < A[mid]) {
-//                right = mid - 1;
-//            } else if(key > A[mid]){
-//                left = mid + 1;
-//            } else {
-//                if(mid>0 && key>A[mid-1]){
-//                    return mid;
-//                }
-//                right = mid-1;
-//            }
-//        }
-//        return -1;
-
+        return left==right && (A[left] == key) ? left : -1;
     }
 
     /**
@@ -115,14 +93,14 @@ public class ArraySearch extends Array {
 
         while (left < right) {
             int mid = (int)Math.ceil(left + (right-left) / 2.0);
-            if (key >= A[mid]) {
-                left = mid;
-            } else {
+            if (key < A[mid]) {
                 right = mid - 1;
+            } else {
+                left = mid;
             }
         }
 
-        return (A[left] == key) ? left : -1;
+        return left==right && (A[left] == key) ? left : -1;
     }
 
     /**
@@ -131,7 +109,7 @@ public class ArraySearch extends Array {
      * @return
      */
     public int binarySearchRec(int key) {
-        return binarySearchRec(0, size-1, key);
+        return bsRec(0, size-1, key);
     }
 
     /**
@@ -141,68 +119,63 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchRec(int left, int right, int key) {
+    public int bsRec(int left, int right, int key) {
 
         if (left > right) {
             return -1;
         }
 
         int mid = left + (right-left)/2;
-
-        if (key < A[mid]) {
-            return binarySearchRec(left, mid - 1, key);
-        }
-        if (key > A[mid]) {
-            return binarySearchRec(mid + 1, right, key);
+        if(A[mid]==key){
+            return mid;
         }
 
-        return mid;
+        return (key < A[mid]) ? bsRec(left, mid - 1, key) : bsRec(mid + 1, right, key);
     }
 
     /**
      *
      * @return
      */
-    public int getRotatedArrayPivotElementIndex() {
-        return getRotatedArrayPivotElementIndex(0, size-1);
+    public int getRotatedArrayPivotIndex() {
+        return getRotatedArrayPivotIndex(0, size-1);
     }
 
     /**
-     * Find the left most element which is less than the first element.
-     * If the array is not rotated, pivot element index will be right+1.
+     * Find Minimum in Rotated Sorted Array.
+     * Hint: Find the left most element which is less than the first element.
+     *       If not rotated, return 0
      *
      * Complexity:
      *      O(lon n) if elements are unique or firstElement>lastElement
      *      O(n) if elements are not unique
+     *          For duplicate elements:
+     *          *      3 4 3 3 3 3 ==> pivotIndex = 2
+     *          *      3 3 3 3 3 3 ==> pivotIndex = 0
+     *          *
+     *          * To make this algorithm work for duplicate elements, we ensure A[left]>A[right] by adjusting left index.
+     *          * which may take O(n) in worst case.
      *
      * @param left
      * @param right
      * @return
      */
-    public int getRotatedArrayPivotElementIndex(int left, int right) {
+    public int getRotatedArrayPivotIndex(int left, int right) {
 
-        /**
-         * For duplicate elements:
-         *      3 3 3 3 4 3 ==> pivotIndex = 5
-         *      3 4 3 3 3 3 ==> pivotIndex = 2
-         *      3 3 3 3 3 3 ==> pivotIndex = 6 (not found)
-         *
-         * To make this algorithm work for duplicate elements, we ensure A[left]>A[right] by adjusting left index.
-         * which may take O(n) in worst case.
-         */
+        // Duplicate elements workaround.
         for (; left<right && A[right] == A[left]; left++);
 
         //Binary search
         int firstElement = A[left];
         while (left <= right) {
             int mid = left + (right-left)/2;
-            if(A[mid]<firstElement){
+            if(A[mid]<firstElement) {
                 right = mid-1;
             } else {
                 left = mid+1;
             }
         }
-        return left;
+        return left%A.length;
     }
 
     /**
@@ -210,8 +183,8 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchRotatedArrayPivotBifercation(final int key) {
-        return binarySearchRotatedArrayPivotBifercation(0, size-1, key);
+    public int binarySearchRotatedArrayPivotBifurcation(final int key) {
+        return binarySearchRotatedArrayPivotBifurcation(0, size-1, key);
     }
 
     /**
@@ -222,9 +195,9 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchRotatedArrayPivotBifercation(final int left, final int right, final int key) {
+    public int binarySearchRotatedArrayPivotBifurcation(final int left, final int right, final int key) {
 
-        final int pivotElementIndex = getRotatedArrayPivotElementIndex(left, right);
+        final int pivotElementIndex = getRotatedArrayPivotIndex(left, right);
 
         return key>=A[left] ?
                 binarySearch(left, pivotElementIndex-1, key):
@@ -246,30 +219,30 @@ public class ArraySearch extends Array {
      * @param key
      * @return
      */
-    public int binarySearchRotatedArray(int left, int right, final int key){
+    public int binarySearchRotatedArray(int left, int right, final int key) {
 
         //Workaround for duplicate elements. Say A={4412344}, search 4 results into index 5.
         //If we want index from a particular side of the pivot, we can truncate duplicates from the other side.
         for (; left<right && A[right] == A[left]; right--);
 
-        while(left<=right){
+        while(left<=right) {
             int mid = left + (right-left)/2;
 
-            if(A[mid]==key){
+            if(A[mid]==key) {
                 return mid;
             }
 
-            if(A[left]<=A[mid]){
-                if (key>=A[left] && key<A[mid] ){
+            if(A[left]<=A[mid]) {
+                if (key>=A[left] && key<A[mid] ) {
                     right = mid-1;
                 } else {
                     left = mid+1;
                 }
             } else {
-                if(key>A[mid] && key<=A[right]){
+                if(key>A[mid] && key<=A[right]) {
                     left = mid +1;
                 } else {
-                    right = mid -1;
+                    right = mid-1;
                 }
             }
         }
@@ -287,15 +260,12 @@ public class ArraySearch extends Array {
 
         Integer floor = null;
 
-        for(int x: A){
-            if(x==key){
+        for(int x: A) {
+            if(x==key) {
                 return key;
             }
-            if(x>key){
-                continue;
-            }
-            if(floor==null || floor<x){
-                floor = x;
+            if(x<key && (floor==null || floor<x)) {
+              floor = x;
             }
         }
 
@@ -331,9 +301,9 @@ public class ArraySearch extends Array {
             int mid = left + (right-left)/2;
 
             if (key < A[mid]) {
-                right = mid - 1;
+                right = mid-1;
             } else if(key > A[mid]){
-                left = mid + 1;
+                left = mid+1;
             } else {
                 return key;
             }
@@ -366,14 +336,23 @@ public class ArraySearch extends Array {
         System.out.println("binarySearchLastOccurrence 3: " + array.binarySearchLastOccurrence(3));
         System.out.println();
 
+        ArraySearch array1 = new ArraySearch(new int[]{5,7,7,8,8,10});
+        System.out.println("binarySearchFirstOccurence 8: " + array1.binarySearchFirstOccurrence(8));
+        System.out.println("binarySearchLastOccurrence 8: " + array1.binarySearchLastOccurrence(8));
+        System.out.println();
+
+        array1 = new ArraySearch(new int[]{});
+        System.out.println("binarySearchFirstOccurence 8: " + array1.binarySearchFirstOccurrence(8));
+        System.out.println("binarySearchLastOccurrence 8: " + array1.binarySearchLastOccurrence(8));
+        System.out.println();
 
         array.rotate(-2);
         System.out.println("Array rotated by -2 elements: " + array);
-        System.out.println("getRotatedArrayPivotElementIndex: " + array.getRotatedArrayPivotElementIndex());
+        System.out.println("getRotatedArrayPivotElementIndex: " + array.getRotatedArrayPivotIndex());
 
         System.out.print("binarySearchRotatedArrayPivotBifercation: ");
         for (int number : B) {
-            System.out.print(array.binarySearchRotatedArrayPivotBifercation(number) + " ");
+            System.out.print(array.binarySearchRotatedArrayPivotBifurcation(number) + " ");
         }
         System.out.println();
 

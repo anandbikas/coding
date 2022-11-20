@@ -20,9 +20,9 @@ public class ArrayTest {
 
 
                 array.rotate(1);
-                int pivotElementIndex = array.getRotatedArrayPivotElementIndex();
-                System.out.println(array + " -> " + pivotElementIndex);
-                Assert.assertEquals(pivotElementIndex, i);
+                int pivotIndex = array.getRotatedArrayPivotIndex();
+                System.out.println(array + " -> " + pivotIndex);
+                Assert.assertEquals(pivotIndex, i%k);
             }
         }
     }
@@ -30,10 +30,10 @@ public class ArrayTest {
     @Test
     public void testPivotElementIndexDuplicateEntries(){
 
-        Assert.assertEquals(new ArraySearch(new int[]{3, 3, 3, 3, 4, 3}).getRotatedArrayPivotElementIndex(), 5);
-        Assert.assertEquals(new ArraySearch(new int[]{3, 4, 3, 3, 3, 3}).getRotatedArrayPivotElementIndex(), 2);
-        Assert.assertEquals(new ArraySearch(new int[]{3, 3, 3, 3, 3, 3}).getRotatedArrayPivotElementIndex(), 6);
-        Assert.assertEquals(new ArraySearch(new int[]{5,3}).getRotatedArrayPivotElementIndex(), 1);
+        Assert.assertEquals(new ArraySearch(new int[]{3, 3, 3, 3, 4, 3}).getRotatedArrayPivotIndex(), 5);
+        Assert.assertEquals(new ArraySearch(new int[]{3, 4, 3, 3, 3, 3}).getRotatedArrayPivotIndex(), 2);
+        Assert.assertEquals(new ArraySearch(new int[]{3, 3, 3, 3, 3, 3}).getRotatedArrayPivotIndex(), 0);
+        Assert.assertEquals(new ArraySearch(new int[]{5,3}).getRotatedArrayPivotIndex(), 1);
     }
 
 }
