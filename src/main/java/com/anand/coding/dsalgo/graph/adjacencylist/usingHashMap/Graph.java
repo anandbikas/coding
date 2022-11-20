@@ -3,11 +3,11 @@ package com.anand.coding.dsalgo.graph.adjacencylist.usingHashMap;
 import com.anand.coding.dsalgo.disjointset.DisjointUnionSetsGeneric;
 import com.anand.coding.dsalgo.graph.Edge;
 import com.anand.coding.dsalgo.graph.GraphType;
-import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
 import java.util.Queue;
 import java.util.ArrayDeque;
 import java.util.Stack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.anand.coding.dsalgo.graph.adjacencylist.Pair;
 
 import java.util.*;
 
@@ -17,57 +17,35 @@ import java.util.*;
  *
  * 2. In Connected graph there can be one such node from which all other nodes can be traversed.
  *
- * 3. Disconnected graph is like collection of different sub graphs.
+ * 3. Disconnected graph is like DFS forest having collection of different sub graphs.
+ *    Loop through all nodes in such cases until all are visited.
  *
  * @param <T>
  */
 public class Graph<T extends Comparable<T>> {
 
-    private HashMap<T,LinkedList<Pair<T,Integer>>> vertices;
+    private final HashMap<T,LinkedList<Pair<T,Integer>>> vertices;
+    private final GraphType type;
 
-    private GraphType type;
     private int size=0;
 
-    /**
-     *
-     */
-    public Graph(){
+    public Graph() {
         this(GraphType.UNDIRECTED);
     }
 
-    /**
-     *
-     * @param type
-     */
-    public Graph(GraphType type){
-        vertices = new HashMap<>();
+    public Graph(GraphType type) {
         this.type = type;
+        vertices = new HashMap<>();
     }
 
     /**
      *
      * @param node
      */
-    public void insert(T node){
+    public void insert(T node) {
         if(!vertices.containsKey(node)) {
             vertices.put(node, new LinkedList<>());
             size++;
-        }
-    }
-
-    /**
-     *
-     * @param u
-     * @param v
-     */
-    public void removeEdge(T u, T v){
-        if (!(vertices.containsKey(u) || vertices.containsKey(v))) {
-            throw new IllegalArgumentException();
-        }
-
-        vertices.get(u).remove(new Pair<>(v, 1));
-        if(type.equals(GraphType.UNDIRECTED)) {
-            vertices.get(v).remove(new Pair<>(u, 1));
         }
     }
 
@@ -99,45 +77,28 @@ public class Graph<T extends Comparable<T>> {
 
     /**
      *
-     * @return
+     * @param u
+     * @param v
      */
-    @Override
-    public String toString() {
-        return "Graph{" +
-                "vertices=" + vertices +
-                ", type=" + type +
-                ", size=" + size +
-                '}';
-    }
-
-    /**
-     *
-     */
-    public void display(){
-        System.out.println("Adjacency List Graph");
-
-        for(T u : vertices.keySet()){
-            System.out.print(u + " -> ");
-
-            for(Pair<T, Integer> v: vertices.get(u)){
-                System.out.print(String.format("%s, ", v.key));
-            }
-            System.out.println();
+    public void removeEdge(T u, T v) {
+        if (!(vertices.containsKey(u) || vertices.containsKey(v))) {
+            throw new IllegalArgumentException();
+        }
+        vertices.get(u).remove(new Pair<>(v, 1));
+        if (type.equals(GraphType.UNDIRECTED)) {
+            vertices.get(v).remove(new Pair<>(u, 1));
         }
     }
 
     /**
-     *
+     * Display node along with all of its adjacent nodes with weight.
      */
-    public void displayWeighted(){
+    public void display() {
         System.out.println("Adjacency List Graph");
 
         for(T u : vertices.keySet()){
             System.out.print(u + " -> ");
-
-            for(Pair<T, Integer> v: vertices.get(u)){
-                System.out.print(String.format("%s(%s), ", v.key, v.value));
-            }
+            vertices.get(u).forEach(v -> System.out.printf("%s(%s), ", vertices.get(v.key), v.value));
             System.out.println();
         }
     }
@@ -149,7 +110,7 @@ public class Graph<T extends Comparable<T>> {
      */
     public void bfsDisplay(T u) {
         System.out.println("BFS Display from node: " + u);
-        if (!vertices.containsKey(u)) {
+        if(!vertices.containsKey(u)){
             throw new IllegalArgumentException();
         }
 
@@ -159,12 +120,12 @@ public class Graph<T extends Comparable<T>> {
         queue.add(u);
         visited.add(u);
 
-        while(!queue.isEmpty()){
+        while(!queue.isEmpty()) {
             u = queue.remove();
             System.out.print(u + "  ");
 
-            for(Pair<T, Integer> v: vertices.get(u)){
-                if(!visited.contains(v.key)){
+            for(Pair<T, Integer> v: vertices.get(u)) {
+                if(!visited.contains(v.key)) {
                     queue.add(v.key);
                     visited.add(v.key);
                 }
@@ -174,7 +135,8 @@ public class Graph<T extends Comparable<T>> {
     }
 
     /**
-     * Depth First Search algorithm
+     * Depth First Search algorithm (PreOrder)
+     * For PostOrder print node after processing adjList
      *
      * @param u
      */
@@ -192,8 +154,6 @@ public class Graph<T extends Comparable<T>> {
 
         while(!stack.isEmpty()){
             u = stack.pop();
-
-            //For PostOrder printing will be done after processing adjList.
             System.out.print(u + "  ");
 
             Iterator<Pair<T, Integer>> iterator = vertices.get(u).descendingIterator();
@@ -212,24 +172,23 @@ public class Graph<T extends Comparable<T>> {
      *
      * @param u
      */
-    public void dfsDisplayPreOrderRec(T u){
+    public void dfsDisplayPreOrderRec(T u) {
         System.out.println("\nDFS Display PreOrder Recursive from node: " + u);
         if (!vertices.containsKey(u)) {
             throw new IllegalArgumentException();
         }
 
-        Set<T> visited = new HashSet<>();
-        dfsDisplayPreOrderRec(u, visited);
+        dfsDisplayPreOrderRec(u, new HashSet<>());
         System.out.println();
     }
 
     /**
+     *
      * @param u
      * @param visited
      */
-    private void dfsDisplayPreOrderRec(T u, Set<T> visited){
+    private void dfsDisplayPreOrderRec(T u, Set<T> visited) {
 
-        //For PostOrder printing will be done after processing adjList.
         System.out.print(u + "  ");
         visited.add(u);
 
@@ -241,7 +200,34 @@ public class Graph<T extends Comparable<T>> {
     }
 
     /**
-     * Use DFS to count number of disconnected sub graphs.
+     *
+     * @param node
+     */
+    public int inDegree(T node) {
+
+        //To calculate inDegrees for all nodes, take an array instead.
+        int inDegree=0;
+        for(T u : vertices.keySet()) {
+            for(Pair<T, Integer> v: vertices.get(u)) {
+                if(v.key.equals(node)) {
+                    inDegree++;
+                }
+            }
+        }
+
+        return inDegree;
+    }
+
+    /**
+     *
+     * @param u
+     */
+    public int outDegree(T u) {
+        return vertices.get(u).size();
+    }
+
+    /**
+     * Use DFS to count number of disconnected sub graphs (DFS forest).
      *
      * @return
      */
@@ -250,10 +236,8 @@ public class Graph<T extends Comparable<T>> {
         Set<T> visited = new HashSet<>();
 
         int dfsForests = 0;
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
-        for(T u : vertices.keySet()){
-            if(!visited.contains(u)){
+        for(T u : vertices.keySet()) {
+            if(!visited.contains(u)) {
                 countDfsForests(u, visited);
                 dfsForests++;
             }
@@ -267,64 +251,30 @@ public class Graph<T extends Comparable<T>> {
      * @param visited
      * @return
      */
-    private void countDfsForests(T u, Set<T> visited){
+    private void countDfsForests(T u, Set<T> visited) {
 
         visited.add(u);
 
-        for(Pair<T, Integer> v: vertices.get(u)){
-            if(!visited.contains(v.key)){
+        for(Pair<T, Integer> v: vertices.get(u)) {
+            if(!visited.contains(v.key)) {
                 countDfsForests(v.key, visited);
             }
         }
     }
-
-
-    /**
-     *
-     * @param u
-     */
-    public int outDegree(T u) {
-        return vertices.get(u).size();
-    }
-
-    /**
-     *
-     * @param node
-     */
-    public int inDegree(T node) {
-
-        //To calculate inDegrees for all nodes, take an array instead.
-        int inDegree=0;
-
-        for(T u : vertices.keySet()){
-            for(Pair<T, Integer> v: vertices.get(u)) {
-                if(v.key.equals(node)) {
-                    inDegree++;
-                }
-            }
-        }
-        return inDegree;
-    }
-
 
     /**
      * Use DFS to find a cycle in a directed graph
      *
      * @return
      */
-    public boolean isCyclicDfsRec(){
-
+    public boolean isCyclicDfsRec() {
         if(type.equals(GraphType.UNDIRECTED)){
-            throw new NotImplementedException();
+            throw new UnsupportedOperationException();
         }
 
         Set<T> visited = new HashSet<>();
-        Set<T> visiting = new HashSet<>();
-
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
-        for(T u : vertices.keySet()){
-            if(!visited.contains(u) && isCyclicDfsRec(u, visited, visiting)){
+        for(T u : vertices.keySet()) {
+            if(!visited.contains(u) && isCyclicDfsRec(u, visited, new HashSet<>())) {
                 return true;
             }
         }
@@ -335,25 +285,84 @@ public class Graph<T extends Comparable<T>> {
      *
      * @param u
      * @param visited
-     * @param visiting
+     * @param inPathStack
      * @return
      */
-    private boolean isCyclicDfsRec(T u, Set<T> visited, Set<T> visiting){
+    private boolean isCyclicDfsRec(T u, Set<T> visited, Set<T> inPathStack) {
 
-        visiting.add(u);
+        inPathStack.add(u);
         visited.add(u);
 
-        for(Pair<T, Integer> v: vertices.get(u)){
-            if(visiting.contains(v.key)){
+        for(Pair<T, Integer> v: vertices.get(u)) {
+            if(inPathStack.contains(v.key)) {
                 return true;
             }
             if(!visited.contains(v.key)) {
-                if (isCyclicDfsRec(v.key, visited, visiting)) {
+                if (isCyclicDfsRec(v.key, visited, inPathStack)) {
                     return true;
                 }
             }
         }
-        visiting.remove(u);
+        inPathStack.remove(u);
+        return false;
+    }
+
+
+    /**
+     * Use DFS to find a cycle in a directed graph
+     *
+     * @return
+     */
+    public boolean isCyclicDfs() {
+        if(type.equals(GraphType.UNDIRECTED)){
+            throw new UnsupportedOperationException();
+        }
+
+        Set<T> visited = new HashSet<>();
+        for(T u : vertices.keySet()) {
+            if(!visited.contains(u) && isCyclicDfs(u, visited)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param u
+     * @param visited
+     * @return
+     */
+    private boolean isCyclicDfs(T u, Set<T> visited) {
+
+        Stack<T> stack = new Stack<>();
+        Set<T> inPathStack = new HashSet<>();
+
+        stack.push(u);
+        while (!stack.isEmpty()) {
+
+            u = stack.pop();
+            if (u==null) {
+                //Means all child processed, now remove parent from pathStack
+                inPathStack.remove(stack.pop());
+                continue;
+            }
+
+            stack.push(u);
+            stack.push(null); //Put a marker in the stack for parent placeholder.
+
+            inPathStack.add(u);
+            visited.add(u);
+
+            for(Pair<T, Integer> v: vertices.get(u)) {
+                if (inPathStack.contains(v.key)) {
+                    return true; //LOOP FOUND
+                }
+                if(!visited.contains(v.key)) {
+                    stack.push(v.key);
+                }
+            }
+        }
         return false;
     }
 
@@ -366,35 +375,23 @@ public class Graph<T extends Comparable<T>> {
      * @return
      */
     public boolean isCyclicUnionFind() {
-
-        if(type.equals(GraphType.DIRECTED)){
-            throw new NotImplementedException();
+        if(type.equals(GraphType.DIRECTED)) {
+            throw new UnsupportedOperationException();
         }
 
         DisjointUnionSetsGeneric<T> dus = new DisjointUnionSetsGeneric<>();
-        for(T u: vertices.keySet()) {
-            dus.insert(u);
-        }
-
         Set<T> visited = new HashSet<>();
+        for(T u: vertices.keySet()) dus.insert(u);
 
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
         for(T u: vertices.keySet()) {
             visited.add(u);
 
-            for(Pair<T, Integer> v: vertices.get(u)){
-                if(visited.contains(v.key)){
+            for(Pair<T, Integer> v: vertices.get(u)) {
+                if(visited.contains(v.key)) {
                     continue;
                 }
-
-                T leftEnd = dus.find(u);
-                T rightEnd = dus.find(v.key);
-
-                if(leftEnd==rightEnd){
+                if(!dus.union(u, v.key)) {
                     return true;
-                } else{
-                    dus.union(leftEnd, rightEnd);
                 }
             }
         }
@@ -402,28 +399,30 @@ public class Graph<T extends Comparable<T>> {
     }
 
     /**
-     * BFS algorithm for topological sorting
+     * Topological Sorting is a linear ordering of vertices where for each edge uv, vertex u comes before v.
      * Applicable for Directed Acyclic Graph (DAG)
      *
-     * Algorithm:
+     * BFS Algorithm for topological sorting:
      *      Apply BFS algorithm to process as following
-     *          1. Calculate and store indegree of all the vertices
-     *          2. Put all the vertices with indegree=0 in a queue
+     *          1. Calculate and store inDegree of all the vertices
+     *          2. Put all the vertices with inDegree=0 in a queue
      *          3. For each vertices in the queue
      *              3.1 Consider the vertex in the topological sorting list.
-     *              3.2 Reduce indegree of all its children and put the one's with indegree=0 in the queue
+     *              3.2 Reduce indegree of all its children and put the one's with inDegree=0 in the queue
      *
-     *  NOTE: If the result list size is less than vertices count, then there is a cycle in the graph
+     *  NOTE:
+     *      If the result list size is less than vertices count, then there is a cycle in the graph
+     *
      * @return
      */
     public List<T> topologicalSortingBfs(){
 
-        if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()){
+        if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()) {
             return null;
         }
 
         Queue<T> queue = new ArrayDeque<>(size);
-        List<T> topologicallySortedVertices = new ArrayList<>();
+        List<T> sortedVertices = new ArrayList<>();
 
         Map<T,Integer> inDegrees = new HashMap<>();
         for(T u: vertices.keySet()) {
@@ -436,104 +435,89 @@ public class Graph<T extends Comparable<T>> {
             }
         }
 
-        for(T u: vertices.keySet()){
-            if(inDegrees.get(u)==0){
-                queue.add(u);
-            }
-        }
+        vertices.keySet().stream().filter(u->inDegrees.get(u)==0).forEach(queue::add);
 
-        while(!queue.isEmpty()){
+        while(!queue.isEmpty()) {
             T u = queue.remove();
-            topologicallySortedVertices.add(u);
+            sortedVertices.add(u);
 
-            for(Pair<T, Integer> v: vertices.get(u)){
-                //Reduce indegree once its parent is processed.
+            for(Pair<T, Integer> v: vertices.get(u)) {
+                //Reduce inDegree once its parent is processed.
                 inDegrees.put(v.key,inDegrees.get(v.key)-1);
-                if(inDegrees.get(v.key) == 0){
+                if(inDegrees.get(v.key)==0) {
                     queue.add(v.key);
                 }
             }
         }
 
-        return topologicallySortedVertices;
+        return sortedVertices;
     }
 
     /**
-     *
-     * It is a linear ordering of vertices where for each edge uv, vertex u comes before v in the ordering.
-     *
-     * DFS (PostOrder) algorithm for topological sorting
-     * Applicable for Directed Acyclic Graph (DAG)
-     *
-     * Algorithm:
-     *      Apply DFS (PostOrder) algorithm to process as following
-     *      1. traverse all the DFS forests
-     *      2. Once all the children are processed, put the vertex in a stack
-     *      3. Empty the stack and it gives topological sorting.
+     * DFS Algorithm for topological sorting:
+     *      Apply DFS (PostOrder) to process as follows
+     *          1. traverse all the DFS forests
+     *          2. Once all the children are processed, put the vertex in a stack
+     *          3. Empty the stack and it gives topological sorting.
      *
      * @return
      */
-    public List<T> topologicalSortingDfsRec(){
+    public List<T> topologicalSortingDfsRec() {
 
         if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()){
             return null;
         }
 
         Set<T> visited = new HashSet<>();
-        Stack<T> topologicalVertexStack = new Stack<>();
+        Stack<T> sortedVerticesStack = new Stack<>();
 
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
         for(T u: vertices.keySet()) {
             if(!visited.contains(u)) {
-                topologicalSortingDfsRec(u, visited, topologicalVertexStack);
+                topologicalSortingDfsRec(u, visited, sortedVerticesStack);
             }
         }
 
-        List<T> topologicallySortedVertices = new ArrayList<>();
-        while(!topologicalVertexStack.isEmpty()){
-            topologicallySortedVertices.add(topologicalVertexStack.pop());
+        List<T> sortedVertices = new ArrayList<>();
+        while(!sortedVerticesStack.isEmpty()) {
+            sortedVertices.add(sortedVerticesStack.pop());
         }
 
-        return topologicallySortedVertices;
+        return sortedVertices;
     }
 
     /**
      *
      * @param u
      * @param visited
-     * @param topologicalVertexStack
+     * @param sortedVerticesStack
      */
-    private void topologicalSortingDfsRec(T u, Set<T> visited, Stack<T> topologicalVertexStack){
+    private void topologicalSortingDfsRec(T u, Set<T> visited, Stack<T> sortedVerticesStack){
 
         visited.add(u);
 
         for(Pair<T, Integer> v: vertices.get(u)){
             if(!visited.contains(v.key)){
-                topologicalSortingDfsRec(v.key, visited, topologicalVertexStack);
+                topologicalSortingDfsRec(v.key, visited, sortedVerticesStack);
             }
         }
-        topologicalVertexStack.push(u);
+        sortedVerticesStack.push(u);
     }
 
     /**
      * use DFS(PreOrder) to find all paths from u to v
+     * problems/all-paths-from-source-to-target
      *
      * @param u
      * @param v
      * @param
      */
-    public List<List<T>> findAllPathsDFSRec(T u, T v){
+    public List<List<T>> findAllPathsDFSRec(T u, T v) {
         if (!(vertices.containsKey(u) || vertices.containsKey(v))) {
             throw new IllegalArgumentException();
         }
 
-        Set<T> visited = new HashSet<>();
-        LinkedList<T> pathStack = new LinkedList<>();
-
         List<List<T>> pathList= new ArrayList<>();
-
-        findAllPathsDFSRec(u, v, visited, pathStack, pathList);
+        findAllPathsDFSRec(u, v, new HashSet<>(), new ArrayList<>(), pathList);
         return pathList;
     }
 
@@ -541,28 +525,29 @@ public class Graph<T extends Comparable<T>> {
      *
      * @param u
      * @param v
-     * @param visited
+     * @param inPathStack
+     * @param pathStack
+     * @param pathList
      */
-    private void findAllPathsDFSRec(T u, T v, Set<T> visited, LinkedList<T> pathStack, List<List<T>> pathList){
+    private void findAllPathsDFSRec(T u, T v, Set<T> inPathStack, List<T> pathStack, List<List<T>> pathList) {
 
-        pathStack.addLast(u);
-
-        if(u.equals(v)){
-            pathList.add((List<T>)pathStack.clone());
-
-            pathStack.removeLast();
+        pathStack.add(u);
+        if(u==v) {
+            pathList.add(new ArrayList<>(pathStack));
+            pathStack.remove(pathStack.size()-1);
             return;
         }
 
-        visited.add(u);
+        inPathStack.add(u);
 
-        for(Pair<T, Integer> vNode: vertices.get(u)){
-            if(!visited.contains(vNode.key)){
-                findAllPathsDFSRec(vNode.key, v, visited, pathStack, pathList);
+        for(Pair<T, Integer> vNode: vertices.get(u)) {
+            if(!inPathStack.contains(vNode.key)) {
+                findAllPathsDFSRec(vNode.key, v, inPathStack, pathStack, pathList);
             }
         }
 
-        pathStack.removeLast();
+        inPathStack.remove(u);
+        pathStack.remove(pathStack.size()-1);
     }
 
     /**
@@ -578,41 +563,40 @@ public class Graph<T extends Comparable<T>> {
         }
 
         Stack<T> stack = new Stack<>();
-        Set<T> visited = new HashSet<>();
+        Set<T> inPathStack = new HashSet<>();
 
-        LinkedList<T> pathStack = new LinkedList<>();
+        List<T> pathStack = new ArrayList<>();
         List<List<T>> pathList = new ArrayList<>();
 
         stack.push(u);
-
         while (!stack.isEmpty()) {
 
             u = stack.pop();
-            if (u == null) {
-                //Means all childs processed, now remove parent from pathStack
-                pathStack.removeLast();
+            if (u==null) {
+                //Means all child processed, now remove parent from pathStack
+                u = pathStack.remove(pathStack.size()-1);
+                inPathStack.remove(u);
                 continue;
             }
 
-            pathStack.addLast(u);
-
-            if (u.equals(v)) {
-                pathList.add((List<T>)pathStack.clone());
-                pathStack.removeLast();
+            pathStack.add(u);
+            if (u==v) {
+                pathList.add(new ArrayList<> (pathStack));
+                pathStack.remove(pathStack.size()-1);
                 continue;
             }
 
-            visited.add(u);
+            stack.push(null); //Put a marker in the stack for parent placeholder.
 
-            //Put a marker in stack for parent place holder.
-            stack.push(null);
+            inPathStack.add(u); //May not be required for DAG graph.
 
             Iterator<Pair<T, Integer>> iterator = vertices.get(u).descendingIterator();
             while (iterator.hasNext()) {
                 Pair<T, Integer> vNode = iterator.next();
-                if (!visited.contains(vNode.key)) {
-                    stack.push(vNode.key);
+                if (inPathStack.contains(vNode.key)) {
+                    continue; //Avoid LOOP
                 }
+                stack.push(vNode.key);
             }
         }
         return pathList;
@@ -629,7 +613,7 @@ public class Graph<T extends Comparable<T>> {
      *    having minimum total weight.
      *
      *  1. Sort all edges in increasing order of their weight
-     *  2. Insert smallest edge into spanning tree.
+     *  2. Insert the smallest edge into spanning tree.
      *  3. If the newly inserted edge forms a cycle, discard it.
      *
      *  Use union-find to detect cycle in an undirected graph.
@@ -873,4 +857,18 @@ public class Graph<T extends Comparable<T>> {
         }
         return mstGraph;
     }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Graph{" +
+                "vertices=" + vertices +
+                ", type=" + type +
+                ", size=" + size +
+                '}';
+    }
+
 }

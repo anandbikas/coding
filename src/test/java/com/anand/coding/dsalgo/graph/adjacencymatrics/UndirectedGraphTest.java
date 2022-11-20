@@ -32,8 +32,8 @@ public class UndirectedGraphTest {
 
         undirectedGraph.display();
         undirectedGraph.bfsDisplay(5);
-        undirectedGraph.dfsDisplay(5);
-        undirectedGraph.dfsDisplayRec(5);
+        undirectedGraph.dfsDisplayPreOrder(5);
+        undirectedGraph.dfsDisplayPreOrderRec(5);
 
         Assert.assertEquals(undirectedGraph.inDegree(5),3);
         Assert.assertEquals(undirectedGraph.outDegree(5),3);

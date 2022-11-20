@@ -9,6 +9,7 @@ import java.util.Stack;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * 1. A non-linear data structure consisting of nodes(vertices) and edges.
@@ -16,60 +17,37 @@ import java.util.*;
  *
  * 2. In Connected graph there can be one such node from which all other nodes can be traversed.
  *
- * 3. Disconnected graph is like collection of different sub graphs.
+ * 3. Disconnected graph is like DFS forest having collection of different sub graphs.
+ *    Loop through all nodes in such cases until all are visited.
  *
  * @param <T>
  */
 public class Graph<T> {
 
-    private ArrayList<T> vertices;
+    private final ArrayList<T> vertices;
+    private final ArrayList<LinkedList<Pair<Integer,Integer>>> adjListArray; //neighbor-weight pair.
+    private final GraphType type;
 
-    // Pair<Integer,Integer> represents childNode and weight pair
-    private ArrayList<LinkedList<Pair<Integer,Integer>>> adjListArray;
-
-    private GraphType type;
     private int size=0;
 
-    /**
-     *
-     */
-    public Graph(){
+    public Graph() {
         this(GraphType.UNDIRECTED);
     }
 
-    /**
-     *
-     * @param type
-     */
-    public Graph(GraphType type){
+    public Graph(GraphType type) {
+        this.type = type;
         vertices = new ArrayList<>();
         adjListArray = new ArrayList<>();
-        this.type = type;
     }
 
     /**
      *
      * @param node
      */
-    public void insert(T node){
+    public void insert(T node) {
         vertices.add(size, node);
         adjListArray.add(size, new LinkedList<>());
         size++;
-    }
-
-    /**
-     *
-     * @param u
-     * @param v
-     */
-    public void removeEdge(Integer u, Integer v){
-        if(u>=size || v >= size){
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        adjListArray.get(u).remove(new Pair<>(v, 1));
-        if(type.equals(GraphType.UNDIRECTED)) {
-            adjListArray.get(v).remove(new Pair<>(u, 1));
-        }
     }
 
     /**
@@ -89,7 +67,7 @@ public class Graph<T> {
      */
     public void addEdge(int u, int v, int wt) {
         if (u >= size || v >= size) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IllegalArgumentException();
         }
 
         adjListArray.get(u).addLast(new Pair<>(v, wt));
@@ -100,30 +78,28 @@ public class Graph<T> {
 
     /**
      *
+     * @param u
+     * @param v
      */
-    public void display(){
-        System.out.println("Adjacency List Graph");
-
-        for(int u=0; u<size; u++){
-            System.out.print(vertices.get(u) + " -> ");
-            for(Pair<Integer, Integer> v: adjListArray.get(u)){
-                System.out.print(String.format("%s, ", vertices.get(v.key)));
-            }
-            System.out.println();
+    public void removeEdge(int u, int v) {
+        if (u>=size || v >= size) {
+            throw new IllegalArgumentException();
+        }
+        adjListArray.get(u).remove(new Pair<>(v, 1));
+        if (type.equals(GraphType.UNDIRECTED)) {
+            adjListArray.get(v).remove(new Pair<>(u, 1));
         }
     }
 
     /**
-     *
+     * Display node along with all of its adjacent nodes with weight.
      */
-    public void displayWeighted(){
+    public void display() {
         System.out.println("Adjacency List Graph");
 
         for(int u=0; u<size; u++){
             System.out.print(vertices.get(u) + " -> ");
-            for(Pair<Integer, Integer> v: adjListArray.get(u)){
-                System.out.print(String.format("%s(%s), ", vertices.get(v.key), v.value));
-            }
+            adjListArray.get(u).forEach(v -> System.out.printf("%s(%s), ", vertices.get(v.key), v.value));
             System.out.println();
         }
     }
@@ -136,21 +112,21 @@ public class Graph<T> {
     public void bfsDisplay(int u) {
         System.out.println("BFS Display from index: " + u);
         if(u>=size){
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IllegalArgumentException();
         }
 
         Queue<Integer> queue = new ArrayDeque<>(size);
         boolean []visited = new boolean[size];
 
         queue.add(u);
-        visited[u]=true;
+        visited[u] = true;
 
-        while(!queue.isEmpty()){
+        while(!queue.isEmpty()) {
             u = queue.remove();
             System.out.print(vertices.get(u) + "  ");
 
-            for(Pair<Integer, Integer> v: adjListArray.get(u)){
-                if(!visited[v.key]){
+            for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+                if(!visited[v.key]) {
                     queue.add(v.key);
                     visited[v.key] = true;
                 }
@@ -160,30 +136,29 @@ public class Graph<T> {
     }
 
     /**
-     * Depth First Search algorithm
+     * Depth First Search algorithm (PreOrder)
+     * For PostOrder print node after processing adjList
      *
      * @param u
      */
     public void dfsDisplayPreOrder(int u) {
         System.out.println("DFS Display PreOrder from index: " + u);
-        if(u>=size){
-            throw new ArrayIndexOutOfBoundsException();
+        if (u>=size) {
+            throw new IllegalArgumentException();
         }
 
         Stack<Integer> stack = new Stack<>();
         boolean []visited = new boolean[size];
 
         stack.push(u);
-        visited[u]=true;
+        visited[u] = true;
 
-        while(!stack.isEmpty()){
+        while(!stack.isEmpty()) {
             u = stack.pop();
-
-            //For PostOrder printing will be done after processing adjList.
             System.out.print(vertices.get(u) + "  ");
 
             Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).descendingIterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 Pair<Integer, Integer> v = iterator.next();
                 if(!visited[v.key]){
                     stack.push(v.key);
@@ -198,28 +173,27 @@ public class Graph<T> {
      *
      * @param u
      */
-    public void dfsDisplayPreOrderRec(int u){
+    public void dfsDisplayPreOrderRec(int u) {
         System.out.println("\nDFS Display PreOrder Recursive from index: " + u);
         if(u>=size){
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IllegalArgumentException();
         }
 
-        boolean []visited = new boolean[size];
-        dfsDisplayPreOrderRec(u, visited);
+        dfsDisplayPreOrderRec(u, new boolean[size]);
         System.out.println();
     }
 
     /**
+     *
      * @param u
      * @param visited
      */
-    private void dfsDisplayPreOrderRec(int u, boolean []visited){
+    private void dfsDisplayPreOrderRec(int u, boolean []visited) {
 
-        //For PostOrder printing will be done after processing adjList.
         System.out.print(vertices.get(u) + "  ");
         visited[u] = true;
 
-        for(Pair<Integer, Integer> v: adjListArray.get(u)){
+        for(Pair<Integer, Integer> v: adjListArray.get(u)) {
             if(!visited[v.key]){
                 dfsDisplayPreOrderRec(v.key, visited);
             }
@@ -227,19 +201,44 @@ public class Graph<T> {
     }
 
     /**
-     * Use DFS to count number of disconnected sub graphs.
+     *
+     * @param u
+     */
+    public int inDegree(int u) {
+
+        //To calculate inDegrees for all nodes, take an array instead.
+        int inDegree=0;
+        for(int i=0; i<size; i++) {
+            for(Pair<Integer, Integer> v: adjListArray.get(i)) {
+                if(v.key==u) {
+                    inDegree++;
+                }
+            }
+        }
+
+        return inDegree;
+    }
+
+    /**
+     *
+     * @param u
+     */
+    public int outDegree(int u) {
+        return adjListArray.get(u).size();
+    }
+
+    /**
+     * Use DFS to count number of disconnected sub graphs (DFS forest).
      *
      * @return
      */
-    public int countDfsForests(){
+    public int countDfsForests() {
 
         boolean []visited = new boolean[size];
 
         int dfsForests = 0;
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
         for(int u=0; u<size; u++) {
-            if(!visited[u]){
+            if(!visited[u]) {
                 countDfsForests(u, visited);
                 dfsForests++;
             }
@@ -253,64 +252,30 @@ public class Graph<T> {
      * @param visited
      * @return
      */
-    private void countDfsForests(int u, boolean []visited){
+    private void countDfsForests(int u, boolean []visited) {
 
         visited[u] = true;
 
-        for(Pair<Integer, Integer> v: adjListArray.get(u)){
-            if(!visited[v.key]){
+        for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+            if(!visited[v.key]) {
                 countDfsForests(v.key, visited);
             }
         }
     }
-
-
-    /**
-     *
-     * @param node
-     */
-    public int outDegree(int node) {
-        return adjListArray.get(node).size();
-    }
-
-    /**
-     *
-     * @param node
-     */
-    public int inDegree(int node) {
-
-        //To calculate inDegrees for all nodes, take an array instead.
-        int inDegree=0;
-
-        for(int u=0; u<size; u++){
-            for(Pair<Integer, Integer> v: adjListArray.get(u)) {
-                if(v.key==node) {
-                   inDegree++;
-                }
-            }
-        }
-        return inDegree;
-    }
-
 
     /**
      * Use DFS to find a cycle in a directed graph
      *
      * @return
      */
-    public boolean isCyclicDfsRec(){
-
+    public boolean isCyclicDfsRec() {
         if(type.equals(GraphType.UNDIRECTED)){
-            throw new NotImplementedException();
+            throw new UnsupportedOperationException();
         }
 
         boolean []visited = new boolean[size];
-        boolean []inPathStack = new boolean[size];
-
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
         for(int u=0; u<size; u++) {
-            if(!visited[u] && isCyclicDfsRec(u, visited, inPathStack)){
+            if(!visited[u] && isCyclicDfsRec(u, visited, new boolean[size])) {
                 return true;
             }
         }
@@ -324,13 +289,13 @@ public class Graph<T> {
      * @param inPathStack
      * @return
      */
-    private boolean isCyclicDfsRec(int u, boolean []visited, boolean []inPathStack){
+    private boolean isCyclicDfsRec(int u, boolean []visited, boolean []inPathStack) {
 
         inPathStack[u] = true;
         visited[u] = true;
 
-        for(Pair<Integer, Integer> v: adjListArray.get(u)){
-            if(inPathStack[v.key]){
+        for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+            if(inPathStack[v.key]) {
                 return true;
             }
             if(!visited[v.key]) {
@@ -343,6 +308,64 @@ public class Graph<T> {
         return false;
     }
 
+
+    /**
+     * Use DFS to find a cycle in a directed graph
+     *
+     * @return
+     */
+    public boolean isCyclicDfs() {
+        if(type.equals(GraphType.UNDIRECTED)) {
+            throw new UnsupportedOperationException();
+        }
+
+        boolean []visited = new boolean[size];
+        for(int u=0; u<size; u++) {
+            if(!visited[u] && isCyclicDfs(u, visited)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param u
+     * @param visited
+     * @return
+     */
+    private boolean isCyclicDfs(int u, boolean []visited) {
+
+        Stack<Integer> stack = new Stack<>();
+        boolean[] inPathStack = new boolean[size];
+
+        stack.push(u);
+        while (!stack.isEmpty()) {
+
+            u = stack.pop();
+            if (u<0) {
+                //Means all child processed, now remove parent from pathStack
+                inPathStack[u+size] = false;
+                continue;
+            }
+
+            stack.push(u-size); //Put a marker in the stack for parent placeholder.
+
+            inPathStack[u] = true;
+            visited[u] = true;
+
+            for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+                if (inPathStack[v.key]) {
+                    return true; //LOOP FOUND
+                }
+                if(!visited[v.key]) {
+                    stack.push(v.key);
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Use DisjointSets Union-Find to find a cycle in an undirected graph
      * Consider all the edges(u-v) in the graph,
@@ -352,31 +375,22 @@ public class Graph<T> {
      * @return
      */
     public boolean isCyclicUnionFind() {
-
-        if(type.equals(GraphType.DIRECTED)){
-            throw new NotImplementedException();
+        if(type.equals(GraphType.DIRECTED)) {
+            throw new UnsupportedOperationException();
         }
 
         DisjointUnionSets dus = new DisjointUnionSets(size);
         boolean []visited = new boolean[size];
 
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
         for(int u=0; u<size; u++) {
             visited[u] = true;
 
-            for(Pair<Integer, Integer> v: adjListArray.get(u)){
-                if(visited[v.key]){
+            for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+                if(visited[v.key]) {
                     continue;
                 }
-
-                int leftEnd = dus.find(u);
-                int rightEnd = dus.find(v.key);
-
-                if(leftEnd==rightEnd){
+                if(!dus.union(u, v.key)) {
                     return true;
-                } else{
-                    dus.union(leftEnd, rightEnd);
                 }
             }
         }
@@ -384,28 +398,30 @@ public class Graph<T> {
     }
 
     /**
-     * BFS algorithm for topological sorting
+     * Topological Sorting is a linear ordering of vertices where for each edge uv, vertex u comes before v.
      * Applicable for Directed Acyclic Graph (DAG)
      *
-     * Algorithm:
+     * BFS Algorithm for topological sorting:
      *      Apply BFS algorithm to process as following
-     *          1. Calculate and store indegree of all the vertices
-     *          2. Put all the vertices with indegree=0 in a queue
+     *          1. Calculate and store inDegree of all the vertices
+     *          2. Put all the vertices with inDegree=0 in a queue
      *          3. For each vertices in the queue
      *              3.1 Consider the vertex in the topological sorting list.
-     *              3.2 Reduce indegree of all its children and put the one's with indegree=0 in the queue
+     *              3.2 Reduce indegree of all its children and put the one's with inDegree=0 in the queue
      *
-     *  NOTE: If the result list size is less than vertices count, then there is a cycle in the graph
+     *  NOTE:
+     *      If the result list size is less than vertices count, then there is a cycle in the graph
+     *
      * @return
      */
     public List<T> topologicalSortingBfs(){
 
-        if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()){
+        if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()) {
             return null;
         }
 
         Queue<Integer> queue = new ArrayDeque<>(size);
-        List<T> topologicallySortedVertices = new ArrayList<>();
+        List<T> sortedVertices = new ArrayList<>();
 
         int[] inDegrees = new int[size];
 
@@ -415,103 +431,88 @@ public class Graph<T> {
             }
         }
 
-        for(int u=0; u<size; u++){
-            if(inDegrees[u]==0){
-                queue.add(u);
-            }
-        }
+        IntStream.range(0, size).filter(u->inDegrees[u]==0).forEach(queue::add);
 
-        while(!queue.isEmpty()){
+        while(!queue.isEmpty()) {
             int u = queue.remove();
-            topologicallySortedVertices.add(vertices.get(u));
+            sortedVertices.add(vertices.get(u));
 
-            for(Pair<Integer, Integer> v: adjListArray.get(u)){
-                //Reduce indegree once its parent is processed.
-                if(--inDegrees[v.key] == 0){
+            for(Pair<Integer, Integer> v: adjListArray.get(u)) {
+                //Reduce inDegree once its parent is processed.
+                if(--inDegrees[v.key]==0) {
                     queue.add(v.key);
                 }
             }
         }
 
-        return topologicallySortedVertices;
+        return sortedVertices;
     }
 
     /**
-     *
-     * It is a linear ordering of vertices where for each edge uv, vertex u comes before v in the ordering.
-     *
-     * DFS (PostOrder) algorithm for topological sorting
-     * Applicable for Directed Acyclic Graph (DAG)
-     *
-     * Algorithm:
-     *      Apply DFS (PostOrder) algorithm to process as following
-     *      1. traverse all the DFS forests
-     *      2. Once all the children are processed, put the vertex in a stack
-     *      3. Empty the stack and it gives topological sorting.
+     * DFS Algorithm for topological sorting:
+     *      Apply DFS (PostOrder) to process as follows
+     *          1. traverse all the DFS forests
+     *          2. Once all the children are processed, put the vertex in a stack
+     *          3. Empty the stack and it gives topological sorting.
      *
      * @return
      */
-    public List<T> topologicalSortingDfsRec(){
+    public List<T> topologicalSortingDfsRec() {
 
         if(type.equals(GraphType.UNDIRECTED) || isCyclicDfsRec()){
             return null;
         }
 
         boolean []visited = new boolean[size];
-        Stack<T> topologicalVertexStack = new Stack<>();
+        Stack<T> sortedVerticesStack = new Stack<>();
 
-        // In case of disconnected graph, there can be DFS forest.
-        // Loop through all nodes in such cases.
         for(int u=0; u<size; u++) {
             if(!visited[u]) {
-                topologicalSortingDfsRec(u, visited, topologicalVertexStack);
+                topologicalSortingDfsRec(u, visited, sortedVerticesStack);
             }
         }
 
-        List<T> topologicallySortedVertices = new ArrayList<>();
-        while(!topologicalVertexStack.isEmpty()){
-            topologicallySortedVertices.add(topologicalVertexStack.pop());
+        List<T> sortedVertices = new ArrayList<>();
+        while(!sortedVerticesStack.isEmpty()) {
+            sortedVertices.add(sortedVerticesStack.pop());
         }
 
-        return topologicallySortedVertices;
+        return sortedVertices;
     }
 
     /**
      *
      * @param u
      * @param visited
-     * @param topologicalVertexStack
+     * @param sortedVerticesStack
      */
-    private void topologicalSortingDfsRec(int u, boolean []visited, Stack<T> topologicalVertexStack){
+    private void topologicalSortingDfsRec(int u, boolean []visited, Stack<T> sortedVerticesStack){
 
         visited[u] = true;
 
         for(Pair<Integer, Integer> v: adjListArray.get(u)){
             if(!visited[v.key]){
-                topologicalSortingDfsRec(v.key, visited, topologicalVertexStack);
+                topologicalSortingDfsRec(v.key, visited, sortedVerticesStack);
             }
         }
-        topologicalVertexStack.push(vertices.get(u));
+        sortedVerticesStack.push(vertices.get(u));
     }
 
     /**
      * use DFS(PreOrder) to find all paths from u to v
+     * problems/all-paths-from-source-to-target
      *
      * @param u
      * @param v
      * @param
      */
-    public List<List<T>> findAllPathsDFSRec(int u, int v){
-        if(u>=size || v >=size){
-            throw new ArrayIndexOutOfBoundsException();
+    public List<List<T>> findAllPathsDFSRec(int u, int v) {
+        if (u>=size || v>=size) {
+            throw new IllegalArgumentException();
         }
 
-        boolean []visited = new boolean[size];
-        LinkedList<T> pathStack = new LinkedList<>();
-
         List<List<T>> pathList= new ArrayList<>();
-
-        findAllPathsDFSRec(u, v, visited, pathStack, pathList);
+        findAllPathsDFSRec(u, v, new boolean[size], new ArrayList<>(), pathList);
         return pathList;
     }
 
@@ -519,28 +520,29 @@ public class Graph<T> {
      *
      * @param u
      * @param v
-     * @param visited
+     * @param inPathStack
+     * @param pathStack
+     * @param pathList
      */
-    private void findAllPathsDFSRec(int u, int v, boolean []visited, LinkedList<T> pathStack, List<List<T>> pathList){
+    private void findAllPathsDFSRec(int u, int v, boolean []inPathStack, List<T> pathStack, List<List<T>> pathList) {
 
-        pathStack.addLast(vertices.get(u));
-
-        if(u == v){
-            pathList.add((List<T>)pathStack.clone());
-
-            pathStack.removeLast();
+        pathStack.add(vertices.get(u));
+        if(u==v) {
+            pathList.add(new ArrayList<>(pathStack));
+            pathStack.remove(pathStack.size()-1);
             return;
         }
 
-        visited[u] = true;
+        inPathStack[u] = true;
 
-        for(Pair<Integer, Integer> vNode: adjListArray.get(u)){
-            if(!visited[vNode.key]){
-                findAllPathsDFSRec(vNode.key, v, visited, pathStack, pathList);
+        for(Pair<Integer, Integer> vNode: adjListArray.get(u)) {
+            if(!inPathStack[vNode.key]) {
+                findAllPathsDFSRec(vNode.key, v, inPathStack, pathStack, pathList);
             }
         }
 
-        pathStack.removeLast();
+        inPathStack[u] = false;
+        pathStack.remove(pathStack.size()-1);
     }
 
     /**
@@ -552,45 +554,44 @@ public class Graph<T> {
      */
     public List<List<T>> findAllPathsDFS(int u, int v) {
         if (u >= size || v >= size) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new IllegalArgumentException();
         }
 
         Stack<Integer> stack = new Stack<>();
-        boolean[] visited = new boolean[size];
+        boolean[] inPathStack = new boolean[size];
 
-        LinkedList<T> pathStack = new LinkedList<>();
+        List<T> pathStack = new ArrayList<>();
         List<List<T>> pathList = new ArrayList<>();
 
         stack.push(u);
-
         while (!stack.isEmpty()) {
 
             u = stack.pop();
-            if (u == -1) {
-                //Means all childs processed, now remove parent from pathStack
-                pathStack.removeLast();
+            if (u<0) {
+                //Means all child processed, now remove parent from pathStack
+                pathStack.remove(pathStack.size()-1);
+                inPathStack[u+size] = false;
                 continue;
             }
 
-            pathStack.addLast(vertices.get(u));
-
-            if (u == v) {
-                pathList.add((List<T>)pathStack.clone());
-                pathStack.removeLast();
+            pathStack.add(vertices.get(u));
+            if (u==v) {
+                pathList.add(new ArrayList<> (pathStack));
+                pathStack.remove(pathStack.size()-1);
                 continue;
             }
 
-            visited[u] = true;
+            stack.push(u-size); //Put a marker in the stack for parent placeholder.
 
-            //Put a marker in stack for parent place holder.
-            stack.push(-1);
+            inPathStack[u] = true; //May not be required for DAG graph.
 
             Iterator<Pair<Integer, Integer>> iterator = adjListArray.get(u).descendingIterator();
             while (iterator.hasNext()) {
                 Pair<Integer, Integer> vNode = iterator.next();
-                if (!visited[vNode.key]) {
-                    stack.push(vNode.key);
+                if (inPathStack[vNode.key]) {
+                    continue; //Avoid LOOP
                 }
+                stack.push(vNode.key);
             }
         }
         return pathList;
@@ -607,7 +608,7 @@ public class Graph<T> {
      *    having minimum total weight.
      *
      *  1. Sort all edges in increasing order of their weight
-     *  2. Insert smallest edge into spanning tree.
+     *  2. Insert the smallest edge into spanning tree.
      *  3. If the newly inserted edge forms a cycle, discard it.
      *
      *  Use union-find to detect cycle in an undirected graph.
@@ -846,8 +847,8 @@ public class Graph<T> {
     /**
      * Dijkstra does not work with negative edges.
      *
-     * Bellman's idea is to relax all the edges exactly v-1 times, so that all the minimum possible distance can be considered..
-     * The i'th iteration gives shortest paths upto i edges long.
+     * Bellman's idea is to relax all the edges exactly v-1 times, so that all the minimum possible distance can be considered.
+     * The i'th iteration gives the shortest paths upto i edges long.
      *
      * Again this does not work for graphs having negative edge cycle.
      *

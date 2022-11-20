@@ -119,34 +119,34 @@ public class UndirectedGraphTest {
     @Test
     private void testKruskalMSTWeighted(){
 
-        undirectedWeightedGraph.displayWeighted();
+        undirectedWeightedGraph.display();
         System.out.println();
-        undirectedWeightedGraph.kruskalsMinimumSpanningTree().displayWeighted();
+        undirectedWeightedGraph.kruskalsMinimumSpanningTree().display();
     }
 
     @Test
     private void testPrimsMSTWeighted(){
 
-        undirectedWeightedGraph.displayWeighted();
+        undirectedWeightedGraph.display();
         System.out.println();
-        undirectedWeightedGraph.primsMinimumSpanningTree().displayWeighted();
+        undirectedWeightedGraph.primsMinimumSpanningTree().display();
     }
 
     @Test
     private void testDijkstraSPTWeighted(){
 
-        undirectedWeightedGraph.displayWeighted();
+        undirectedWeightedGraph.display();
         System.out.println();
-        undirectedWeightedGraph.dijkstraShortestPathTree(0).displayWeighted();
-        undirectedWeightedGraph.dijkstraShortestPathTreeHeap(0).displayWeighted();
+        undirectedWeightedGraph.dijkstraShortestPathTree(0).display();
+        undirectedWeightedGraph.dijkstraShortestPathTreeHeap(0).display();
     }
 
     @Test
     private void testBellmanSPTWeighted(){
 
-        undirectedWeightedGraph.displayWeighted();
+        undirectedWeightedGraph.display();
         System.out.println();
-        undirectedWeightedGraph.bellmanShortestPathTree(0).displayWeighted();
+        undirectedWeightedGraph.bellmanShortestPathTree(0).display();
     }
 
 }

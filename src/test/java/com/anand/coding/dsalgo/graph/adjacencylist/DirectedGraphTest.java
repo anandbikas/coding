@@ -63,7 +63,22 @@ public class DirectedGraphTest {
     }
 
     @Test
-    private void testCyclic(){
+    private void testCyclicDfs(){
+
+        Assert.assertFalse(directedGraph.isCyclicDfs());
+
+        directedGraph.addEdge(3,5);
+        Assert.assertTrue(directedGraph.isCyclicDfs());
+
+        directedGraph.dfsDisplayPreOrderRec(2);
+
+        directedGraph.removeEdge(3,5);
+
+        directedGraph.dfsDisplayPreOrderRec(2);
+    }
+
+    @Test
+    private void testCyclicDfsRec(){
 
         Assert.assertFalse(directedGraph.isCyclicDfsRec());
 
@@ -120,8 +135,8 @@ public class DirectedGraphTest {
 
     @Test
     private void testDijkstra() {
-        directedWeightedGraph.dijkstraShortestPathTree(0).displayWeighted();
-        directedWeightedGraph.dijkstraShortestPathTreeHeap(0).displayWeighted();
+        directedWeightedGraph.dijkstraShortestPathTree(0).display();
+        directedWeightedGraph.dijkstraShortestPathTreeHeap(0).display();
     }
 }
 

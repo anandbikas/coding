@@ -50,13 +50,28 @@ public class DirectedGraphTest {
 
         Assert.assertEquals(directedGraph.outDegree("node5"),3);
 
-        directedGraph.displayWeighted();
+        directedGraph.display();
         System.out.println(directedGraph);
 
     }
 
     @Test
-    private void testCyclic(){
+    private void testCyclicDfs(){
+
+        Assert.assertFalse(directedGraph.isCyclicDfs());
+
+        directedGraph.addEdge("node3","node5");
+        Assert.assertTrue(directedGraph.isCyclicDfs());
+
+        directedGraph.dfsDisplayPreOrderRec("node2");
+
+        directedGraph.removeEdge("node3","node5");
+
+        directedGraph.dfsDisplayPreOrderRec("node2");
+    }
+
+    @Test
+    private void testCyclicDfsRec(){
 
         Assert.assertFalse(directedGraph.isCyclicDfsRec());
 
@@ -76,9 +91,7 @@ public class DirectedGraphTest {
         String[] topologicallySortedListBfs = {"node5", "node2", "node4", "node3", "node1", "node0"};
         Assert.assertEquals(directedGraph.topologicalSortingBfs().toArray(),topologicallySortedListBfs);
 
-        //String[] topologicallySortedListDfs = {"node5", "node4", "node2", "node3", "node1", "node0"};
         String[] topologicallySortedListDfs = {"node5", "node2", "node3", "node0", "node4", "node1"};
-
         Assert.assertEquals(directedGraph.topologicalSortingDfsRec().toArray(),topologicallySortedListDfs);
     }
 

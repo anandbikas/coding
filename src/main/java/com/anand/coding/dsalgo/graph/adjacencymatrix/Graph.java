@@ -13,13 +13,13 @@ public class Graph<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private T [] vertices;
-    private int [][] adjArr;
-    private GraphType type;
+    private final T [] vertices;
+    private final int [][] adjArr;
+    private final GraphType type;
 
     private int size=0;
 
-    public Graph(){
+    public Graph() {
         this(DEFAULT_CAPACITY);
     }
 
@@ -42,12 +42,12 @@ public class Graph<T> {
      *
      * @param node
      */
-    public void insert(T node){
-        if(size >=vertices.length){
+    public void insert(T node ){
+        if (size >=vertices.length) {
             throw new IllegalStateException();
         }
 
-        vertices[size++]=node;
+        vertices[size++] = node;
     }
 
     /**
@@ -55,43 +55,43 @@ public class Graph<T> {
      * @param u
      * @param v
      */
-    public void addEdge(int u, int v){
-        addEdge(u,v,1);
+    public void addEdge(int u, int v) {
+        addEdge(u, v, 1);
     }
 
     /**
      *
      * @param u
      * @param v
+     * @param wt
      */
-    public void removeEdge(int u, int v){
-        addEdge(u,v,0);
-    }
-
-    /**
-     *
-     * @param u
-     * @param v
-     * @param weight
-     */
-    public void addEdge(int u, int v, int weight){
-        if(u>=size || v >= size){
+    public void addEdge(int u, int v, int wt) {
+        if (u >= size || v >= size) {
             throw new IllegalArgumentException();
         }
 
-        adjArr[u][v]= weight;
-        if(type.equals(GraphType.UNDIRECTED)){
-            adjArr[v][u]= weight;
+        adjArr[u][v]= wt;
+        if (type.equals(GraphType.UNDIRECTED)){
+            adjArr[v][u]= wt;
         }
+    }
+
+    /**
+     *
+     * @param u
+     * @param v
+     */
+    public void removeEdge(int u, int v) {
+        addEdge(u,v,0);
     }
 
     /**
      * Display node along with all of its adjacent nodes with weight.
      */
-    public void display(){
-        System.out.println("\nAdjacency Matrix Graph");
+    public void display() {
+        System.out.println("Adjacency Matrix Graph");
 
-        for(int u=0; u<size; u++){
+        for(int u=0; u<size; u++) {
             System.out.print(vertices[u] + " -> ");
             for(int v=0; v<size; v++){
                 if(adjArr[u][v]>0){
@@ -108,7 +108,7 @@ public class Graph<T> {
      * @param u
      */
     public void bfsDisplay(int u) {
-        System.out.println("\nBFS Display from index: " + u);
+        System.out.println("BFS Display from index: " + u);
         if(u>=size){
             throw new IllegalArgumentException();
         }
@@ -119,11 +119,11 @@ public class Graph<T> {
         queue.add(u);
         visited[u] = true;
 
-        while(!queue.isEmpty()){
+        while(!queue.isEmpty()) {
             u = queue.remove();
             System.out.print(vertices[u] + "  ");
 
-            for(int v=0; v<size; v++){
+            for(int v=0; v<size; v++) {
                 if(adjArr[u][v]>0 && !visited[v]){
                     queue.add(v);
                     visited[v] = true;
@@ -134,12 +134,13 @@ public class Graph<T> {
     }
 
     /**
-     * Depth First Search algorithm
+     * Depth First Search algorithm (PreOrder)
+     * For PostOrder print node after processing adjList
      *
      * @param u
      */
-    public void dfsDisplay(int u) {
-        System.out.println("\nDFS Display from index: " + u);
+    public void dfsDisplayPreOrder(int u) {
+        System.out.println("DFS Display from index: " + u);
         if(u>=size){
             throw new IllegalArgumentException();
         }
@@ -150,12 +151,12 @@ public class Graph<T> {
         stack.push(u);
         visited[u] = true;
 
-        while(!stack.isEmpty()){
+        while(!stack.isEmpty()) {
             u = stack.pop();
             System.out.print(vertices[u] + "  ");
 
-            for(int v=size-1; v>=0; v--){
-                if(adjArr[u][v]>0 && !visited[v]){
+            for(int v=size-1; v>=0; v--) {
+                if(adjArr[u][v]>0 && !visited[v]) {
                     stack.push(v);
                     visited[v] = true;
                 }
@@ -168,13 +169,13 @@ public class Graph<T> {
      *
      * @param u
      */
-    public void dfsDisplayRec(int u){
+    public void dfsDisplayPreOrderRec(int u) {
         System.out.println("\nDFS Display Recursive from index: " + u);
         if(u>=size){
             throw new IllegalArgumentException();
         }
 
-        dfsDisplayRec(u, new boolean[size]);
+        dfsDisplayPreOrderRec(u, new boolean[size]);
         System.out.println();
     }
 
@@ -183,14 +184,14 @@ public class Graph<T> {
      * @param u
      * @param visited
      */
-    private void dfsDisplayRec(int u, boolean []visited){
+    private void dfsDisplayPreOrderRec(int u, boolean []visited) {
 
         System.out.print(vertices[u] + "  ");
         visited[u] = true;
 
         for(int v=0; v<size; v++){
-            if(adjArr[u][v]>0 && !visited[v]){
-                dfsDisplayRec(v, visited);
+            if(adjArr[u][v]>0 && !visited[v]) {
+                dfsDisplayPreOrderRec(v, visited);
             }
         }
     }
@@ -201,7 +202,7 @@ public class Graph<T> {
      */
     public int inDegree(int u) {
         int inDegree=0;
-        for(int i=0;i<size;i++) {
+        for(int i=0; i<size; i++) {
             if (adjArr[i][u] > 0) {
                 inDegree++;
             }
@@ -216,7 +217,7 @@ public class Graph<T> {
      */
     public int outDegree(int u) {
         int outDegree=0;
-        for(int i=0;i<size;i++) {
+        for(int i=0; i<size; i++) {
             if (adjArr[u][i] > 0) {
                 outDegree++;
             }

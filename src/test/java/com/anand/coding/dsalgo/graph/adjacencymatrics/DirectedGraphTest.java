@@ -45,8 +45,8 @@ public class DirectedGraphTest {
 
         directedGraph.display();
         directedGraph.bfsDisplay(5);
-        directedGraph.dfsDisplay(5);
-        directedGraph.dfsDisplayRec(5);
+        directedGraph.dfsDisplayPreOrder(5);
+        directedGraph.dfsDisplayPreOrderRec(5);
 
         Assert.assertEquals(directedGraph.inDegree(5),0);
         Assert.assertEquals(directedGraph.outDegree(5),3);
