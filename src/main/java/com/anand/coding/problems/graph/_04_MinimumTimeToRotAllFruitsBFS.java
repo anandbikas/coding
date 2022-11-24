@@ -1,66 +1,57 @@
 package com.anand.coding.problems.graph;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 /**
  * A 2D array contains 0,1,2. 0(empty), 1(fresh orange), 2(rotten orange).
  * One rotten orange can rot its four neighbours in one time frame.
  *
- * Find total time rot all oranges.
+ * Find total time to rot all the oranges.
  * Return -1 if not all are rotten.
  *
  */
 public class _04_MinimumTimeToRotAllFruitsBFS {
 
-    // Possible 4 directions of a node up, down, left, right.
-    static int[] rows = { -1, +1,  0,  0};
-    static int[] cols = {  0,  0, -1, +1};
+    // Possible directions of a node up, down, left, right.
+    static int[] R = { -1, +1,  0,  0};
+    static int[] C = {  0,  0, -1, +1};
 
-    private static class Node{
-        int row, col;
-
-        public Node(int row, int col) {
-            this.row = row; this.col = col;
-        }
+    private static class Cell {
+        int i, j;
+        public Cell(int i, int j) { this.i = i; this.j = j;}
     }
 
-    /**
-     *
-     * @param A
-     * @param n
-     * @param m
-     * @return
-     */
-    public static int minimumTimeToRotAll(int [][]A, int n, int m){
-
-        Queue<Node> queue = new LinkedList<>();
+    public static int minimumTimeToRotAll(int [][]A){
+        int n=A.length, m = A[0].length;
+        Cell NULL = new Cell(-1,-1);
+        Queue<Cell> queue = new ArrayDeque<>();
         boolean[][] visited = new boolean[n][m];
 
-        //Find already rotten nodes.
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
+        //Find the start cells already rotten
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
                 if(A[i][j]==2){
-                    queue.add(new Node(i,j));
+                    queue.add(new Cell(i,j));
                     visited[i][j]=true;
                 }
             }
         }
-        queue.add(null);
+        queue.add(NULL);
 
         int time=0;
-        while (queue.size()>1){
-            Node node = queue.remove();
-            if(node == null){
+        while (queue.size()>1) {
+            Cell cell = queue.remove();
+            if(cell == NULL) {
                 time++;
-                queue.add(null);
+                queue.add(NULL);
                 continue;
             }
 
-            //Rot neighbour fruits
-            for(int k=0; k<4; k++){
-                int i = node.row + rows[k];
-                int j = node.col + cols[k];
+            //Rot neighbours
+            for(int k=0; k<R.length; k++){
+                int i = cell.i + R[k];
+                int j = cell.j + C[k];
 
                 if(i<0 || i>=n || j<0 || j>=m || A[i][j]==0 || visited[i][j]){
                     continue;
@@ -68,7 +59,7 @@ public class _04_MinimumTimeToRotAllFruitsBFS {
 
                 if(A[i][j]==1){
                     A[i][j]=2;
-                    queue.add(new Node(i,j));
+                    queue.add(new Cell(i,j));
                 }
                 visited[i][j]=true;
             }
@@ -97,7 +88,7 @@ public class _04_MinimumTimeToRotAllFruitsBFS {
                 {1, 0, 1, 2, 1},
                 {1, 0, 0, 2, 1}
         };
-        System.out.println(minimumTimeToRotAll(A,3, 5));
+        System.out.println(minimumTimeToRotAll(A));
 
 
         int [][] B = {
@@ -105,6 +96,6 @@ public class _04_MinimumTimeToRotAllFruitsBFS {
                 {0, 0, 1, 2, 1},
                 {1, 0, 0, 2, 1}
         };
-        System.out.println(minimumTimeToRotAll(B,3, 5));
+        System.out.println(minimumTimeToRotAll(B));
     }
 }
