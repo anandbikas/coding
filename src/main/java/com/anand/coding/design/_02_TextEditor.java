@@ -3,11 +3,12 @@ package com.anand.coding.design;
 /**
  * Text Editor with a cursor with following operations: add, delete, cursorLeft, cursorRight
  *
- * void addText(string text) Appends text to where the cursor is.
- * int deleteText(int k) Deletes k characters to the left of the cursor. Returns the number of characters actually deleted.
- * string cursorLeft(int k) Moves the cursor to the left k times. Return max 10 characters to the left of the cursor.
- * string cursorRight(int k) Moves the cursor to the right k times. Return max 10 characters to the left of the cursor.
+ * void addText(string text):    Appends text to where the cursor is.
+ * int deleteText(int k):        Deletes k characters to the left of the cursor. Returns the number of characters actually deleted.
+ * string cursorLeft(int k):     Moves the cursor to the left k times. Return max 10 characters to the left of the cursor.
+ * string cursorRight(int k):    Moves the cursor to the right k times. Return max 10 characters to the left of the cursor.
  *
+ * leetcode.com/problems/design-a-text-editor
  */
 public class _02_TextEditor {
 

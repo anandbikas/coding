@@ -9,13 +9,15 @@ import java.util.Random;
 /**
  * RandomizedCollection with on average O(1) time complexity for the operations.
  * Duplicate element not supported.
+ *
+ * leetcode.com/problems/insert-delete-getrandom-o1
  */
 public class _08_RandomizedCollectionEqualProbability {
 
     public static Random random = new Random();
 
     List<Integer> list = new ArrayList<>();
-    Map<Integer, Integer> keyMap = new HashMap<>();
+    Map<Integer, Integer> keyMap = new HashMap<>(); // Store index of the value in the list
 
     public boolean insert(int val) {
 

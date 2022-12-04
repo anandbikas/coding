@@ -13,6 +13,7 @@ import java.util.Set;
  * getMinKey()      : O(1)
  * getMaxKey()      : O(1)
  *
+ * leetcode.com/problems/all-oone-data-structure
  */
 public class _09_AllO1FrequencyStore {
 
@@ -26,7 +27,7 @@ public class _09_AllO1FrequencyStore {
         }
     }
 
-    private Node start, end;
+    private final Node start, end;
     private final Map<String, Node> cacheMap = new HashMap<>();
 
     public _09_AllO1FrequencyStore() {
@@ -53,7 +54,7 @@ public class _09_AllO1FrequencyStore {
         cacheMap.put(key, node.next);
         node.next.keys.add(key);
 
-        if(node !=start && node.keys.size()==0) {
+        if(node!=start && node.keys.size()==0) {
             node.prev.next = node.next;
             node.next.prev = node.prev;
         }

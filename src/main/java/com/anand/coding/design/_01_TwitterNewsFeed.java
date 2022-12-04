@@ -3,8 +3,10 @@ package com.anand.coding.design;
 import java.util.*;
 
 /**
- * Find 10 recent tweets of the user or all its followee.
+ * Find 10 recent tweets of the user for all its followee.
  * Heap/PriorityQueue, HashTable, List.
+ *
+ * leetcode.com/problems/design-twitter
  */
 public class _01_TwitterNewsFeed {
 

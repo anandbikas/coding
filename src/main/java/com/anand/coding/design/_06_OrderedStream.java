@@ -5,15 +5,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ *
+ * leetcode.com/problems/design-an-ordered-stream
+ */
 public class _06_OrderedStream {
 
-    private String [] A;
-
+    private final String [] A;
     private int i=1;
-    private int h;
 
-    private List<String> arrayList;
-    private List<String> emptyList = new ArrayList<>();
+    private final List<String> arrayList;
+    private final List<String> emptyList = new ArrayList<>();
 
     public _06_OrderedStream(int n) {
         A = new String[n+1];
@@ -24,8 +26,9 @@ public class _06_OrderedStream {
         A[key] = value;
 
         if(i==key){
-            for(h=i; i<A.length && A[i]!=null; i++);
-            return arrayList.subList(h, i);
+            int current=i;
+            for(; i<A.length && A[i]!=null; i++);
+            return arrayList.subList(current, i);
         }
 
         return emptyList;

@@ -4,6 +4,11 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+/**
+ * Design HashSet
+ *
+ * leetcode.com/problems/design-hashset
+ */
 public class _03_HashSet {
 
     private int capacity = 10;

@@ -4,6 +4,11 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+/**
+ * Deign a HashMap.
+ *
+ * leetcode.com/problems/design-hashmap
+ */
 public class _03_HashMap {
 
     private int capacity = 10;

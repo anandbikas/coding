@@ -10,13 +10,15 @@ import java.util.Set;
 
 /**
  * RandomizedCollection with on average O(1) time complexity for the operations.
+ *
+ * leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed
  */
-public class _07_RandomizedCollection {
+public class _07_RandomizedCollectionEqualProbabilityWithDuplicates {
 
     public static Random random = new Random();
 
     List<Integer> list = new ArrayList<>();
-    Map<Integer, Set<Integer>> keyMap = new HashMap<>();
+    Map<Integer, Set<Integer>> keyMap = new HashMap<>();  //Store all indexes of the value in the list
 
     public boolean insert(int val) {
 
