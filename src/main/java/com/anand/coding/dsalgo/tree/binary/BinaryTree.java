@@ -671,6 +671,43 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
+     * List of paths (from root to leaf) with matching targetSum
+     */
+    public List<List<Integer>> pathsMatchingSum(int targetSum) {
+        Stack<Integer> pathStack = new Stack<>();
+        List<List<Integer>> paths = new ArrayList<>();
+        pathsMatchingSum((Node<Integer>)root, pathStack, 0, paths, targetSum);
+
+        return paths;
+    }
+
+    /**
+     *
+     * @param node
+     * @param pathStack
+     * @param sum
+     * @param paths
+     * @param targetSum
+     */
+    private void pathsMatchingSum(final Node<Integer> node, final Stack<Integer> pathStack, int sum, List<List<Integer>> paths, int targetSum){
+        if(node == null) {
+            return;
+        }
+        sum += node.data;
+        pathStack.push(node.data);
+        if(node.left==null && node.right==null){
+            if(sum==targetSum) {
+                paths.add(new ArrayList<>(pathStack));
+            }
+        } else {
+            pathsMatchingSum(node.left, pathStack, sum, paths, targetSum);
+            pathsMatchingSum(node.right, pathStack, sum, paths, targetSum);
+        }
+
+        pathStack.pop();
+    }
+
+    /**
      * Find the lowest common ancestor node of the two given nodes
      * Method 1: find path for both x and y and find the parent by comparing both the paths.
      * Method 2: Using single traversal with an object (x,y,parent) as the parameter
@@ -1182,6 +1219,8 @@ public class BinaryTree <T extends Comparable<T>> {
         binaryTree.rightSideView();
         System.out.println("Diameter: "  + binaryTree.diameter());
 
+        System.out.println("Paths Matching targetSum=11: "  + binaryTree.pathsMatchingSum(11));
+        System.out.println("Paths Matching targetSum=18: "  + binaryTree.pathsMatchingSum(18));
 
         // LCA
         System.out.println("binaryTree.findLca(4,5): " + binaryTree.findLca(8,5));
