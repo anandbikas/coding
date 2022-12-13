@@ -662,6 +662,12 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node.left==null && node.right==null){
             //Instead of displaying paths we can add the them to pathList provided in function
             System.out.println(pathStack.toString());
+//            StringBuffer sb = new StringBuffer();
+//            for(Object x: pathStack.toArray()) {
+//                sb.append(x).append("->");
+//            }
+//            sb.setLength(sb.length()-2);
+//            paths.add(sb.toString());
         } else {
             displayPaths(node.left, pathStack);
             displayPaths(node.right, pathStack);
@@ -703,6 +709,49 @@ public class BinaryTree <T extends Comparable<T>> {
             pathsMatchingSum(node.left, pathStack, sum, paths, targetSum);
             pathsMatchingSum(node.right, pathStack, sum, paths, targetSum);
         }
+
+        pathStack.pop();
+    }
+
+    /**
+     * List of paths (any path) with matching targetSum
+     */
+    public List<List<Integer>> pathsMatchingSumAll(int targetSum) {
+        List<List<Integer>> paths = new ArrayList<>();
+
+        Stack<Node<Integer>> stack = new Stack<>();
+        if(root!=null) stack.push((Node<Integer>)root);
+        while(!stack.isEmpty()) {
+            Node<Integer> node = stack.pop();
+            pathsMatchingSumAll(node, new Stack<>(), 0, paths, targetSum);
+            if (node.right != null) stack.push(node.right);
+            if (node.left  != null) stack.push(node.left);
+        }
+
+        return paths;
+    }
+
+    /**
+     *
+     * @param node
+     * @param pathStack
+     * @param sum
+     * @param paths
+     * @param targetSum
+     */
+    private void pathsMatchingSumAll(final Node<Integer> node, final Stack<Integer> pathStack, int sum, List<List<Integer>> paths, int targetSum){
+        if(node == null) {
+            return;
+        }
+
+        sum +=node.data;
+        pathStack.push(node.data);
+        if(sum==targetSum) {
+            paths.add(new ArrayList<>(pathStack));
+        }
+
+        pathsMatchingSumAll(node.left, pathStack, sum, paths, targetSum);
+        pathsMatchingSumAll(node.right, pathStack, sum, paths, targetSum);
 
         pathStack.pop();
     }
@@ -1221,6 +1270,13 @@ public class BinaryTree <T extends Comparable<T>> {
 
         System.out.println("Paths Matching targetSum=11: "  + binaryTree.pathsMatchingSum(11));
         System.out.println("Paths Matching targetSum=18: "  + binaryTree.pathsMatchingSum(18));
+
+        final BinaryTree<Integer> bt = new BinaryTree<>(1);
+        bt.insertAsRightChild(2, 1);
+        bt.insertAsRightChild(3, 2);
+        bt.insertAsRightChild(4, 3);
+        bt.insertAsRightChild(5, 4);
+        System.out.println("PathsAll Matching targetSum=3: "  + bt.pathsMatchingSumAll(3));
 
         // LCA
         System.out.println("binaryTree.findLca(4,5): " + binaryTree.findLca(8,5));
