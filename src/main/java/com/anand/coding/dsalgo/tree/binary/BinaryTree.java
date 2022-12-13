@@ -715,19 +715,12 @@ public class BinaryTree <T extends Comparable<T>> {
 
     /**
      * List of paths (any path) with matching targetSum
+     * path-sum-iii/submissions/854651208
      */
     public List<List<Integer>> pathsMatchingSumAll(int targetSum) {
         List<List<Integer>> paths = new ArrayList<>();
 
-        Stack<Node<Integer>> stack = new Stack<>();
-        if(root!=null) stack.push((Node<Integer>)root);
-        while(!stack.isEmpty()) {
-            Node<Integer> node = stack.pop();
-            pathsMatchingSumAll(node, new Stack<>(), 0, paths, targetSum);
-            if (node.right != null) stack.push(node.right);
-            if (node.left  != null) stack.push(node.left);
-        }
-
+        pathsMatchingSumAll((Node<Integer>)root, new Stack<>(), new int[100], 1, 0, paths, targetSum);
         return paths;
     }
 
@@ -735,23 +728,28 @@ public class BinaryTree <T extends Comparable<T>> {
      *
      * @param node
      * @param pathStack
-     * @param sum
+     * @param levelSum
+     * @param level
      * @param paths
      * @param targetSum
      */
-    private void pathsMatchingSumAll(final Node<Integer> node, final Stack<Integer> pathStack, int sum, List<List<Integer>> paths, int targetSum){
+    private void pathsMatchingSumAll(final Node<Integer> node, final Stack<Integer> pathStack,
+                                     int []levelSum, int level, int sum, List<List<Integer>> paths, int targetSum){
         if(node == null) {
             return;
         }
 
         sum +=node.data;
+        levelSum[level] = sum;
         pathStack.push(node.data);
-        if(sum==targetSum) {
-            paths.add(new ArrayList<>(pathStack));
+        for(int l=0; l<level; l++) {
+            if (sum-levelSum[l] == targetSum) {
+                paths.add(new ArrayList<>(pathStack.subList(l,pathStack.size())));
+            }
         }
 
-        pathsMatchingSumAll(node.left, pathStack, sum, paths, targetSum);
-        pathsMatchingSumAll(node.right, pathStack, sum, paths, targetSum);
+        pathsMatchingSumAll(node.left, pathStack, levelSum, level+1, sum, paths, targetSum);
+        pathsMatchingSumAll(node.right, pathStack, levelSum, level+1, sum, paths, targetSum);
 
         pathStack.pop();
     }
