@@ -1,5 +1,6 @@
 package com.anand.coding.dsalgo.tree.binary;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Serialize/Deserialize binary tree to/from string.
@@ -9,73 +10,64 @@ import java.util.*;
  */
 public class Codec {
 
-    public static class TreeNode {
-        int val;
-        TreeNode left, right;
-        TreeNode(int x) {
-            val = x;
-        }
-    }
-
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
-        if(root==null){
+        if(root==null) {
             return "";
         }
-        Queue<TreeNode> queue = new LinkedList<TreeNode>(){{add(root);}};
 
+        Queue<TreeNode> q = new LinkedList<TreeNode>(){{ add(root); }};
         StringBuilder sb = new StringBuilder();
-        while(!queue.isEmpty()){
-            TreeNode node = queue.remove();
 
+        while(!q.isEmpty()) {
+            TreeNode node = q.remove();
             sb.append(node==null? "x," : node.val + ",");
 
             if(node!=null){
-                queue.add(node.left);
-                queue.add(node.right);
+                q.add(node.left);
+                q.add(node.right);
             }
         }
-        for(int i=sb.length()-1; sb.charAt(i)==',' || sb.charAt(i)=='x'; i--){
-            sb.setLength(i);
-        }
+
+        int i=sb.length()-1; for(; sb.charAt(i)==',' || sb.charAt(i)=='x'; i--);
+        sb.setLength(i+1);
+
         return sb.toString();
     }
 
     // Decodes encoded data to tree.
     public TreeNode deserialize(String data) {
-
-        if(data==null || data.length()==0){
+        if(data==null || data.length()==0) {
             return null;
         }
 
-        System.out.println(data);
         String [] list = data.split(",");
 
         TreeNode root=new TreeNode(Integer.parseInt(list[0]));
+        Queue<TreeNode> q = new LinkedList<TreeNode>(){{ add(root); }};
 
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(root);
+        for(int i=1; i<list.length; i++) {
+            TreeNode node = q.remove();
 
-        int i=1;
-        while (i<list.length){
-            TreeNode node = queue.remove();
-
-            if(list[i].charAt(0)=='x') node.left = null;
-            else queue.add(node.left = new TreeNode(Integer.parseInt(list[i])));
-            i++;
+            if((node.left = nodeFor.apply(list[i++])) !=null ) q.add(node.left);
             if(i==list.length) break;
-
-            if(list[i].charAt(0)=='x') node.right = null;
-            else queue.add(node.right = new TreeNode(Integer.parseInt(list[i])));
-            i++;
+            if((node.right = nodeFor.apply(list[i])) !=null ) q.add(node.right);
         }
         return root;
     }
 
-    public static void main(String []args){
+    Function<String, TreeNode> nodeFor = s -> s.charAt(0)=='x' ? null : new TreeNode(Integer.parseInt(s));
+
+    public static void main(String []args) {
         Codec codec = new Codec();
         TreeNode root = codec.deserialize("1,2,3,x,x,4,5");
 
         System.out.println(codec.serialize(root));
+    }
+
+    public static class TreeNode {
+        int val;
+        TreeNode left, right;
+        TreeNode(int x) { val = x; }
     }
 }
