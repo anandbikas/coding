@@ -522,6 +522,30 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         return node;
     }
 
+    public static class ListNode<T> {
+        T val;
+        ListNode<T> next;
+        ListNode(T val, ListNode<T> next) { this.val = val; this.next = next; }
+    }
+
+    public Node<T> bstFromInorder(ListNode<T> head) {
+        return bstFromInorder(head, null);
+    }
+
+    private Node<T> bstFromInorder(ListNode<T> left, ListNode<T> right){
+        if(left==right) {
+            return null;
+        }
+
+        ListNode<T> slow,fast;
+        for(slow=fast=left ; fast!=right && fast.next!=right; slow=slow.next, fast=fast.next.next);
+        Node<T> node = new Node<>(slow.val);
+        node.left = bstFromInorder(left, slow);
+        node.right= bstFromInorder(slow.next, right);
+
+        return node;
+    }
+
     /**
      * Inorder BST iterator
      */
