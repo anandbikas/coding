@@ -6,16 +6,10 @@ package com.anand.coding.dsalgo.trie;
 public class TrieNode {
 
     TrieNode [] children;
-    Object value; //value for key-value pair
+    Object val; //word meaning
+    int count=0; //Optional count to indicate how many words contain this character at a particular level.
 
     public TrieNode(int size) {
-        this.children = new TrieNode[size];;
-    }
-
-    @Override
-    public String toString() {
-        return "TrieNode{" +
-                "value='" + value + '\'' +
-                '}';
+        this.children = new TrieNode[size];
     }
 }

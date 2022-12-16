@@ -20,19 +20,20 @@ public class Trie {
     /**
      *
      * @param key
-     * @param value
+     * @param val
      */
-    public void insert(final String key, final Object value){
+    public void insert(final String key, final Object val){
 
         TrieNode trieNode = root;
         for(char c: key.toCharArray()) {
             int childIndex = c-start;
-            if(trieNode.children[childIndex]==null){
+            if(trieNode.children[childIndex]==null) {
                 trieNode.children[childIndex] = new TrieNode(size);
             }
             trieNode = trieNode.children[childIndex];
+            trieNode.count++;
         }
-        trieNode.value = value;
+        trieNode.val = val;
     }
 
     /**
@@ -45,11 +46,11 @@ public class Trie {
         TrieNode trieNode = root;
         for(char c: key.toCharArray()) {
             trieNode = trieNode.children[c-start];
-            if(trieNode==null){
+            if(trieNode==null) {
                 return null;
             }
         }
-        return trieNode.value;
+        return trieNode.val;
     }
 
     /**
@@ -71,13 +72,12 @@ public class Trie {
     private Object searchWithDot(TrieNode rt, final String key, int x) {
 
         if(x==key.length()){
-            return rt.value;
+            return rt.val;
         }
 
         char c = key.charAt(x);
         if (c =='.') {
-            for (short i = 0; i < size; i++) {
-                TrieNode trieNode = rt.children[i];
+            for(TrieNode trieNode: rt.children) {
                 if(trieNode!=null) {
                     Object res = searchWithDot(trieNode, key, x+1);
                     if(res!=null) {
@@ -88,7 +88,7 @@ public class Trie {
             return null;
         }
 
-        TrieNode trieNode = rt.children[c - start];
+        TrieNode trieNode = rt.children[c-start];
         if (trieNode == null) {
             return null;
         }
@@ -105,11 +105,22 @@ public class Trie {
         TrieNode trieNode = root;
         for(char c: key.toCharArray()) {
             trieNode = trieNode.children[c-start];
-            if(trieNode==null){
+            if(trieNode==null) {
                 return;
             }
         }
-        trieNode.value=null;
+        trieNode.val = null;
+
+        //Decrease counter and detach the node from where count becomes 0.
+        trieNode = root;
+        for(char c: key.toCharArray()) {
+            if(trieNode.children[c-start].count==1) {
+                trieNode.children[c-start]=null;
+                return;
+            }
+            trieNode = trieNode.children[c-start];
+            trieNode.count--;
+        }
     }
 
     /**
@@ -133,12 +144,12 @@ public class Trie {
      */
     private void display(TrieNode trieNode, StringBuilder sb) {
 
-        for(short i=0; i<size; i++) {
+        for(char i=0; i<size; i++) {
             TrieNode child = trieNode.children[i];
-            if(child!=null){
+            if(child!=null) {
                 sb.append((char)(i+start));
-                if(child.value!=null) {
-                    System.out.printf("%-18s%s%n", sb, child.value);
+                if(child.val!=null) {
+                    System.out.printf("%-18s%s%n", sb, child.val);
                 }
                 display(child, sb);
                 sb.setLength(sb.length()-1);
@@ -154,9 +165,9 @@ public class Trie {
     public boolean startsWith(String prefix) {
 
         TrieNode trieNode = root;
-        for(char c: prefix.toCharArray()){
+        for(char c: prefix.toCharArray()) {
             trieNode = trieNode.children[c-start];
-            if(trieNode==null){
+            if(trieNode==null) {
                 return false;
             }
         }
@@ -178,9 +189,9 @@ public class Trie {
 
         TrieNode trieNode = root;
         StringBuilder sb = new StringBuilder();
-        for(char c: prefix.toCharArray()){
+        for(char c: prefix.toCharArray()) {
             trieNode = trieNode.children[c-start];
-            if(trieNode==null){
+            if(trieNode==null) {
                 return list;
             }
             sb.append(c);
@@ -207,7 +218,7 @@ public class Trie {
 
             if(child!=null) {
                 sb.append((char)(i+start));
-                if(child.value!=null){
+                if(child.val!=null){
                     list.add(sb.toString());
                 }
                 wordsWithPrefix(child, sb, list);

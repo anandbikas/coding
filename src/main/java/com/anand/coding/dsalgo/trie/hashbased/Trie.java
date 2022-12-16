@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Trie using hashMap
+ * Trie
  */
 public class Trie {
 
@@ -13,9 +13,9 @@ public class Trie {
     /**
      *
      * @param key
-     * @param value
+     * @param val
      */
-    public void insert(final String key, final Object value){
+    public void insert(final String key, final Object val){
 
         TrieNode trieNode = root;
         for(char c: key.toCharArray()) {
@@ -25,7 +25,7 @@ public class Trie {
             trieNode = trieNode.charMap.get(c);
             trieNode.count++;
         }
-        trieNode.value = value;
+        trieNode.val = val;
     }
 
     /**
@@ -38,11 +38,53 @@ public class Trie {
         TrieNode trieNode = root;
         for(char c: key.toCharArray()) {
             trieNode = trieNode.charMap.get(c);
-            if(trieNode==null){
+            if(trieNode==null) {
                 return null;
             }
         }
-        return trieNode.value;
+        return trieNode.val;
+    }
+
+    /**
+     *
+     * @param key
+     * @return
+     */
+    public Object searchWithDot(final String key) {
+        return searchWithDot(root, key, 0);
+    }
+
+    /**
+     *
+     * @param rt
+     * @param key
+     * @param x
+     * @return
+     */
+    private Object searchWithDot(TrieNode rt, final String key, int x) {
+
+        if(x==key.length()){
+            return rt.val;
+        }
+
+        char c = key.charAt(x);
+        if (c =='.') {
+            for(TrieNode trieNode: rt.charMap.values()) {
+                if(trieNode!=null) {
+                    Object res = searchWithDot(trieNode, key, x+1);
+                    if(res!=null) {
+                        return res;
+                    }
+                }
+            }
+            return null;
+        }
+
+        TrieNode trieNode = rt.charMap.get(c);
+        if (trieNode == null) {
+            return null;
+        }
+        return searchWithDot(trieNode, key, x+1);
     }
 
     /**
@@ -55,24 +97,21 @@ public class Trie {
         TrieNode trieNode = root;
         for(char c: key.toCharArray()) {
             trieNode = trieNode.charMap.get(c);
-            if(trieNode==null){
+            if(trieNode==null) {
                 return;
             }
         }
-        trieNode.value=null;
+        trieNode.val = null;
 
         //Decrease counter and detach the node from where count becomes 0.
-        TrieNode trieNodeParent = null;
         trieNode = root;
-
         for(char c: key.toCharArray()) {
-            trieNodeParent = trieNode;
-            trieNode = trieNode.charMap.get(c);
-            trieNode.count--;
-            if(trieNode.count==0) {
-                trieNodeParent.charMap.remove(c);
+            if(trieNode.charMap.get(c).count==1) {
+                trieNode.charMap.remove(c);
                 return;
             }
+            trieNode = trieNode.charMap.get(c);
+            trieNode.count--;
         }
     }
 
@@ -99,10 +138,10 @@ public class Trie {
 
         for(char c: trieNode.charMap.keySet()) {
             TrieNode child = trieNode.charMap.get(c);
-            if(child!=null){
+            if(child!=null) {
                 sb.append(c);
-                if(child.value!=null){
-                    System.out.printf("%-18s%s%n", sb, child.value);
+                if(child.val!=null) {
+                    System.out.printf("%-18s%s%n", sb, child.val);
                 }
                 display(child, sb);
                 sb.setLength(sb.length()-1);
@@ -111,9 +150,7 @@ public class Trie {
     }
 
     /**
-     * Its like
-     * printAllWords
-     * printAllPaths
+     *
      */
     public void displayAllShortestUniquePrefix() {
         System.out.println("All Unique Prefixes");
@@ -150,6 +187,23 @@ public class Trie {
      * @param prefix
      * @return
      */
+    public boolean startsWith(String prefix) {
+
+        TrieNode trieNode = root;
+        for(char c: prefix.toCharArray()) {
+            trieNode = trieNode.charMap.get(c);
+            if(trieNode==null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param prefix
+     * @return
+     */
     public List<String> wordsWithPrefix(String prefix) {
 
         List<String> list = new ArrayList<>();
@@ -160,9 +214,9 @@ public class Trie {
 
         TrieNode trieNode = root;
         StringBuilder sb = new StringBuilder();
-        for(char c: prefix.toCharArray()){
+        for(char c: prefix.toCharArray()) {
             trieNode = trieNode.charMap.get(c);
-            if(trieNode==null){
+            if(trieNode==null) {
                 return list;
             }
             sb.append(c);
@@ -189,7 +243,7 @@ public class Trie {
 
             if(child!=null) {
                 sb.append(c);
-                if(child.value!=null){
+                if(child.val!=null){
                     list.add(sb.toString());
                 }
                 wordsWithPrefix(child, sb, list);
