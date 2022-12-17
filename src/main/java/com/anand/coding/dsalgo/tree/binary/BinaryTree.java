@@ -2,9 +2,7 @@ package com.anand.coding.dsalgo.tree.binary;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import java.util.Queue;
 import java.util.ArrayDeque;
@@ -12,17 +10,18 @@ import java.util.ArrayDeque;
 /**
  * Binary Tree
  *
- * A binary tree has two nods called left and right.
+ * A binary tree has two child nodes left and right.
  *
  * 1. A binary tee with n nodes has exactly n-1 edges
  * 2. Maximum number of nodes at level l is 2 pow(l-1).
  * 3. Maximum number of nodes in a binary tree of height h is 2 pow(h) – 1.
  * 4. In a Binary Tree with n nodes, minimum possible height is ceil(log2(n+1))
- * 5. Number of nodes in a complete binary tree lies betwwen 2 pow(h-1) to 2 pow(h) -1
+ * 5. Number of nodes in a complete binary tree lies between 2 pow(h-1) to 2 pow(h) -1
  */
 public class BinaryTree <T extends Comparable<T>> {
 
     protected Node<T> root;
+    protected Node<T> NULL = new Node<>();
 
     public BinaryTree(){
         super();
@@ -106,20 +105,16 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println("preOrderTraversal");
 
         Stack<Node> stack = new Stack<>();
-
         if(root!=null){
             stack.push(root);
         }
+
         while(!stack.isEmpty()) {
             Node node = stack.pop();
             System.out.print(node.data + "  ");
 
-            if (node.right != null) {
-                stack.push(node.right);
-            }
-            if (node.left != null) {
-                stack.push(node.left);
-            }
+            if (node.right != null) stack.push(node.right);
+            if (node.left != null)  stack.push(node.left);
         }
         System.out.println();
     }
@@ -132,15 +127,15 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println("inOrderTraversal");
 
         Stack<Node> stack = new Stack<>();
-
-        for(Node node = root; node!= null; node=node.left){
+        for(Node node = root; node!=null; node=node.left){
             stack.push(node);
         }
+
         while(!stack.isEmpty()){
             Node node = stack.pop();
             System.out.print(node.data + "  ");
 
-            for(node=node.right; node!= null; node = node.left){
+            for(node=node.right; node!=null; node=node.left){
                 stack.push(node);
             }
         }
@@ -157,15 +152,13 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println("postOrderTraversal");
 
         Stack<Node> stack = new Stack<>();
-
         if(root != null){
             stack.push(root);
         }
+
         while(!stack.isEmpty()){
             Node node = stack.peek();
-
-            if(node==null){
-                //Process root node
+            if(node==null) { //Process root node
                 stack.pop();
                 System.out.print(stack.pop().data + "  ");
                 continue;
@@ -174,13 +167,8 @@ public class BinaryTree <T extends Comparable<T>> {
             //Push null to indicate a root needs to be processed from the stack
             stack.push(null);
 
-            if (node.right != null) {
-                stack.push(node.right);
-            }
-            if (node.left != null) {
-                stack.push(node.left);
-            }
-
+            if (node.right != null) stack.push(node.right);
+            if (node.left != null)  stack.push(node.left);
         }
 
         System.out.println();
@@ -194,7 +182,6 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println("levelOrderTraversal");
 
         Queue<Node> queue = new ArrayDeque<>(); //new LinkedList<>();
-
         if(root!=null){
             queue.add(root);
         }
@@ -202,13 +189,11 @@ public class BinaryTree <T extends Comparable<T>> {
         while(!queue.isEmpty()){
             Node node = queue.remove();
             System.out.print(node.data + "  ");
-            if(node.left!=null){
-                queue.add(node.left);
-            }
-            if(node.right!=null){
-                queue.add(node.right);
-            }
+
+            if(node.left!=null)  queue.add(node.left);
+            if(node.right!=null) queue.add(node.right);
         }
+
         System.out.println();
     }
 
@@ -218,22 +203,16 @@ public class BinaryTree <T extends Comparable<T>> {
      */
     public List<List<T>> levelOrderTraversal1() {
 
-        Queue<Node<T>> queue = new ArrayDeque<>(); //new LinkedList<>();
-
         List<List<T>> list = new LinkedList<>();
+        List<T> currentList= new ArrayList<>();
 
-        List<T> currentList=null;
-        Node<T> NULL = new Node<T>();
-
+        Queue<Node<T>> queue = new ArrayDeque<Node<T>>(){{ add(NULL); }}; //new LinkedList<>();
         if(root!=null){
             queue.add(root);
-            queue.add(NULL);
-            list.add(currentList = new ArrayList<>());
         }
 
         while(queue.size()>1){
             Node<T> node = queue.remove();
-
             if(node==NULL){
                 list.add(currentList = new ArrayList<>());
                 queue.add(NULL);
@@ -241,12 +220,8 @@ public class BinaryTree <T extends Comparable<T>> {
             }
             currentList.add(node.data);
 
-            if(node.left!=null){
-                queue.add(node.left);
-            }
-            if(node.right!=null){
-                queue.add(node.right);
-            }
+            if(node.left!=null)  queue.add(node.left);
+            if(node.right!=null) queue.add(node.right);
         }
 
         return list;
@@ -261,38 +236,27 @@ public class BinaryTree <T extends Comparable<T>> {
 
         Queue<Node> queue = new ArrayDeque<>();
         Stack<Node> stack = new Stack<>();
-
         if(root!=null){
             queue.add(root);
         }
 
-        int level=1;
-        while (!queue.isEmpty()) {
+        for (int level=1; !queue.isEmpty(); level++) {
 
             while (!queue.isEmpty()) {
                 Node node = queue.remove();
                 System.out.print(node.data + "  ");
 
                 if(level%2==1) {
-                    if (node.left != null) {
-                        stack.push(node.left);
-                    }
-                    if (node.right != null) {
-                        stack.push(node.right);
-                    }
+                    if (node.left != null) stack.push(node.left);
+                    if (node.right!= null) stack.push(node.right);
                 } else {
-                    if (node.right != null) {
-                        stack.push(node.right);
-                    }
-                    if (node.left != null) {
-                        stack.push(node.left);
-                    }
+                    if (node.right!= null) stack.push(node.right);
+                    if (node.left != null) stack.push(node.left);
                 }
             }
-            while(!stack.isEmpty()){
+            while(!stack.isEmpty()) {
                 queue.add(stack.pop());
             }
-            level++;
         }
 
         System.out.println();
@@ -302,7 +266,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * Call printLevel method for each level
      */
     public void levelOrderTraversalBruteForce(){
-        System.out.println("levelOrderTraversalBruteForce");
+        System.out.println("levelOrderTraversalBruteForce :");
 
         for(int level = 1; level <=height(); level++){
             printLevel(level);
@@ -337,128 +301,6 @@ public class BinaryTree <T extends Comparable<T>> {
         }
         printLevel(node.left, level, currentLevel+1);
         printLevel(node.right, level, currentLevel+1);
-
-    }
-
-    /**
-     * verticalOrderTraversal using HashMap
-     */
-    public void verticalOrderTraversal(){
-
-        Map<Integer, List<Node>> nodeMap= new HashMap<>();
-        Range verticalRange = new Range();
-
-        verticalOrderTraversal(root, nodeMap, 0, verticalRange);
-
-        for(int level = verticalRange.left; level<=verticalRange.right; level++) {
-            System.out.println("printLevel " + level);
-
-            nodeMap.get(level).forEach(node -> {
-                System.out.print( node.data + " ");
-            });
-            System.out.println();
-        }
-
-    }
-
-    private class NodeLevelPair{
-        Node<T> node; int level;
-
-        public NodeLevelPair(Node<T> node, int level) {
-            this.node = node;
-            this.level = level;
-        }
-    }
-
-    /**
-     * Same as calculateVerticalLevelRange, but this requires BFS traversal so that output be in top-down order.
-     *
-     *
-     * @param node
-     * @param nodeMap
-     * @param currentLevel
-     * @param range
-     */
-    private void verticalOrderTraversal(Node<T> node, Map<Integer, List<Node>> nodeMap, int currentLevel, Range range){
-
-        Queue<NodeLevelPair> queue = new ArrayDeque<>(); //new LinkedList<>();
-
-        if(node!=null){
-            queue.add(new NodeLevelPair(node, currentLevel));
-        }
-
-        while(!queue.isEmpty()){
-            NodeLevelPair pair = queue.remove();
-            node = pair.node;
-            currentLevel = pair.level;
-
-            if(currentLevel<range.left){
-                range.left=currentLevel;
-            }
-
-            if(currentLevel>range.right){
-                range.right = currentLevel;
-            }
-
-            nodeMap.computeIfAbsent(currentLevel, k->new ArrayList<>());
-            nodeMap.get(currentLevel).add(pair.node);
-
-
-            if(node.left!=null){
-                queue.add(new NodeLevelPair(node.left, currentLevel-1));
-            }
-            if(node.right!=null){
-                queue.add(new NodeLevelPair(node.right, currentLevel+1));
-            }
-        }
-    }
-
-    /**
-     * Range: an empty range has right < left
-     */
-    private class Range{
-        public int left=0;
-        public int right=-1;
-    }
-
-    /**
-     *
-     * @param node
-     * @param currentLevel
-     * @param range
-     */
-    public void calculateVerticalLevelRange(Node node,  int currentLevel, Range range){
-
-        if(node == null){
-            return;
-        }
-
-        if(currentLevel<range.left){
-            range.left=currentLevel;
-        }
-
-        if(currentLevel>range.right){
-            range.right = currentLevel;
-        }
-
-        calculateVerticalLevelRange(node.left, currentLevel-1, range);
-        calculateVerticalLevelRange(node.right, currentLevel+1, range);
-    }
-
-
-    /**
-     * Call printLevelVertical method for each vertical level
-     */
-    public void verticalOrderTraversalBruteForce(){
-        System.out.println("verticalOrderTraversalBruteForce");
-
-        Range verticalLevelRange = new Range();
-        calculateVerticalLevelRange(root, 0, verticalLevelRange);
-
-        for(int level = verticalLevelRange.left; level<=verticalLevelRange.right; level++){
-            printVerticalLevel(level);
-        }
-        System.out.println();
     }
 
     /**
@@ -466,7 +308,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param level
      */
     public void printVerticalLevel(int level){
-        System.out.println("printLevel " + level);
+        System.out.print("printVerticalLevel " + level + " : ");
         printVerticalLevel(root, level, 0);
         System.out.println();
     }
@@ -491,6 +333,43 @@ public class BinaryTree <T extends Comparable<T>> {
 
     /**
      *
+     * @param node
+     * @param vLevel
+     * @param range
+     */
+    public void verticalLevelRange(Node node, int vLevel, Range range){
+        if(node == null){
+            return;
+        }
+
+        if(vLevel<range.left)  range.left=vLevel;
+        if(vLevel>range.right) range.right = vLevel;
+
+        verticalLevelRange(node.left, vLevel-1, range);
+        verticalLevelRange(node.right, vLevel+1, range);
+    }
+
+    public static class Range {
+        public int left=0, right=-1; //Range: an empty range has right < left
+    }
+
+    /**
+     * Call printLevelVertical method for each vertical level
+     */
+    public void verticalOrderTraversalBruteForce(){
+        System.out.println("verticalOrderTraversalBruteForce :");
+
+        Range verticalRange = new Range();
+        verticalLevelRange(root, 0, verticalRange);
+
+        for(int vLevel = verticalRange.left; vLevel<=verticalRange.right; vLevel++){
+            printVerticalLevel(vLevel);
+        }
+        System.out.println();
+    }
+
+    /**
+     *
      * @param data
      * @return
      */
@@ -499,22 +378,18 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
-     * If node is not the one, check in right subTree only if the data is not found in left subTree.
      *
      * @param node
      * @param data
      * @return
      */
     private Node<T> searchRec(Node<T> node, T data){
-
         if(node==null || node.data.equals(data)){
             return node;
         }
-        Node<T> foundNode = searchRec(node.left, data);
-        if(foundNode != null){
-            return foundNode;
-        }
-        return searchRec(node.right, data);
+
+        Node<T> foundNode;
+        return (foundNode=searchRec(node.left, data)) == null ? searchRec(node.right, data) : foundNode;
     }
 
     /**
@@ -627,7 +502,7 @@ public class BinaryTree <T extends Comparable<T>> {
         }
         pathStack.push(node);
         if(node.data.equals(data)){
-            //Instead of displaying paths we can add the them to pathList provided in function
+            //Instead of displaying paths we can add them to pathList provided in function
             System.out.println(pathStack.toString());
         } else {
             displayPaths(node.left, data, pathStack);
@@ -660,7 +535,7 @@ public class BinaryTree <T extends Comparable<T>> {
         }
         pathStack.push(node);
         if(node.left==null && node.right==null){
-            //Instead of displaying paths we can add the them to pathList provided in function
+            //Instead of displaying paths we can add them to pathList provided in function
             System.out.println(pathStack.toString());
 //            StringBuffer sb = new StringBuffer();
 //            for(Object x: pathStack.toArray()) {
@@ -757,58 +632,27 @@ public class BinaryTree <T extends Comparable<T>> {
     /**
      * Find the lowest common ancestor node of the two given nodes
      * Method 1: find path for both x and y and find the parent by comparing both the paths.
-     * Method 2: Using single traversal with an object (x,y,parent) as the parameter
+     * Method 2: Using single traversal
      *
      * @return
      */
-    public Node findLca(T x, T y){
-
-        LCA lca = findLca(root, x, y);
-        return lca==null ? null : lca.parent;
+    public Node<T> lowestCommonAncestor(T x, T y){
+        return lowestCommonAncestor(root, x, y);
     }
 
-    private LCA findLca(Node node, T x, T y){
-
-        if(node==null){
-            return null;
+    private Node<T> lowestCommonAncestor(Node<T> n, T x, T y){
+        if(n==null || n.data.compareTo(x)==0 || n.data.compareTo(y)==0) {
+            return n;
         }
 
-        LCA leftLca = findLca(node.left, x, y);
-        if(!(leftLca==null || leftLca.parent==null)){
-            return leftLca;
+        Node<T> left  = lowestCommonAncestor(n.left, x, y);
+        Node<T> right = lowestCommonAncestor(n.right, x, y);
+
+        if(left!=null && right!=null){
+            return n;
         }
 
-        LCA rightLca = findLca(node.right, x, y);
-        if(!(rightLca==null || rightLca.parent==null)){
-            return rightLca;
-        }
-
-        LCA lca = leftLca;
-        if(lca == null) {
-            lca = rightLca;
-        } else if(rightLca != null) {
-            if(lca.x==null)
-                lca.x = rightLca.x;
-            if(lca.y==null)
-                lca.y = rightLca.y;
-        }
-
-        if(node.data.equals(x)){
-            if(lca==null) lca = new LCA();
-            lca.x=node;
-        } else if(node.data.equals(y)){
-            if(lca==null) lca = new LCA();
-            lca.y=node;
-        }
-
-        if(!(lca==null || lca.x==null || lca.y==null)) {
-            lca.parent = node;
-        }
-        return lca;
-    }
-
-    private class LCA{
-        Node x,y,parent;
+        return (left==null) ? right : left;
     }
 
     /**
@@ -820,13 +664,12 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
-     * Calculate height of the tree
      *
      * @param node
      * @return
      */
     public int height(Node node){
-        return node==null? 0 : Math.max(height(node.left),height(node.right)) + 1;
+        return node==null ? 0 : Math.max(height(node.left),height(node.right)) + 1;
     }
 
     /**
@@ -847,12 +690,8 @@ public class BinaryTree <T extends Comparable<T>> {
             return 0;
         }
 
-        if(node.left==null){
-            return minHeight(node.right)+1;
-        }
-        if (node.right==null){
-            return minHeight(node.left)+1;
-        }
+        if(node.left==null)     return minHeight(node.right)+1;
+        if (node.right==null)   return minHeight(node.left)+1;
 
         return Math.min(minHeight(node.left),minHeight(node.right)) + 1;
     }
@@ -870,32 +709,26 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
-     * Diameter of the tree (longest path in the tree)
+     * Diameter of the tree (The longest path in the tree)
      *
      * @return
      */
     public int diameter(){
-        return diameterCalculator(root).diameter;
-    }
-
-    public class HiDi{
-        int height=0,diameter=0;
+        return diameter(root).diameter;
     }
 
     /**
      * Just like height method. Twist is to calculate diameter as well.
-     *
      * @param node
-     * @return []
+     * @return
      */
-    private HiDi diameterCalculator(Node<T> node){
-
+    private HiDi diameter(Node<T> node){
         if(node==null){
             return new HiDi();
         }
 
-        HiDi left = diameterCalculator(node.left);
-        HiDi right = diameterCalculator(node.right);
+        HiDi left  = diameter(node.left);
+        HiDi right = diameter(node.right);
 
         HiDi hidi = new HiDi();
         hidi.height = Math.max(left.height,right.height) + 1;
@@ -904,13 +737,18 @@ public class BinaryTree <T extends Comparable<T>> {
         return hidi;
     }
 
+    public static class HiDi{
+        int height=0,diameter=0;
+    }
+
     /**
      *
-     * @param tree
+     * @param tree1
+     * @param tree2
      * @return
      */
-    public boolean isSimilar(BinaryTree tree){
-        return isSimilar(this.root, tree.root);
+    public static boolean isSimilar(BinaryTree tree1, BinaryTree tree2){
+        return isSimilar(tree1.root, tree2.root);
     }
 
     /**
@@ -920,12 +758,12 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node2
      * @return
      */
-    private boolean isSimilar(Node node1, Node node2){
+    private static boolean isSimilar(Node node1, Node node2){
         if(node1 == null && node2 == null){
             return true;
         }
 
-        if(node1 == null || node2 ==null){
+        if(node1 == null || node2 == null){
             return false;
         }
 
@@ -934,11 +772,12 @@ public class BinaryTree <T extends Comparable<T>> {
 
     /**
      *
-     * @param tree
+     * @param tree1
+     * @param tree2
      * @return
      */
-    public boolean isCopy(BinaryTree tree){
-        return isCopy(this.root, tree.root);
+    public static boolean isCopy(BinaryTree tree1, BinaryTree tree2){
+        return isCopy(tree1.root, tree2.root);
     }
 
     /**
@@ -948,7 +787,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node2
      * @return
      */
-    private boolean isCopy(Node node1, Node node2){
+    private static boolean isCopy(Node node1, Node node2){
         if(node1 == null && node2 == null){
             return true;
         }
@@ -966,10 +805,9 @@ public class BinaryTree <T extends Comparable<T>> {
     /**
      * Checks whether the tree is mirror image of itself
      *
-     * @param tree
      * @return
      */
-    public boolean isSymmetric(BinaryTree tree){
+    public boolean isSymmetric(){
         return root==null || isSymmetric(root.left, root.right);
     }
 
@@ -988,29 +826,28 @@ public class BinaryTree <T extends Comparable<T>> {
             return false;
         }
 
-
         return node1.data.equals(node2.data)
                 && isSymmetric(node1.left, node2.right)
                 && isSymmetric(node1.right, node2.left);
     }
 
 
-    private class NodePair{
-        Node node1, node2;
+    private static class NodePair{
+        Node n1, n2;
 
-        public NodePair(Node node1, Node node2){
-            this.node1 = node1;
-            this.node2 = node2;
+        public NodePair(Node n1, Node n2){
+            this.n1 = n1; this.n2 = n2;
         }
     }
 
     /**
      *
-     * @param tree
+     * @param tree1
+     * @param tree2
      * @return
      */
-    public boolean isCopyUsingLoop(BinaryTree tree){
-        return isCopyUsingLoop(this.root, tree.root);
+    public static boolean isCopyUsingLoop(BinaryTree tree1, BinaryTree tree2){
+        return isCopyUsingLoop(tree1.root, tree2.root);
     }
 
     /**
@@ -1020,29 +857,28 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node2
      * @return
      */
-    private boolean isCopyUsingLoop(Node node1, Node node2){
+    private static boolean isCopyUsingLoop(Node node1, Node node2){
 
         Stack<NodePair> stack = new Stack<>();
-
         stack.push(new NodePair(node1, node2));
 
         boolean result = true;
         while(!stack.isEmpty() && result){
             NodePair pair = stack.pop();
-            if(pair.node1 == null && pair.node2 == null){
+            if(pair.n1 == null && pair.n2 == null){
                 result = true;
                 continue;
             }
 
-            if(pair.node1 == null || pair.node2 ==null){
+            if(pair.n1 == null || pair.n2 ==null){
                 result = false;
                 continue;
             }
 
-            result = pair.node1.data.equals(pair.node2.data);
+            result = pair.n1.data.equals(pair.n2.data);
 
-            stack.push(new NodePair(pair.node1.left, pair.node2.left));
-            stack.push(new NodePair(pair.node1.right, pair.node2.right));
+            stack.push(new NodePair(pair.n1.left, pair.n2.left));
+            stack.push(new NodePair(pair.n1.right, pair.n2.right));
         }
 
         return result;
@@ -1054,8 +890,8 @@ public class BinaryTree <T extends Comparable<T>> {
      *
      * @return
      */
-    public boolean isBinarySearchTree(){
-        return isBinarySearchTree(root, new Node<>());
+    public boolean isBST(){
+        return isBST(root, new Node<>());
     }
 
     /**
@@ -1065,12 +901,12 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node
      * @return
      */
-    private boolean isBinarySearchTree(Node<T> node, Node<T> prevVisitedNode){
+    private boolean isBST(Node<T> node, Node<T> prevVisitedNode){
         if(node == null){
             return true;
         }
 
-        if(!isBinarySearchTree(node.left, prevVisitedNode)){
+        if(!isBST(node.left, prevVisitedNode)){
             return false;
         }
 
@@ -1078,15 +914,15 @@ public class BinaryTree <T extends Comparable<T>> {
             return false;
         }
         prevVisitedNode.data = node.data;
-        return isBinarySearchTree(node.right, prevVisitedNode);
+        return isBST(node.right, prevVisitedNode);
     }
 
     /**
      *
      * @return
      */
-    public int numberOfNodes(){
-        return numberOfNodes(root);
+    public int size(){
+        return size(root);
     }
 
     /**
@@ -1095,11 +931,11 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node
      * @return
      */
-    private int numberOfNodes(Node node){
+    private int size(Node node){
         if(node==null){
             return 0;
         }
-        return 1 + numberOfNodes(node.left) + numberOfNodes(node.right);
+        return size(node.left) + size(node.right) + 1;
     }
 
     /**
@@ -1113,19 +949,17 @@ public class BinaryTree <T extends Comparable<T>> {
     /**
      * Convert the tree to its mirror image by swapping left and right subTree.
      *
-     * @param node
+     * @param n
      * @return
      */
-    private void toMirrorImage(Node<T> node){
-        if(node==null){
+    private void toMirrorImage(Node<T> n){
+        if(n==null){
             return;
         }
-        Node<T> temp =  node.left;
-        node.left = node.right;
-        node.right = temp;
+        Node<T> t = n.left; n.left = n.right; n.right = t;
 
-        toMirrorImage(node.left);
-        toMirrorImage(node.right);
+        toMirrorImage(n.left);
+        toMirrorImage(n.right);
     }
 
     /**
@@ -1142,25 +976,25 @@ public class BinaryTree <T extends Comparable<T>> {
      * Insert a node to the left of the provided node
      * Shifts the left child of the provided node to further left.
      *
-     * @param root
+     * @param node
      * @param data
      * @param nodeData
      * @return
      */
-    private boolean insertAsLeftChild(final Node<T> root, final T data, final T nodeData){
-
-        if(null == root){
+    private boolean insertAsLeftChild(final Node<T> node, final T data, final T nodeData){
+        if(null == node){
             return false;
         }
-        if(root.data.equals(nodeData)){
+
+        if(node.data.equals(nodeData)){
             final Node<T> newNode = new Node<>(data);
-            newNode.left = root.left;
-            root.left = newNode;
+            newNode.left = node.left;
+            node.left = newNode;
             return true;
-        } else{
-            return insertAsLeftChild(root.left, data, nodeData)
-                    || insertAsLeftChild(root.right, data, nodeData);
         }
+
+        return insertAsLeftChild(node.left, data, nodeData)
+                || insertAsLeftChild(node.right, data, nodeData);
     }
 
     /**
@@ -1184,90 +1018,73 @@ public class BinaryTree <T extends Comparable<T>> {
      * @return
      */
     private boolean insertAsRightChild(final Node<T> node, final T data, final T nodeData){
-
         if(null == node){
             return false;
         }
+
         if(node.data.equals(nodeData)){
             final Node<T> newNode = new Node<>(data);
             newNode.right = node.right;
             node.right = newNode;
             return true;
-        } else{
-            return insertAsRightChild(node.left, data, nodeData)
-                    || insertAsRightChild(node.right, data, nodeData);
         }
+        return insertAsRightChild(node.left, data, nodeData)
+                || insertAsRightChild(node.right, data, nodeData);
     }
 
     /**
-     *
-     * @return
-     */
-    @Override
-    public String toString() {
-        return "BinaryTree{" +
-                "root=" + root +
-                '}';
-    }
-
-
-    /**
-     * Main function to test the code.
      *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String [] args) {
 
         /*
-         * Build a Binary Tree.
-         *
+         * A Binary Tree.
          *                     1
          *                 2      3
          *               4  5    6  7
          *                     8
          */
-        final BinaryTree<Integer> binaryTree = new BinaryTree<>(1);
-        binaryTree.insertAsLeftChild(2, 1);
-        binaryTree.insertAsRightChild(3, 1);
-        binaryTree.insertAsLeftChild(4,2);
-        binaryTree.insertAsRightChild(5,2);
-        binaryTree.insertAsLeftChild(6,3);
-        binaryTree.insertAsRightChild(7, 3);
-        binaryTree.insertAsLeftChild(8,6);
+        final BinaryTree<Integer> tree = new BinaryTree<>(1);
+        tree.insertAsLeftChild(2, 1);
+        tree.insertAsRightChild(3, 1);
+        tree.insertAsLeftChild(4,2);
+        tree.insertAsRightChild(5,2);
+        tree.insertAsLeftChild(6,3);
+        tree.insertAsRightChild(7, 3);
+        tree.insertAsLeftChild(8,6);
 
         // Traversals
-        binaryTree.inOrderTraversal();
-        binaryTree.inOrderTraversalRec();
+        tree.inOrderTraversal();
+        tree.inOrderTraversalRec();
 
-        binaryTree.preOrderTraversal();
-        binaryTree.preOrderTraversalRec();
+        tree.preOrderTraversal();
+        tree.preOrderTraversalRec();
 
-        binaryTree.postOrderTraversalRec();
-        binaryTree.postOrderTraversal();
+        tree.postOrderTraversalRec();
+        tree.postOrderTraversal();
 
-        binaryTree.levelOrderTraversal();
-        System.out.println(binaryTree.levelOrderTraversal1());
-        binaryTree.levelOrderTraversalBruteForce();
-        binaryTree.levelOrderSpiralTraversal();
-
-        binaryTree.verticalOrderTraversalBruteForce();
-        binaryTree.verticalOrderTraversal();
+        tree.levelOrderTraversal();
+        System.out.println(tree.levelOrderTraversal1());
+        tree.levelOrderTraversalBruteForce();
+        tree.levelOrderSpiralTraversal();
+        tree.verticalOrderTraversalBruteForce();
 
         // Searching
-        System.out.println("binaryTree.searchRec(4) " + binaryTree.searchRec(4));
-        System.out.println("binaryTree.searchRec(9) " + binaryTree.searchRec(9));
+        System.out.println("searchRec(4) " + tree.searchRec(4));
+        System.out.println("searchRec(9) " + tree.searchRec(9));
 
         // Paths (Selective prints)
-        binaryTree.displayPaths(8);
-        binaryTree.displayPaths();
-        binaryTree.printLevel(3);
-        binaryTree.printLeaves();
-        binaryTree.leftSideView();
-        binaryTree.rightSideView();
-        System.out.println("Diameter: "  + binaryTree.diameter());
+        tree.displayPaths(8);
+        tree.displayPaths();
+        tree.printLevel(3);
+        tree.printLeaves();
+        tree.leftSideView();
+        tree.rightSideView();
+        System.out.println("Diameter: "  + tree.diameter());
 
-        System.out.println("Paths Matching targetSum=11: "  + binaryTree.pathsMatchingSum(11));
-        System.out.println("Paths Matching targetSum=18: "  + binaryTree.pathsMatchingSum(18));
+        System.out.println("Paths Matching targetSum=11: "  + tree.pathsMatchingSum(11));
+        System.out.println("Paths Matching targetSum=18: "  + tree.pathsMatchingSum(18));
 
         final BinaryTree<Integer> bt = new BinaryTree<>(1);
         bt.insertAsRightChild(2, 1);
@@ -1277,25 +1094,25 @@ public class BinaryTree <T extends Comparable<T>> {
         System.out.println("PathsAll Matching targetSum=3: "  + bt.pathsMatchingSumAll(3));
 
         // LCA
-        System.out.println("binaryTree.findLca(4,5): " + binaryTree.findLca(8,5));
-        System.out.println("binaryTree.findLca(5,8): " + binaryTree.findLca(3,8));
+        System.out.println("findLca(4,5): " + tree.lowestCommonAncestor(8,5));
+        System.out.println("findLca(5,8): " + tree.lowestCommonAncestor(3,8));
 
         // Utility
-        System.out.println("binaryTree.numberOfNodes(): " + binaryTree.numberOfNodes());
-        System.out.println("binaryTree.height(): " + binaryTree.height());
-        System.out.println("binaryTree.heightBalanceFactor(3): " + binaryTree.heightBalanceFactor(binaryTree.searchRec(3)));
+        System.out.println("numberOfNodes(): " + tree.size());
+        System.out.println("height(): " + tree.height());
+        System.out.println("heightBalanceFactor(3): " + tree.heightBalanceFactor(tree.searchRec(3)));
 
-        // Comparision
-        System.out.println("binaryTree.isBinarySearchTree(): " + binaryTree.isBinarySearchTree());
-        System.out.println("binaryTree.isSimilar(binaryTree): " + binaryTree.isSimilar(binaryTree));
-        System.out.println("binaryTree.isCopy(binaryTree): " + binaryTree.isCopy(binaryTree));
-        System.out.println("binaryTree.isCopyUsingLoop(binaryTree): " + binaryTree.isCopyUsingLoop(binaryTree));
+        // Comparison
+        System.out.println("isBST(): " + tree.isBST());
+        System.out.println("isSimilar(tree, tree): " + BinaryTree.isSimilar(tree, tree));
+        System.out.println("isCopy(tree, tree): " + BinaryTree.isCopy(tree, tree));
+        System.out.println("isCopyUsingLoop(tree, tree): " + BinaryTree.isCopyUsingLoop(tree, tree));
 
         // Conversion
-        binaryTree.toMirrorImage();
+        tree.toMirrorImage();
         System.out.println("After Converting the tree to mirror image");
-        binaryTree.leftSideView();
-        binaryTree.rightSideView();
+        tree.leftSideView();
+        tree.rightSideView();
 
 
         // Construct tree using preOrder and inOrder traversals
@@ -1371,7 +1188,7 @@ public class BinaryTree <T extends Comparable<T>> {
         Node<T> node = new Node<>(preOrder[i]);
         node.left = treeFromPreAndInOrder(preOrder, i+1, inOrder, left, inOrderNodeIndex-1);
 
-        //Rewind i to the element which lies in the right side of the node in inOrder traversal.
+        //Rewind i to the element which lies on the right side of the node in inOrder traversal.
         i += (inOrderNodeIndex)-left + 1;
 
         node.right = treeFromPreAndInOrder(preOrder, i, inOrder, inOrderNodeIndex+1, right);
@@ -1410,7 +1227,7 @@ public class BinaryTree <T extends Comparable<T>> {
         Node<T> node = new Node<>(postOrder[i]);
         node.right = treeFromPreAndInOrder(postOrder, i-1, inOrder, inOrderNodeIndex+1, right);
 
-        //Rewind i to the element which lies in the right side of the node in inOrder traversal.
+        //Rewind i to the element which lies on the right side of the node in inOrder traversal.
         i -= right - (inOrderNodeIndex) + 1;
 
         node.left = treeFromPreAndInOrder(postOrder, i, inOrder, left, inOrderNodeIndex-1);

@@ -9,9 +9,6 @@ import java.util.Stack;
  */
 public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
-    /**
-     *
-     */
     public AVLTree() {
         super();
     }
@@ -32,10 +29,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      */
     @Override
     public int height(final Node node){
-        if(node==null){
-            return 0;
-        }
-        return node.height;
+        return node==null ? 0 : node.height;
     }
 
     /**
@@ -74,22 +68,17 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      *
      * @return
      */
-    public boolean isAVLTree() {
-        return isAVLTree(root);
+    public boolean isBalanced() {
+        return isBalanced(root);
     }
 
     /**
      *
      * @return
      */
-    public boolean isAVLTree(Node node){
-        if(node == null){
-            return true;
-        }
-        if(isAVLTree(node.left) && isAVLTree(node.right)){
-            return Math.abs(heightBalanceFactor(node))<2;
-        }
-        return false;
+    public boolean isBalanced(Node node){
+        return node == null || isBalanced(node.left) && isBalanced(node.right)
+                && Math.abs(heightBalanceFactor(node))<2;
     }
 
     /**
@@ -105,13 +94,8 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @return
      */
     public boolean isHeightCorrectForAllNodes(Node node){
-        if(node == null){
-            return true;
-        }
-        if(isHeightCorrectForAllNodes(node.left) && isHeightCorrectForAllNodes(node.right)){
-            return Math.max(height(node.left), height(node.right))+1 == node.height;
-        }
-        return false;
+        return node == null || isHeightCorrectForAllNodes(node.left) && isHeightCorrectForAllNodes(node.right)
+                && Math.max(height(node.left), height(node.right))+1 == node.height;
     }
 
     /**
@@ -356,17 +340,14 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
 
     /**
-     * main function to test AVLTree
      *
      * @param args
      */
-    public static void main(String args[]){
+    public static void main(String [] args){
 
         intenseInsertionDeletionTest(64);
 
-
         /** Now perform normal testing with a small tree
-         *
          *                 7
          *            3          11
          *         2     6    8      12
@@ -374,7 +355,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
          */
         final AVLTree<Integer> avlTree = new AVLTree<>();
 
-        for(int x : new int[]{ 7,11,3,8,6,12,2,1,4,13,10}) {
+        for(int x : new int[]{7,11,3,8,6,12,2,1,4,13,10}) {
             avlTree.insert(x);
         }
         avlTree.printAllPaths();
@@ -418,9 +399,9 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         System.out.println("avlTree.height(): " + avlTree.height());
         System.out.println("avlTree.heightBalanceFactor(): " + avlTree.heightBalanceFactor());
 
-        System.out.println("avlTree.isBinarySearchTree(): " + avlTree.isBinarySearchTree());
+        System.out.println("avlTree.isBST(): " + avlTree.isBST());
         System.out.println("avlTree.isHeightCorrectForAllNodes(): " + avlTree.isHeightCorrectForAllNodes());
-        System.out.println("avlTree.isAVLTree(): " + avlTree.isAVLTree());
+        System.out.println("avlTree.isBalanced(): " + avlTree.isBalanced());
 
 
         //Deletions in AVL Tree
@@ -491,38 +472,38 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
          *         1    3           11
          *
          */
-        assert avlTree.isBinarySearchTree()
+        assert avlTree.isBST()
                 && avlTree.isHeightCorrectForAllNodes()
-                && avlTree.isAVLTree(): "AVL property failed";
+                && avlTree.isBalanced(): "AVL property failed";
     }
 
     /**
      *
      */
-    private static void intenseInsertionDeletionTest(final int numberOfNodes){
+    private static void intenseInsertionDeletionTest(final int size){
         final AVLTree<Integer> avlTree = new AVLTree<>();
 
-        for(int x=1; x<=numberOfNodes; x++) {
+        for(int x=1; x<=size; x++) {
             avlTree.insert(x);
-            assert avlTree.numberOfNodes()==x;
-            assert avlTree.isBinarySearchTree()
+            assert avlTree.size()==x;
+            assert avlTree.isBST()
                     && avlTree.isHeightCorrectForAllNodes()
-                        && avlTree.isAVLTree(): "AVL property failed for value: " + x;
+                        && avlTree.isBalanced(): "AVL property failed for value: " + x;
         }
 
-        for(int x=1; x<=numberOfNodes; x++) {
+        for(int x=1; x<=size; x++) {
             assert avlTree.search(x) != null: "search failed for: " + x;
         }
 
-        for(int x=1; x<=numberOfNodes; x++) {
+        for(int x=1; x<=size; x++) {
             avlTree.delete(x);
             assert avlTree.search(x) == null;
 
-            assert avlTree.numberOfNodes()==numberOfNodes-x;
+            assert avlTree.size()==size-x;
 
-            assert avlTree.isBinarySearchTree()
+            assert avlTree.isBST()
                     && avlTree.isHeightCorrectForAllNodes()
-                    && avlTree.isAVLTree() :  "AVL property failed for value: " + x;
+                    && avlTree.isBalanced() :  "AVL property failed for value: " + x;
         }
     }
 }

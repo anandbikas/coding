@@ -1,16 +1,14 @@
 package com.anand.coding.dsalgo.tree.binary;
 
 /**
- * Binary Node with data and left and right child nodes.
+ * Binary Tree Node
  */
-public class Node <T extends Comparable<T>> implements Comparable<Node<T>>{
+public class Node <T extends Comparable<T>>{
 
     public T data;
     public Node<T> left;
     public Node<T> right;
-
-    // height is used in AVLTree
-    public int height;
+    public int height; // height is used in AVLTree
 
     public Node(){
         super();
@@ -21,22 +19,8 @@ public class Node <T extends Comparable<T>> implements Comparable<Node<T>>{
         height=1;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Node{" +
-//                "data=" + data +
-//                ", left=" + left +
-//                ", right=" + right +
-//                '}';
-//    }
-
     @Override
     public String toString() {
         return String.valueOf(data);
-    }
-
-    @Override
-    public int compareTo(Node<T> node) {
-        return this.data.compareTo(node.data);
     }
 }

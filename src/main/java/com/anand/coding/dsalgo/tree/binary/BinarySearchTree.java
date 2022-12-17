@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Binary Seach Tree
+ * Binary Search Tree
  */
 public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
@@ -29,8 +29,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         }
 
         if(pivotNode!=null) {
-            //Duplicate node rejected.
-            return null;
+            return null; //Duplicate data rejected.
         }
 
         pivotNode = new Node<>(data);
@@ -113,8 +112,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @return
      */
     private Node<T> searchRec(Node<T> node, T data){
-
-        if(node==null || node.data.compareTo(data)==0){
+        if(node==null || node.data.equals(data)){
             return node;
         }
         return searchRec(node.data.compareTo(data)>0 ? node.left : node.right, data);
@@ -209,7 +207,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      */
     public int rangeSumBST(int low, int high) {
         return rangeSumBST((Node<Integer>)root, low, high);
-
     }
 
     /**
@@ -221,7 +218,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @return
      */
     public int rangeSumBST(Node<Integer> node, int low, int high) {
-
         if (node == null) {
             return 0;
         }
@@ -245,9 +241,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return null;
         }
         if(data1.compareTo(data2)>0) {
-            T temp = data2;
-            data2 = data1;
-            data1 = temp;
+            T t = data2; data2 = data1; data1 = t;
         }
 
         Node<T> node = root;
@@ -290,7 +284,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         if(node.data.equals(data)){
             for(Node<T> n = this.root; !n.data.equals(data);){
                 System.out.print(n.data + "  ");
-                n = n.compareTo(node) > 0 ? n.left : n.right;
+                n = n.data.compareTo(node.data) > 0 ? n.left : n.right;
             }
             System.out.print(data + "  ");
             System.out.println();
@@ -325,7 +319,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         if(node.left==null && node.right==null){
             for(Node<T> n = this.root; n!=null;){
                 System.out.print(n.data + "  ");
-                n = n.compareTo(node) > 0 ? n.left : n.right;
+                n = n.data.compareTo(node.data) > 0 ? n.left : n.right;
             }
             System.out.println();
             return;
@@ -342,14 +336,14 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         List<T> sortedList = new ArrayList<>();
 
-        Stack<Node> stack = new Stack<>();
-
-        for(Node node = root; node!= null; node=node.left){
+        Stack<Node<T>> stack = new Stack<>();
+        for(Node<T> node = root; node!= null; node=node.left){
             stack.push(node);
         }
+
         while(!stack.isEmpty()){
-            Node node = stack.pop();
-            sortedList.add((T)node.data);
+            Node<T> node = stack.pop();
+            sortedList.add(node.data);
 
             for(node=node.right; node!= null; node = node.left){
                 stack.push(node);
@@ -370,17 +364,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         while(node != null){
             if(node.data.compareTo(x) > 0){
                 node = node.left;
-
             } else {
-                if(node.right == null
-                        || node.right.data.compareTo(x)>0){
-                    break;
+                if(node.right == null || node.right.data.compareTo(x)>0){
+                    return node.data;
                 } else {
                     node = node.right;
                 }
             }
         }
-        return node == null ? null : node.data;
+        return null;
     }
 
     /**
@@ -394,25 +386,21 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         while(node != null){
             if(node.data.compareTo(x) < 0){
                 node = node.right;
-
             } else {
-                if(node.left == null
-                        || node.left.data.compareTo(x)<0){
-                    break;
-                } else {
-                    node = node.left;
+                if(node.left == null || node.left.data.compareTo(x)<0){
+                    return node.data;
                 }
+                node = node.left;
             }
         }
-        return node == null ? null : node.data;
+        return null;
     }
 
     /**
-     * Main function to test the code.
      *
      * @param args
      */
-    public static void main(String args[]){
+    public static void main(String [] args){
 
         /*
          *               5
@@ -420,18 +408,17 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
          *        2   4  6   8
          */
         final BinarySearchTree<Integer> bst = new BinarySearchTree<>();
-
         for(int x : new int[]{ 5,7,3,6,4,8,2}) {
             bst.insertRec(x);
         }
 
         Integer [] preOrder = {5, 3, 2, 4, 7, 6, 8};
-        final BinarySearchTree<Integer> bst1 = new BinarySearchTree<Integer>(preOrder);
-        System.out.println("bst.isCopy(bst1)" + bst.isCopy(bst1));
+        final BinarySearchTree<Integer> bst1 = new BinarySearchTree<>(preOrder);
+        System.out.println("isCopy(bst,bst1)" + BinarySearchTree.isCopy(bst,bst1));
 
 
-        System.out.println(bst.floor(7));
-        System.out.println(bst.ceil(1));
+        System.out.println("bst.floor(7) " + bst.floor(7));
+        System.out.println("bst.ceil(1) " + bst.ceil(1));
 
         System.out.println(bst);
         bst.inOrderTraversalRec();
@@ -445,7 +432,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         System.out.println("bst.searchRec(8): " + bst.searchRec(8));
 
-        System.out.println("bst.isBinarySearchTree(): " + bst.isBinarySearchTree());
+        System.out.println("bst.isBinarySearchTree(): " + bst.isBST());
 
         System.out.println("bst.rangeSumBST(4, 7): " + bst.rangeSumBST(4, 7));
 
@@ -460,7 +447,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         System.out.println("bst.search(4): " + bst.search(4));
         System.out.println("bst.delete(4): " + bst.delete(4));
 
-        BSTIterator bstIterator =  bst.iterator();
+        BSTIterator<Integer> bstIterator =  bst.iterator();
         System.out.println("bstIterator.hasNext(): " + bstIterator.hasNext());
         System.out.println("bstIterator.next(): " + bstIterator.next());
         System.out.println("bstIterator.next(): " + bstIterator.next());
