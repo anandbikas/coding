@@ -656,6 +656,45 @@ public class BinaryTree <T extends Comparable<T>> {
     }
 
     /**
+     * Find the lowest common ancestor node of the deepest leaves
+     * Method 1: Find the list of the deepest leaves and then LCA of 1st and last nodes of the deepest leaves.
+     *
+     * problems/lowest-common-ancestor-of-deepest-leaves
+     * problems/smallest-subtree-with-all-the-deepest-nodes
+     * * @return
+     */
+    public Node<T> lowestCommonAncestorDeepestLeaves(){
+        DeepestLeaves deepestLeaves = new DeepestLeaves();
+        findDeepestLeaves(root, deepestLeaves, 0);
+
+        return lowestCommonAncestor(root, deepestLeaves.list.get(0).data, deepestLeaves.list.get(deepestLeaves.list.size()-1).data);
+    }
+
+    public void findDeepestLeaves(Node<T> node, DeepestLeaves deepestLeaves, int currentLevel){
+        if (node==null){
+            return;
+        }
+
+        if(node.left==null && node.right==null){
+            if(deepestLeaves.level<currentLevel){
+                deepestLeaves.level=currentLevel;
+                deepestLeaves.list = new ArrayList<>();
+            }
+            if(deepestLeaves.level==currentLevel) {
+                deepestLeaves.list.add(node);
+            }
+        }
+
+        findDeepestLeaves(node.left, deepestLeaves, currentLevel+1);
+        findDeepestLeaves(node.right, deepestLeaves, currentLevel+1);
+    }
+
+    public class DeepestLeaves {
+        int level=0;
+        List<Node<T>> list = new ArrayList<>();
+    }
+
+    /**
      *
      * @return
      */
@@ -1096,6 +1135,7 @@ public class BinaryTree <T extends Comparable<T>> {
         // LCA
         System.out.println("findLca(4,5): " + tree.lowestCommonAncestor(8,5));
         System.out.println("findLca(5,8): " + tree.lowestCommonAncestor(3,8));
+        System.out.println("lowestCommonAncestorDeepestLeaves(): " + tree.lowestCommonAncestorDeepestLeaves());
 
         // Utility
         System.out.println("numberOfNodes(): " + tree.size());
