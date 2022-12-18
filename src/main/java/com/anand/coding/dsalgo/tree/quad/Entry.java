@@ -4,51 +4,25 @@ package com.anand.coding.dsalgo.tree.quad;
  *
  * @param <T>
  */
-public class Entry<T extends Comparable<T>> implements Comparable<Entry<T>> {
+public class Entry<T extends Comparable<T>> {
 
-    public T object;
-    public Point location;
+    public T obj;
+    public Point loc;
 
-    /**
-     *
-     * @param x
-     * @param y
-     * @param object
-     */
-    public Entry(int x, int y, T object) {
-        this.object = object;
-        this.location = new Point(x,y);
+    public Entry(int x, int y, T obj) {
+        this.obj = obj;
+        this.loc = new Point(x,y);
     }
 
-    /**
-     *
-     * @return
-     */
-    @Override
     public String toString() {
-        return object + " " + location;
+        return obj + " " + loc;
     }
 
-    /**
-     *
-     * @param entry
-     * @return
-     */
-    @Override
-    public int compareTo(Entry<T> entry) {
-        return this.object.compareTo(entry.object);
-    }
-
-    /**
-     *
-     */
     public static class Point {
-        public int x;
-        public int y;
+        public int x, y;
 
         public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
+            this.x = x; this.y = y;
         }
 
         public String toString() {

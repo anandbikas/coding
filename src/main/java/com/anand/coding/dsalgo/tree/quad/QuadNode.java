@@ -12,25 +12,17 @@ public class QuadNode<T extends Comparable<T>>{
     public List<Entry<T>> entryList = new ArrayList<>();
     public Integer threshold;
 
-    public Point ll;
-    public Point ur;
+    public Point ll, ur;
 
     public QuadNode<T> t1,t2,t3,t4;
     public QuadNode<T> parent;
 
-    /**
-     *
-     */
     public QuadNode(Point ll, Point ur , int threshold){
-        super();
         this.ll = ll;
         this.ur = ur;
         this.threshold = threshold;
     }
 
-    /**
-     *
-     */
     public QuadNode(Point ll, Point ur , int threshold, QuadNode<T> parent){
        this(ll,ur,threshold);
        this.parent = parent;
@@ -77,14 +69,14 @@ public class QuadNode<T extends Comparable<T>>{
         t4 = new QuadNode<>(new Point(ll.x, midY), new Point(midX, ur.y), threshold, this);
 
         for(Entry<T> entry : entryList){
-            if(entry.location.x <=t1.ur.x){
-                if(entry.location.y <=t1.ur.y){
+            if(entry.loc.x <= t1.ur.x){
+                if(entry.loc.y <=t1.ur.y){
                     t1.addEntry(entry);
                 } else {
                     t4.addEntry(entry);
                 }
             } else {
-                if(entry.location.y <=t2.ur.y){
+                if(entry.loc.y <= t2.ur.y){
                     t2.addEntry(entry);
                 } else {
                     t3.addEntry(entry);
@@ -95,13 +87,9 @@ public class QuadNode<T extends Comparable<T>>{
         this.threshold=null;
         this.entryList=null;
     }
-    
-    /**
-     *
-     * @return
-     */
+
     @Override
     public String toString() {
-        return entryList + String.format(" {%s/%s}",ll,ur);
+        return String.format("{%s/%s} : %s",ll,ur, entryList);
     }
 }

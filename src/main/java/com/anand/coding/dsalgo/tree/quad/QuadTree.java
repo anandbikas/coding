@@ -4,8 +4,10 @@ import com.anand.coding.dsalgo.tree.quad.Entry.Point;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -14,10 +16,6 @@ public class QuadTree<T extends Comparable<T>> {
 
     private QuadNode<T> root;
 
-    /**
-     *
-     * @param threshold;
-     */
     public QuadTree(int x1, int y1, int x2, int y2, int threshold) {
         this.root = new QuadNode<>(new Point(x1,y1), new Point(x2,y2), threshold);
     }
@@ -46,7 +44,7 @@ public class QuadTree<T extends Comparable<T>> {
 
         if (x < root.ll.x || x > root.ur.x
                 || y < root.ll.y || y > root.ur.y) {
-            System.out.println("Location not supported");
+            System.out.printf("Location not supported,(%d,%d)%n", x, y);
             return null;
         }
 
@@ -84,7 +82,7 @@ public class QuadTree<T extends Comparable<T>> {
 
         if (x < root.ll.x || x > root.ur.x
                 || y < root.ll.y || y > root.ur.y) {
-            System.out.println("Location not supported");
+            System.out.printf("Location not supported,(%d,%d)%n", x, y);
             return null;
         }
 
@@ -93,67 +91,43 @@ public class QuadTree<T extends Comparable<T>> {
         Point ur = new Point(x+radius, y+radius);
 
         // Find the quad node where squareOfCircle ll-ur is lies.
-        // In case squareOfCircle expands beyond root quadNode, then use root,
-        // else find through the tree path
-        QuadNode<T> quadNode = root;
-        if(quadNode.ll.x<=ll.x && quadNode.ll.y<=ll.y
-                && quadNode.ur.x>=ur.x && quadNode.ur.y>=ur.y){
-
-            while (!quadNode.isLeafNode()) {
-
-               //Check if any child node can contain squareOfCircle
-                QuadNode[] childQuadNodes = {quadNode.t1, quadNode.t2, quadNode.t3, quadNode.t4};
-                QuadNode<T> newQuadNode=null;
-                for(QuadNode child : childQuadNodes) {
-                    if (child.ll.x <= ll.x && child.ll.y <= ll.y
-                            && child.ur.x >= ur.x && child.ur.y >= ur.y) {
-                        newQuadNode = child;
-                        break;
-                    }
-                }
-                if(newQuadNode==null){
-                    break;
-                } else {
-                    quadNode=newQuadNode;
-                }
-            }
+        // In case squareOfCircle expands beyond root quadNode, then use root, else find through the tree path
+        QuadNode<T> qNode = root;
+        while (!qNode.isLeafNode()) {
+           //Check if any child node can contain squareOfCircle
+            QuadNode childQNode= Arrays.stream(new QuadNode[]{qNode.t1, qNode.t2, qNode.t3, qNode.t4}).filter(
+                    child -> child.ll.x <= ll.x && child.ll.y <= ll.y
+                            && child.ur.x >= ur.x && child.ur.y >= ur.y).findFirst().orElse(null);
+            if(childQNode==null) break;
+            qNode = childQNode;
         }
+
 
         //Find all leaf quad nodes intersecting the squareOfCircle;
         List<QuadNode<T>> intersectingQuadNodes = new ArrayList<>();
+        Queue<QuadNode<T>> q = new ArrayDeque<>(); //new LinkedList<>();
+        q.add(qNode);
 
-        Queue<QuadNode<T>> queue = new ArrayDeque<>(); //new LinkedList<>();
-
-        queue.add(quadNode);
-
-        while (!queue.isEmpty()) {
-
-            quadNode = queue.remove();
-            if(quadNode.isLeafNode()){
-                intersectingQuadNodes.add(quadNode);
+        while (!q.isEmpty()) {
+            qNode = q.remove();
+            if(qNode.isLeafNode()){
+                intersectingQuadNodes.add(qNode);
                 continue;
             }
 
-            QuadNode[] childQuadNodes = {quadNode.t1, quadNode.t2, quadNode.t3, quadNode.t4};
-            for(QuadNode child : childQuadNodes) {
-
+            for(QuadNode child : new QuadNode[]{qNode.t1, qNode.t2, qNode.t3, qNode.t4}) {
                 //find ll(x1,y1) and ur(x2,y2) intersecting rectangle with squareOfCircle.
                 long x1=Math.max(ll.x, child.ll.x);    long x2=Math.min(ur.x, child.ur.x);
                 long y1=Math.max(ll.y, child.ll.y);    long y2=Math.min(ur.y, child.ur.y);
 
-                //Is not overlapping
-                if(x1>x2 || y1>y2){
-                    continue;
-                }
-                //Else
-                queue.add(child);
+                if(!(x1>x2 || y1>y2)) q.add(child);  //Overlapping
             }
         }
 
         List<Entry<T>> entryList = new ArrayList<>();
         for(QuadNode<T> qN : intersectingQuadNodes){
             for(Entry<T> entry : qN.entryList){
-                if(isOnCircle(x, y, radius, entry.location)){
+                if(isOnCircle(x, y, radius, entry.loc)){
                     entryList.add(entry);
                 }
             }
@@ -161,14 +135,6 @@ public class QuadTree<T extends Comparable<T>> {
         return entryList;
     }
 
-    /**
-     *
-     * @param x
-     * @param y
-     * @param radius
-     * @param p
-     * @return
-     */
     private boolean isOnCircle(int x, int y, int radius, Point p) {
         return (x-p.x)*(x-p.x) + (y-p.y)*(y-p.y) <= radius*radius;
     }
