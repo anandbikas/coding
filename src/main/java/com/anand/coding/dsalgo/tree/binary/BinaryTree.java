@@ -667,7 +667,7 @@ public class BinaryTree <T extends Comparable<T>> {
         DeepestLeaves deepestLeaves = new DeepestLeaves();
         findDeepestLeaves(root, deepestLeaves, 0);
 
-        return lowestCommonAncestor(root, deepestLeaves.list.get(0).data, deepestLeaves.list.get(deepestLeaves.list.size()-1).data);
+        return lowestCommonAncestor(root, deepestLeaves.start.data, deepestLeaves.end.data);
     }
 
     public void findDeepestLeaves(Node<T> node, DeepestLeaves deepestLeaves, int currentLevel){
@@ -678,10 +678,11 @@ public class BinaryTree <T extends Comparable<T>> {
         if(node.left==null && node.right==null){
             if(deepestLeaves.level<currentLevel){
                 deepestLeaves.level=currentLevel;
-                deepestLeaves.list = new ArrayList<>();
+                deepestLeaves.start=deepestLeaves.end=null;
             }
             if(deepestLeaves.level==currentLevel) {
-                deepestLeaves.list.add(node);
+                if(deepestLeaves.start==null) deepestLeaves.start=node;
+                deepestLeaves.end=node;
             }
         }
 
@@ -691,7 +692,7 @@ public class BinaryTree <T extends Comparable<T>> {
 
     public class DeepestLeaves {
         int level=0;
-        List<Node<T>> list = new ArrayList<>();
+        Node<T> start, end;
     }
 
     /**
