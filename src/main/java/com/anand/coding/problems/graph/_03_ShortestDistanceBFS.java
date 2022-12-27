@@ -1,8 +1,6 @@
 package com.anand.coding.problems.graph;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -19,9 +17,9 @@ import java.util.Queue;
  *                    {1, 9, 1, 0, 0},
  *                    {1, 0, 1, 0, 1}
  * Output : 5
- * problems/shortest-path-in-binary-matrix
+ * problems/shortest-path-in-binary-matrix (start=(0,0), end=(n-1,m-1), two adjacent node having value 0 means there is a way)
  */
-public class _03_ShortestDistanceUsingBFS {
+public class _03_ShortestDistanceBFS {
 
     // Possible directions of a node up, down, left, right.
     static int[] R = { -1, -1, -1, 0, 0, 1, 1, 1 };
@@ -35,45 +33,39 @@ public class _03_ShortestDistanceUsingBFS {
 
     public static int shortestDistance(int [][]A){
         int n=A.length, m = A[0].length;
-        Cell NULL = new Cell(-1,-1);
-        Queue<Cell> queue = new ArrayDeque<>();
+        Queue<Cell> q = new ArrayDeque<>();
         boolean[][] visited = new boolean[n][m];
 
         //Find the start node
         for(int i=0; i<n; i++) {
             for(int j=0; j<m; j++) {
                 if(A[i][j]==2){
-                    queue.add(new Cell(i,j));
+                    q.add(new Cell(i,j));
                     visited[i][j]=true;
                     break;
                 }
             }
         }
-        queue.add(NULL);
 
-        int dist=0;
-        while (queue.size()>1) {
-            Cell cell = queue.remove();
-            if(cell == NULL) {
-                dist++;
-                queue.add(NULL);
-                continue;
-            }
+        for(int dist=0; !q.isEmpty(); dist++) {
 
-            if (A[cell.i][cell.j] == 9){
-                return dist;
-            }
-
-            // BFS all neighbors if any
-            for(int k=0; k<R.length; k++){
-                int i = cell.i + R[k];
-                int j = cell.j + C[k];
-
-                if(i<0 || i>=n || j<0 || j>=m || A[i][j]==0 || visited[i][j]){
-                    continue;
+            for(int size=q.size(); size>0 ; size--) {
+                Cell cell = q.remove();
+                if(A[cell.i][cell.j] == 9) {
+                    return dist;
                 }
-                queue.add(new Cell(i,j));
-                visited[i][j]=true;
+
+                // BFS all neighbors if any
+                for (int k=0; k<R.length; k++) {
+                    int i = cell.i + R[k];
+                    int j = cell.j + C[k];
+
+                    if(i < 0 || i >= n || j < 0 || j >= m || A[i][j] == 0 || visited[i][j]) {
+                        continue;
+                    }
+                    q.add(new Cell(i,j));
+                    visited[i][j] = true;
+                }
             }
         }
 
