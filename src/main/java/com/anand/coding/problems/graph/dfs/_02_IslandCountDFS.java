@@ -1,4 +1,4 @@
-package com.anand.coding.problems.graph;
+package com.anand.coding.problems.graph.dfs;
 
 /**
  * Given a 2D matrix (0/1), find the number of islands.

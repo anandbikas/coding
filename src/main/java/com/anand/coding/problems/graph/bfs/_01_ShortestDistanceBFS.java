@@ -1,4 +1,4 @@
-package com.anand.coding.problems.graph;
+package com.anand.coding.problems.graph.bfs;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -19,7 +19,7 @@ import java.util.Queue;
  * Output : 5
  * problems/shortest-path-in-binary-matrix (start=(0,0), end=(n-1,m-1), two adjacent node having value 0 means there is a way)
  */
-public class _03_ShortestDistanceBFS {
+public class _01_ShortestDistanceBFS {
 
     // Possible directions of a node up, down, left, right.
     static int[] R = { -1, -1, -1, 0, 0, 1, 1, 1 };

@@ -1,4 +1,4 @@
-package com.anand.coding.problems.graph;
+package com.anand.coding.problems.graph.dfs;
 
 /**
  * Flood fill is used in MS Paint to fill the pixel along with all surrounding same colored pixels with another color using DFS algorithm.

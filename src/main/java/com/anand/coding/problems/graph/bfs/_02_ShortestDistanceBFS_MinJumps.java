@@ -1,4 +1,4 @@
-package com.anand.coding.problems.graph;
+package com.anand.coding.problems.graph.bfs;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Queue;
  *
  * leetcode.com/problems/jump-game-iv
  */
-public class _03a_ShortestDistanceBFS_MinJumps {
+public class _02_ShortestDistanceBFS_MinJumps {
 
     public static int minJumps(int[] A) {
 

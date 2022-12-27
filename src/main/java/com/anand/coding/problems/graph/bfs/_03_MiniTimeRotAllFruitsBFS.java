@@ -1,4 +1,4 @@
-package com.anand.coding.problems.graph;
+package com.anand.coding.problems.graph.bfs;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -11,7 +11,7 @@ import java.util.Queue;
  * Return -1 if not all are rotten.
  *
  */
-public class _04_MiniTimeRotAllFruitsBFS {
+public class _03_MiniTimeRotAllFruitsBFS {
 
     // Possible directions of a node up, down, left, right.
     static int[] R = { -1, +1,  0,  0};
