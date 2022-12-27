@@ -13,74 +13,55 @@ public class _01_Knapsack_0_1 {
 
     /**
      * Recursive solution with memoization
-     *
-     * @param wt
-     * @param val
-     * @param n
-     * @param weight
-     * @return
      */
-    public static int knapsackRec(int [] wt, int [] val, int n, int weight) {
+    public static int knapsackRec(int[] wt, int[] val, int n, int weight) {
 
         int [][] DP =  new int[n+1][weight+1];  //Item-Weight
         int finalResult = knapsackRec(wt, val, n, weight, DP);
-        printDPArray(DP, n, weight);
 
+        printDPArray(DP, n, weight);
         return finalResult;
     }
-    private static int knapsackRec(int [] wt, int [] val, int n, int w, int [][] DP){
+    private static int knapsackRec(int[] wt, int[] val, int n, int w, int[][] DP) {
 
-        if(n<=0 || w<=0){
+        if(n<=0 || w<=0) {
             return 0;
         }
-
-        int itemIndex = n-1;
-
-        if(DP[n][w] >0){
+        if(DP[n][w] >0) {
             return DP[n][w];
         }
 
-        if(wt[itemIndex]>w){
-            return DP[n][w] = knapsackRec(wt, val, n-1, w, DP);
-        }
+        int item = n-1;
+        int res = (wt[item]>w)
+                ? knapsackRec(wt, val, n-1, w, DP)
+                : Math.max(knapsackRec(wt, val, n-1, w, DP),
+                            val[item] + knapsackRec(wt, val, n-1, w-wt[item], DP));
+                            // For unbounded knapsack, take n... val[item] + knapsackRec(wt, val, n, w-wt[item], DP));
 
-        return DP[n][w] = Math.max(knapsackRec(wt, val, n-1, w, DP),
-                                        val[itemIndex] + knapsackRec(wt, val, n-1, w-wt[itemIndex], DP));
-                                        // For unbounded knapsack, take n, not n-1.
-                                        // val[itemIndex] + knapsackRec(wt, val, n, w-wt[itemIndex], DP));
+        return DP[n][w] = res;
     }
 
     /**
      * DP Tabulation solution
-     *
-     * @param wt
-     * @param val
-     * @param n
-     * @param weight
      */
-    public static int knapsack(int [] wt, int [] val, int n, int weight){
+    public static int knapsack(int[] wt, int[] val, int n, int weight) {
 
-        if(n==0 || weight==0){
+        if(n<=0 || weight<=0) {
             return 0;
         }
 
         int [][] DP = new int[n+1][weight+1];   //Item-Weight
 
         //Populate DP from 1st element onwards
-        for(int i=1; i<=n; i++){
+        for(int i=1; i<=n; i++) {
 
-            int itemIndex = i-1;
-            for(int w=1; w<=weight; w++){
-
-                //Can't take i'th element upto now
-                if(wt[itemIndex]>w) {
-                    DP[i][w] = DP[i-1][w];
-                }
-                else{
-                    DP[i][w] = Math.max( DP[i-1][w], val[itemIndex] + DP[i-1][w-wt[itemIndex]]);
-                    //For unbounded knapsack, take i, not i-1.
-                    //DP[i][w] = Math.max( DP[i-1][w], val[itemIndex] + DP[i][w-wt[itemIndex]]);
-                }
+            int item = i-1;
+            for(int w=1; w<=weight; w++) {
+                DP[i][w] = (wt[item]>w)
+                        ? DP[i-1][w]
+                        : Math.max(DP[i-1][w],
+                                    val[item] + DP[i-1][w-wt[item]]);
+                                    //For unbounded knapsack, take i... val[item] + DP[i][w-wt[item]]);
             }
         }
         printDPArray(DP, n, weight);
@@ -89,16 +70,14 @@ public class _01_Knapsack_0_1 {
         List<Integer> itemWeights = new ArrayList<>();
         List<Integer> itemValues = new ArrayList<>();
         int w=weight;
-        for(int i=n; i>0;i--){
-            if (DP[i][w]!=DP[i-1][w]) {
-                itemWeights.add(wt[i-1]);
-                itemValues.add(val[i-1]);
-                w-=wt[i-1];
+        for(int i=n; i>0 && w>0; i--) {
+            int item = i-1;
+            if (DP[i][w] != DP[i-1][w]) {
+                itemWeights.add(wt[item]);
+                itemValues.add(val[item]);
+                w -= wt[item];
             }
-            // For unbounded knapsack
-            // else {
-            //    i--;
-            //}
+            // For unbounded knapsack use, else { i--; } and remove i-- from for loop.
         }
         System.out.println(itemWeights + "\n" + itemValues);
         return DP[n][weight];
@@ -108,7 +87,7 @@ public class _01_Knapsack_0_1 {
      *
      * @param args
      */
-    public static void main(String [] args){
+    public static void main(String [] args) {
 
         // Example 1:
         int []val1 = {10, 20, 30};
@@ -124,7 +103,7 @@ public class _01_Knapsack_0_1 {
          */
         System.out.println(knapsackRec(wt1, val1, wt1.length, weight1));
 
-        /* Tapulation Solution DP Array:
+        /* Tabulation Solution DP Array:
          *
          *    0   0   0   0   0   0   0   0   0   0
          *    0   0  10  10  10  10  10  10  10  10
@@ -152,21 +131,13 @@ public class _01_Knapsack_0_1 {
         System.out.println(knapsack(wt, val, wt.length, weight));
     }
 
-    /**
-     *
-     * @param DP
-     * @param n
-     * @param m
-     */
-    public static void printDPArray(int [][] DP, int n, int m)
-    {
-        System.out.println();
-        for(int i=0; i<=n; i++){
-
-            for(int j =0; j<=m; j++){
-                System.out.print(String.format("%4d", DP[i][j]));
+    public static void printDPArray(int [][] DP, int n, int m) {
+        for(int i=0; i<=n; i++) {
+            for(int j =0; j<=m; j++) {
+                System.out.printf("%4d", DP[i][j]);
             }
             System.out.println();
         }
+        System.out.println();
     }
 }
