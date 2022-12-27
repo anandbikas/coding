@@ -21,7 +21,6 @@ import java.util.ArrayDeque;
 public class BinaryTree <T extends Comparable<T>> {
 
     protected Node<T> root;
-    protected Node<T> NULL = new Node<>();
 
     public BinaryTree(){
         super();
@@ -204,24 +203,24 @@ public class BinaryTree <T extends Comparable<T>> {
     public List<List<T>> levelOrderTraversal1() {
 
         List<List<T>> list = new LinkedList<>();
-        List<T> currentList= new ArrayList<>();
 
-        Queue<Node<T>> queue = new ArrayDeque<Node<T>>(){{ add(NULL); }}; //new LinkedList<>();
+        Queue<Node<T>> q = new ArrayDeque<>(); //new LinkedList<>();
         if(root!=null){
-            queue.add(root);
+            q.add(root);
         }
 
-        while(queue.size()>1){
-            Node<T> node = queue.remove();
-            if(node==NULL){
-                list.add(currentList = new ArrayList<>());
-                queue.add(NULL);
-                continue;
-            }
-            currentList.add(node.data);
+        while(!q.isEmpty()) {
 
-            if(node.left!=null)  queue.add(node.left);
-            if(node.right!=null) queue.add(node.right);
+            List<T> currentList = new ArrayList<>();
+            list.add(currentList);
+
+            for (int size=q.size(); size > 0; size--) {
+                Node<T> node = q.remove();
+                currentList.add(node.data);
+
+                if(node.left!=null)  q.add(node.left);
+                if(node.right!=null) q.add(node.right);
+            }
         }
 
         return list;
