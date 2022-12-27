@@ -11,21 +11,14 @@ package com.anand.coding.problems.graph;
  *                    {1, 0, 1, 0, 1}
  * Output : 5
  *
- * This can be solved using DisjointSets as well, refer IslandCountUsingDisjointSets.java
+ * DisjointSets solution: Refer IslandCountUsingDisjointSets.java
  */
-public class _02_IslandCountUsingDFS {
+public class _02_IslandCountDFS {
 
     // Possible 8 directions of a node.
-    static int[] row = { -1, -1, -1, 0, 0, 1, 1, 1 };
-    static int[] col = { -1, 0, 1, -1, 1, -1, 0, 1 };
+    static int[] R = { -1, -1, -1, 0, 0, 1, 1, 1 };
+    static int[] C = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
-    /**
-     *
-     * @param A
-     * @param n
-     * @param m
-     * @return
-     */
     public static int islandCount(int [][]A, int n, int m){
 
         boolean[][] visited = new boolean[n][m];
@@ -42,16 +35,6 @@ public class _02_IslandCountUsingDFS {
         return count;
     }
 
-
-    /**
-     *
-     * @param A
-     * @param n
-     * @param m
-     * @param visited
-     * @param i
-     * @param j
-     */
     public static void dfs(int [][]A, int n, int m, boolean[][] visited, int i, int j) {
 
         if(i<0 || i>=n || j<0 || j>=m || A[i][j]==0 || visited[i][j]){
@@ -62,7 +45,7 @@ public class _02_IslandCountUsingDFS {
 
         // DFS all 8 neighbors if any
         for(int k=0; k<8; k++){
-            dfs(A, n, m, visited, i+row[k], j+col[k]);
+            dfs(A, n, m, visited, i+ R[k], j+ C[k]);
         }
     }
 
