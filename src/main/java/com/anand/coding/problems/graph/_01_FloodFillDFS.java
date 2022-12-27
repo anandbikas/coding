@@ -33,12 +33,12 @@ public class _01_FloodFillDFS {
 
     public static void floodFill(int [][]A, int i, int j, int newColor) {
         int n=A.length, m=A[0].length;
-        floodFillDfs(A, n, m, i, j, A[i][j], newColor, new boolean[n][m]);
+        floodFillDfs(A, n, m, i, j, A[i][j], newColor);
     }
 
-    private static void floodFillDfs(int [][]A, int n, int m, int i, int j, int oldColor, int newColor, boolean[][] visited) {
+    private static void floodFillDfs(int [][]A, int n, int m, int i, int j, int oldColor, int newColor) {
 
-        if(i<0 || i>=n || j<0 || j>=m || visited[i][j] || A[i][j]==0 || A[i][j]!=oldColor){
+        if(i<0 || i>=n || j<0 || j>=m || A[i][j]==0 || A[i][j]!=oldColor){
             return;
         }
 
@@ -46,7 +46,7 @@ public class _01_FloodFillDFS {
 
         // DFS all 8 neighbors if any
         for(int k=0; k<8; k++) {
-            floodFillDfs(A, n, m, i+R[k], j+C[k], oldColor, newColor, visited);
+            floodFillDfs(A, n, m, i+R[k], j+C[k], oldColor, newColor);
         }
     }
 

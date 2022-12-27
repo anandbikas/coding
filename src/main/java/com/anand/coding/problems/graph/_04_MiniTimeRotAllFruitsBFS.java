@@ -25,14 +25,12 @@ public class _04_MiniTimeRotAllFruitsBFS {
     public static int minimumTimeToRotAll(int [][]A){
         int n=A.length, m = A[0].length;
         Queue<Cell> q = new ArrayDeque<>();
-        boolean[][] visited = new boolean[n][m];
 
         //Find the start cells (already rotten)
         for(int i=0; i<n; i++) {
             for(int j=0; j<m; j++) {
                 if(A[i][j]==2){
                     q.add(new Cell(i,j));
-                    visited[i][j]=true;
                 }
             }
         }
@@ -48,15 +46,12 @@ public class _04_MiniTimeRotAllFruitsBFS {
                     int i = cell.i + R[k];
                     int j = cell.j + C[k];
 
-                    if(i < 0 || i >= n || j < 0 || j >= m || A[i][j] == 0 || visited[i][j]) {
+                    if(i < 0 || i >= n || j < 0 || j >= m || A[i][j] != 1) {
                         continue;
                     }
 
-                    if (A[i][j] == 1) {
-                        A[i][j] = 2;
-                        q.add(new Cell(i,j));
-                    }
-                    visited[i][j] = true;
+                    A[i][j] = 2;
+                    q.add(new Cell(i,j));
                 }
             }
         }
