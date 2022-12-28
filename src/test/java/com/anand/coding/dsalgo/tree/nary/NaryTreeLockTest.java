@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 public class NaryTreeLockTest {
 
     private NaryTree<Integer> naryTree;
-    private List<NaryNode<Integer>> nodeList;
-    private List<NaryNode<Integer>> nodeListWithDuplicateNodes;
+    private List<Node<Integer>> nodeList;
+    private List<Node<Integer>> nodeListWithDuplicateNodes;
 
     @BeforeMethod
     private void setUp(){
@@ -53,7 +53,7 @@ public class NaryTreeLockTest {
     @Test(invocationCount = 3)
     public void lockTest(){
 
-        List<NaryNode<Integer>> lockedNodes = new ArrayList<>();
+        List<Node<Integer>> lockedNodes = new ArrayList<>();
 
         // Concurrent lock with duplicate nodes
         nodeListWithDuplicateNodes.parallelStream().forEach(node -> {
@@ -65,7 +65,7 @@ public class NaryTreeLockTest {
         // Validate locked node's descendants and ancestors should not be locked
         lockedNodes.forEach(node -> {
             Assert.assertEquals(node.lockedDescendants, 0);
-            for(NaryNode<Integer> parent=node.parent; parent!=null; parent=parent.parent){
+            for(Node<Integer> parent = node.parent; parent!=null; parent=parent.parent){
                 Assert.assertFalse(parent.isLocked);
             }
         });
@@ -100,7 +100,7 @@ public class NaryTreeLockTest {
         nodeList.parallelStream().forEach(node -> {
             if(node.isLocked){
                 Assert.assertEquals(node.lockedDescendants, 0);
-                for(NaryNode<Integer> parent=node.parent; parent!=null; parent=parent.parent){
+                for(Node<Integer> parent = node.parent; parent!=null; parent=parent.parent){
                     Assert.assertFalse(parent.isLocked);
                 }
             }

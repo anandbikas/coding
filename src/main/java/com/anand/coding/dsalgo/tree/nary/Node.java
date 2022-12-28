@@ -4,21 +4,21 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Nary Node with data and all children nodes.
+ * Nary Tree Node
  */
-public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T>>{
+public class Node<T extends Comparable<T>>{
 
     public T data;
-    public NaryNode<T> [] child;
+    public Node<T>[] child;
 
-    // Extra fields to support O(H) lock/unlock operation.
-    public NaryNode<T> parent;
+    // Additional fields to support O(H) lock/unlock operation.
+    public Node<T> parent;
     public boolean isLocked;
     public int lockedDescendants;
 
-    public NaryNode(T data, int N, NaryNode<T> parent){
+    public Node(T data, int N, Node<T> parent){
         this.data = data;
-        child = new NaryNode[N];
+        child = new Node[N];
 
         this.parent = parent;
         lockedDescendants = 0;
@@ -40,7 +40,7 @@ public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T
         }
     }
 
-    private boolean lockWithSynchronizedAncestor(final NaryNode<T>parent){
+    private boolean lockWithSynchronizedAncestor(final Node<T> parent){
 
         if(parent==null){
             return this.isLocked = true;
@@ -66,7 +66,7 @@ public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T
         }
     }
 
-    private boolean unlockWithSynchronizedAncestor(final NaryNode<T>parent){
+    private boolean unlockWithSynchronizedAncestor(final Node<T> parent){
 
         if(parent==null){
             this.isLocked = false;
@@ -82,10 +82,5 @@ public class NaryNode <T extends Comparable<T>> implements Comparable<NaryNode<T
     @Override
     public String toString() {
         return String.valueOf(data);
-    }
-
-    @Override
-    public int compareTo(NaryNode<T> node) {
-        return data.compareTo(node.data);
     }
 }
