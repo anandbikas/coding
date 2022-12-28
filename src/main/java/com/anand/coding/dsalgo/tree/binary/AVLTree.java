@@ -28,7 +28,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @return
      */
     @Override
-    public int height(final Node node){
+    public int height(final Node<T> node){
         return node==null ? 0 : node.height;
     }
 
@@ -36,7 +36,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      *
      * @param node
      */
-    private void calculateHeight(final Node node){
+    private void calculateHeight(final Node<T> node){
         if(node == null){
             return;
         }
@@ -57,7 +57,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @return
      */
     @Override
-    public int heightBalanceFactor(Node node){
+    public int heightBalanceFactor(Node<T> node){
         if(node == null){
             return 0;
         }
@@ -76,7 +76,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      *
      * @return
      */
-    public boolean isBalanced(Node node){
+    public boolean isBalanced(Node<T> node){
         return node == null || isBalanced(node.left) && isBalanced(node.right)
                 && Math.abs(heightBalanceFactor(node))<2;
     }
@@ -93,7 +93,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      *
      * @return
      */
-    public boolean isHeightCorrectForAllNodes(Node node){
+    public boolean isHeightCorrectForAllNodes(Node<T> node){
         return node == null || isHeightCorrectForAllNodes(node.left) && isHeightCorrectForAllNodes(node.right)
                 && Math.max(height(node.left), height(node.right))+1 == node.height;
     }
@@ -156,7 +156,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @return
      */
     @Override
-    public Node insert(T data){
+    public Node<T> insert(T data){
 
         // Part A: Search and insert if not found, maintain a parent pathStack
         // -------------------------------------------------------------------

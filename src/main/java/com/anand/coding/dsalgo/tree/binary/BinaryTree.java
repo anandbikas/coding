@@ -43,7 +43,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * Print in order root, left, right
      * @param node
      */
-    private void preOrderTraversalRec(final Node node){
+    private void preOrderTraversalRec(final Node<T> node){
         if(node == null){
             return;
         }
@@ -65,7 +65,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * Print in order left, root, right
      * @param node
      */
-    private void inOrderTraversalRec(final Node node){
+    private void inOrderTraversalRec(final Node<T> node){
         if(node == null){
             return;
         }
@@ -87,7 +87,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * Print in order left, right, root
      * @param node
      */
-    private void postOrderTraversalRec(final Node node){
+    private void postOrderTraversalRec(final Node<T> node){
         if(node == null){
             return;
         }
@@ -103,13 +103,13 @@ public class BinaryTree <T extends Comparable<T>> {
     public void preOrderTraversal(){
         System.out.println("preOrderTraversal");
 
-        Stack<Node> stack = new Stack<>();
+        Stack<Node<T>> stack = new Stack<>();
         if(root!=null){
             stack.push(root);
         }
 
         while(!stack.isEmpty()) {
-            Node node = stack.pop();
+            Node<T> node = stack.pop();
             System.out.print(node.data + "  ");
 
             if (node.right != null) stack.push(node.right);
@@ -125,13 +125,13 @@ public class BinaryTree <T extends Comparable<T>> {
     public void inOrderTraversal(){
         System.out.println("inOrderTraversal");
 
-        Stack<Node> stack = new Stack<>();
-        for(Node node = root; node!=null; node=node.left){
+        Stack<Node<T>> stack = new Stack<>();
+        for(Node<T> node = root; node!=null; node=node.left){
             stack.push(node);
         }
 
         while(!stack.isEmpty()){
-            Node node = stack.pop();
+            Node<T> node = stack.pop();
             System.out.print(node.data + "  ");
 
             for(node=node.right; node!=null; node=node.left){
@@ -150,13 +150,13 @@ public class BinaryTree <T extends Comparable<T>> {
     public void postOrderTraversal(){
         System.out.println("postOrderTraversal");
 
-        Stack<Node> stack = new Stack<>();
+        Stack<Node<T>> stack = new Stack<>();
         if(root != null){
             stack.push(root);
         }
 
         while(!stack.isEmpty()){
-            Node node = stack.peek();
+            Node<T> node = stack.peek();
             if(node==null) { //Process root node
                 stack.pop();
                 System.out.print(stack.pop().data + "  ");
@@ -180,13 +180,13 @@ public class BinaryTree <T extends Comparable<T>> {
     public void levelOrderTraversal(){
         System.out.println("levelOrderTraversal");
 
-        Queue<Node> queue = new ArrayDeque<>(); //new LinkedList<>();
+        Queue<Node<T>> queue = new ArrayDeque<>(); //new LinkedList<>();
         if(root!=null){
             queue.add(root);
         }
 
         while(!queue.isEmpty()){
-            Node node = queue.remove();
+            Node<T> node = queue.remove();
             System.out.print(node.data + "  ");
 
             if(node.left!=null)  queue.add(node.left);
@@ -233,8 +233,8 @@ public class BinaryTree <T extends Comparable<T>> {
     public void levelOrderSpiralTraversal(){
         System.out.println("levelOrderSpiralTraversal");
 
-        Queue<Node> queue = new ArrayDeque<>();
-        Stack<Node> stack = new Stack<>();
+        Queue<Node<T>> queue = new ArrayDeque<>();
+        Stack<Node<T>> stack = new Stack<>();
         if(root!=null){
             queue.add(root);
         }
@@ -242,7 +242,7 @@ public class BinaryTree <T extends Comparable<T>> {
         for (int level=1; !queue.isEmpty(); level++) {
 
             while (!queue.isEmpty()) {
-                Node node = queue.remove();
+                Node<T> node = queue.remove();
                 System.out.print(node.data + "  ");
 
                 if(level%2==1) {
@@ -290,7 +290,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param level
      * @param currentLevel this tags each node with its level, is handy to find the level of a node while processing.
      */
-    private void printLevel(Node node, int level, int currentLevel){
+    private void printLevel(Node<T> node, int level, int currentLevel){
         if(node == null || currentLevel > level){
             return;
         }
@@ -319,7 +319,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param level
      * @param currentLevel this tags each node with its vertical level, is handy to find the level of a node while processing.
      */
-    private void printVerticalLevel(Node node, int level, int currentLevel){
+    private void printVerticalLevel(Node<T> node, int level, int currentLevel){
         if(node == null){
             return;
         }
@@ -336,7 +336,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param vLevel
      * @param range
      */
-    public void verticalLevelRange(Node node, int vLevel, Range range){
+    public void verticalLevelRange(Node<T> node, int vLevel, Range range){
         if(node == null){
             return;
         }
@@ -407,7 +407,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param processingLevel decides how many levels have already been processed.
      * @return
      */
-    private int leftSideView(Node node, int currentLevel, int processingLevel){
+    private int leftSideView(Node<T> node, int currentLevel, int processingLevel){
         if(node== null){
             return processingLevel;
         }
@@ -437,7 +437,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param processingLevel decides how many levels have already been processed.
      * @return
      */
-    private int rightSideView(Node node, int currentLevel, int processingLevel){
+    private int rightSideView(Node<T> node, int currentLevel, int processingLevel){
         if(node== null){
             return processingLevel;
         }
@@ -465,7 +465,7 @@ public class BinaryTree <T extends Comparable<T>> {
      *
      * @param node
      */
-    private void printLeaves(final Node node){
+    private void printLeaves(final Node<T> node){
         if(node == null){
             return;
         }
@@ -484,7 +484,7 @@ public class BinaryTree <T extends Comparable<T>> {
     public void displayPaths(T data) {
         System.out.println("displayPaths for data: " + data);
 
-        Stack<Node> pathStack = new Stack<>();
+        Stack<Node<T>> pathStack = new Stack<>();
         displayPaths(root, data, pathStack);
         System.out.println();
     }
@@ -495,7 +495,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param data
      * @param pathStack keep track of the nodes in the traversed path.
      */
-    private void displayPaths(final Node<T> node, T data , final Stack<Node> pathStack){
+    private void displayPaths(final Node<T> node, T data , final Stack<Node<T>> pathStack){
         if(node == null){
             return;
         }
@@ -517,7 +517,7 @@ public class BinaryTree <T extends Comparable<T>> {
     public void displayPaths() {
         System.out.println("displayPaths");
 
-        Stack<Node> pathStack = new Stack<>();
+        Stack<Node<T>> pathStack = new Stack<>();
         displayPaths(root, pathStack);
         System.out.println();
     }
@@ -528,7 +528,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node
      * @param pathStack keep track of the nodes in the traversed path.
      */
-    private void displayPaths(final Node node, final Stack<Node> pathStack){
+    private void displayPaths(final Node<T> node, final Stack<Node<T>> pathStack){
         if(node == null){
             return;
         }
@@ -707,7 +707,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node
      * @return
      */
-    public int height(Node node){
+    public int height(Node<T> node){
         return node==null ? 0 : Math.max(height(node.left),height(node.right)) + 1;
     }
 
@@ -724,7 +724,7 @@ public class BinaryTree <T extends Comparable<T>> {
      *
      * @return
      */
-    public int minHeight(Node node){
+    public int minHeight(Node<T> node){
         if(node==null){
             return 0;
         }
@@ -740,7 +740,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node
      * @return
      */
-    public int heightBalanceFactor(Node node){
+    public int heightBalanceFactor(Node<T> node){
         if(node == null){
             return 0;
         }
@@ -786,7 +786,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param tree2
      * @return
      */
-    public static boolean isSimilar(BinaryTree tree1, BinaryTree tree2){
+    public static boolean isSimilar(BinaryTree<?> tree1, BinaryTree<?> tree2){
         return isSimilar(tree1.root, tree2.root);
     }
 
@@ -797,7 +797,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node2
      * @return
      */
-    private static boolean isSimilar(Node node1, Node node2){
+    private static boolean isSimilar(Node<?> node1, Node<?> node2){
         if(node1 == null && node2 == null){
             return true;
         }
@@ -815,7 +815,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param tree2
      * @return
      */
-    public static boolean isCopy(BinaryTree tree1, BinaryTree tree2){
+    public static boolean isCopy(BinaryTree<?> tree1, BinaryTree<?> tree2){
         return isCopy(tree1.root, tree2.root);
     }
 
@@ -826,7 +826,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node2
      * @return
      */
-    private static boolean isCopy(Node node1, Node node2){
+    private static boolean isCopy(Node<?> node1, Node<?> node2){
         if(node1 == null && node2 == null){
             return true;
         }
@@ -856,7 +856,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node2
      * @return
      */
-    private boolean isSymmetric(Node node1, Node node2){
+    private boolean isSymmetric(Node<T> node1, Node<T> node2){
         if(node1 == null && node2 == null){
             return true;
         }
@@ -872,9 +872,9 @@ public class BinaryTree <T extends Comparable<T>> {
 
 
     private static class NodePair{
-        Node n1, n2;
+        Node<?> n1, n2;
 
-        public NodePair(Node n1, Node n2){
+        public NodePair(Node<?> n1, Node<?> n2){
             this.n1 = n1; this.n2 = n2;
         }
     }
@@ -896,7 +896,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node2
      * @return
      */
-    private static boolean isCopyUsingLoop(Node node1, Node node2){
+    private static boolean isCopyUsingLoop(Node<?> node1, Node<?> node2){
 
         Stack<NodePair> stack = new Stack<>();
         stack.push(new NodePair(node1, node2));
@@ -970,7 +970,7 @@ public class BinaryTree <T extends Comparable<T>> {
      * @param node
      * @return
      */
-    private int size(Node node){
+    private int size(Node<T> node){
         if(node==null){
             return 0;
         }

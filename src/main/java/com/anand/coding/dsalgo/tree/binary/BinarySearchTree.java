@@ -18,7 +18,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param data
      * @return
      */
-    public Node insert(T data){
+    public Node<T> insert(T data){
 
         Node<T> parent = null;
         Node<T> pivotNode = root;
