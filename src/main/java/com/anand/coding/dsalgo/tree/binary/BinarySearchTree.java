@@ -1,6 +1,7 @@
 package com.anand.coding.dsalgo.tree.binary;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -449,6 +450,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
 
         BSTIterator<Integer> bstIterator =  bst.iterator();
         System.out.println("bstIterator.hasNext(): " + bstIterator.hasNext());
+        System.out.println("bstIterator.peek(): " + bstIterator.peek());
         System.out.println("bstIterator.next(): " + bstIterator.next());
         System.out.println("bstIterator.next(): " + bstIterator.next());
     }
@@ -536,7 +538,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     /**
      * Inorder BST iterator
      */
-    public static class BSTIterator<T extends Comparable<T>> {
+    public static class BSTIterator<T extends Comparable<T>> implements Iterator<T> {
 
         Stack<Node<T>> stack = new Stack<>();
 
@@ -546,6 +548,11 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             }
         }
 
+        public T peek() {
+            return stack.isEmpty() ? null : stack.peek().data;
+        }
+
+        @Override
         public T next() {
             if(hasNext()){
                 Node<T> node1 = stack.pop();
@@ -558,6 +565,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             return null;
         }
 
+        @Override
         public boolean hasNext() {
             return !stack.isEmpty();
         }
