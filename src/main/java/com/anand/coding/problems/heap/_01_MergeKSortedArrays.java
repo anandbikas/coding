@@ -12,6 +12,7 @@ import java.util.PriorityQueue;
  *
  * 2. optimized using BinaryMinHeap(PriorityQueue) : O(n log(k))
  *
+ * leetcode.com/problems/merge-k-sorted-lists
  */
 public class _01_MergeKSortedArrays {
 
@@ -20,26 +21,23 @@ public class _01_MergeKSortedArrays {
      * @param list list of arrays
      * @return
      */
-    public static int [] mergeKSortedArrays(List<int[]> list){
+    public static int [] mergeKSortedArrays(List<int[]> list) {
 
-        PriorityQueue<IndexedArray> pq = new PriorityQueue<>(Comparator.comparingInt(x -> x.A[x.index]));
+        PriorityQueue<IndexedArray> pq = new PriorityQueue<>(Comparator.comparingInt(x -> x.A[x.idx]));
 
-        for(int i=0; i<list.size(); i++){
-            if(list.get(i).length>0) {
-                pq.offer(new IndexedArray(list.get(i), 0));
+        list.stream().filter(A->A.length>0).map(IndexedArray::new).forEach(pq::offer);
+
+        List<Integer> res = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            IndexedArray idxArray = pq.poll();
+            res.add(idxArray.A[idxArray.idx++]);
+
+            if(idxArray.idx<idxArray.A.length){
+                pq.offer(idxArray);
             }
         }
 
-        List<Integer> sortedList = new ArrayList<>();
-        while (!pq.isEmpty()){
-            IndexedArray indexedArray = pq.poll();
-            sortedList.add(indexedArray.A[indexedArray.index++]);
-            if(indexedArray.index<indexedArray.A.length){
-                pq.offer(indexedArray);
-            }
-        }
-
-        return sortedList.stream().mapToInt(x->x).toArray();
+        return res.stream().mapToInt(x->x).toArray();
     }
 
     /**
@@ -47,12 +45,12 @@ public class _01_MergeKSortedArrays {
      * @param list list of arrays
      * @return
      */
-    public static int [] mergeKSortedArrays1(List<int[]> list){
+    public static int [] mergeKSortedArrays1(List<int[]> list) {
 
         int [] kPointers = new int[list.size()];
 
         int totalCount = 0;
-        for(int i=0; i<list.size(); i++){
+        for(int i=0; i<list.size(); i++) {
             totalCount +=list.get(i).length;
             kPointers[i]=0;
         }
@@ -60,25 +58,21 @@ public class _01_MergeKSortedArrays {
         int A[] = new int[totalCount];
 
         int i=0;
-        while(true){
-            int minValue=Integer.MAX_VALUE;
-            int minValueArrayIndex = -1;
+        while(true) {
+            int minVal=Integer.MAX_VALUE;
+            int idx = -1;
             for(int j=0; j<list.size(); j++){
-                if(kPointers[j]>=list.get(j).length){
-                    continue;
-                }
-                if(list.get(j)[kPointers[j]] < minValue){
-                    minValue = list.get(j)[kPointers[j]];
-                    minValueArrayIndex =j;
+                if(kPointers[j] < list.get(j).length) {
+                    if (list.get(j)[kPointers[j]] < minVal) {
+                        minVal = list.get(j)[kPointers[j]];
+                        idx = j;
+                    }
                 }
             }
-            if(minValueArrayIndex==-1){
-                //Nothing found break
-                break;
-            }
+            if(idx==-1) break; //Nothing found break
 
-            A[i++] = list.get(minValueArrayIndex)[kPointers[minValueArrayIndex]];
-            kPointers[minValueArrayIndex]++;
+            A[i++] = list.get(idx)[kPointers[idx]];
+            kPointers[idx]++;
         }
 
         return A;
@@ -103,12 +97,8 @@ public class _01_MergeKSortedArrays {
         Array.display(B);
     }
 
-    private static class IndexedArray{
-        public int index, A[];
-
-        public IndexedArray(int[] a, int index) {
-            this.A = a;
-            this.index = index;
-        }
+    private static class IndexedArray {
+        public int idx, A[];
+        public IndexedArray(int[] A) { this.A = A;}
     }
 }

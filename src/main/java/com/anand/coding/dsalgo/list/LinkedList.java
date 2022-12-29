@@ -981,22 +981,16 @@ public class LinkedList<T extends Comparable<T>> implements Iterable<T>{
      */
     public void mergeKSortedLists(List<LinkedList<T>> listOfLists){
 
-        PriorityQueue<Node<T>> heap = new PriorityQueue<>(listOfLists.size());
+        PriorityQueue<Node<T>> pq = new PriorityQueue<>(listOfLists.size());
 
-        for(LinkedList<T> list: listOfLists){
-            if(list.header.next!=null){
-                heap.add(list.header.next);
-            }
-            list.header.next=null;
-        }
+        listOfLists.stream().map(l->l.header.next).filter(Objects::nonNull).forEach(pq::add);
 
         Node<T> end = header;
-        while (!heap.isEmpty()){
-            end.next = heap.remove();
-            end = end.next;
+        while (!pq.isEmpty()) {
+            end = end.next = pq.remove();
 
-            if(end.next!=null){
-                heap.add(end.next);
+            if(end.next!=null) {
+                pq.add(end.next);
             }
         }
         end.next = null;
