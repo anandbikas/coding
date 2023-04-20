@@ -1,4 +1,4 @@
-package com.anand.coding.os.memorymanagement.cache;
+package com.anand.coding.design.cache;
 
 import com.anand.coding.dsalgo.queue.DoublyLinkedQueue;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * put(key,value)   : O(1)
  *
  */
-public class LFUCache<K,V> {
+public class _02_LFUCache<K,V> {
 
     private final HashMap<K, DoublyLinkedQueue.Node<Pair<K,V>>> cacheMap = new HashMap<>();
     private final ConcurrentHashMap<Integer, DoublyLinkedQueue<Pair<K,V>>> frequencyMap = new ConcurrentHashMap<>();
@@ -23,7 +23,7 @@ public class LFUCache<K,V> {
      *
      * @param capacity
      */
-    public LFUCache(int capacity) {
+    public _02_LFUCache(int capacity) {
         this.capacity = capacity;
         frequencyMap.put(1, new DoublyLinkedQueue<>());
     }
@@ -83,7 +83,7 @@ public class LFUCache<K,V> {
      */
     public static void main(String [] args){
 
-        LFUCache<Integer, String> cache = new LFUCache<>(2);
+        _02_LFUCache<Integer, String> cache = new _02_LFUCache<>(2);
 
         cache.put(1, "value1");
         cache.put(2, "value2");

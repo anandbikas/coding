@@ -1,4 +1,4 @@
-package com.anand.coding.os.memorymanagement.cache;
+package com.anand.coding.design.cache;
 
 import com.anand.coding.dsalgo.queue.DoublyLinkedQueue;
 
@@ -11,7 +11,7 @@ import java.util.HashMap;
  * put(key,value)   : O(1)
  *
  */
-public class LRUCache<K,V> {
+public class _01_LRUCache<K,V> {
 
     private final DoublyLinkedQueue<Pair<K,V>> queue = new DoublyLinkedQueue<>();
     private final HashMap<K, DoublyLinkedQueue.Node<Pair<K,V>>> cacheMap = new HashMap<>();
@@ -22,7 +22,7 @@ public class LRUCache<K,V> {
      *
      * @param capacity
      */
-    public LRUCache(int capacity) {
+    public _01_LRUCache(int capacity) {
         this.capacity = capacity;
     }
 
@@ -63,7 +63,7 @@ public class LRUCache<K,V> {
      */
     public static void main(String [] args){
 
-        LRUCache<Integer, String> cache = new LRUCache<>(2);
+        _01_LRUCache<Integer, String> cache = new _01_LRUCache<>(2);
 
         cache.put(1, "value1");
         cache.put(2, "value2");
