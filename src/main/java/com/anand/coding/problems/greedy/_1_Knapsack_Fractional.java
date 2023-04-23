@@ -2,6 +2,7 @@ package com.anand.coding.problems.greedy;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -13,21 +14,28 @@ public class _1_Knapsack_Fractional {
 
     /**
      *
-     * @param items
+     * @param wt
+     * @param val
+     * @param n
+     * @param weight
      * @return
      */
-    public static List<Item> knapsack(List<Item> items, float weight){
+    public static List<Item> knapsack(int[] wt, int[] val, int n, int weight) {
 
-        //items.sort(Comparator.comparing(Item::getValuePerWeight));
-        Collections.sort(items, Collections.reverseOrder());
+        List<Item> items = new ArrayList<>();
+        for(int i=0; i<n; i++){
+            items.add(new Item(val[i], wt[i]));
+        }
 
-        float resultedWeight = 0;
+        items.sort(Comparator.comparing(i -> i.value/i.weight, Comparator.reverseOrder()));
+
+        int resultedWeight = 0;
         List<Item> resultedItems = new ArrayList<>();
 
         for(Item item: items){
 
             if(resultedWeight + item.weight > weight) {
-                if(resultedWeight < weight) {
+                if(resultedWeight < weight) { //Fractional
                     resultedItems.add(new Item(item.value, weight - resultedWeight));
                     resultedWeight = weight;
                 }
@@ -47,50 +55,27 @@ public class _1_Knapsack_Fractional {
      */
     public static void main(String [] args){
 
-        float []val = {10, 20, 30};
-        float []wt =  { 2,  5,  6};
-        float weight = 9;
+        int []val = {10, 20, 30};
+        int []wt =  { 2,  5,  5};
 
-        List<Item> items = new ArrayList<>();
-        for(int i=0; i<wt.length; i++){
-            items.add(new Item(val[i], wt[i]));
-        }
-
-        System.out.println(knapsack(items, weight));
+        System.out.println(knapsack(wt, val,3, 9));
 
     }
 
     /**
      *
      */
-    public static class Item implements Comparable<Item> {
-        float value;
-        float weight;
-        Float valuePerWeight;
+    public static class Item  {
+        int value,weight;
 
-        public Item(float value, float weight) {
+        public Item(int value, int weight) {
             this.value = value;
             this.weight = weight;
-            valuePerWeight = value/weight;
         }
 
         @Override
         public String toString() {
-            return "Item{" +
-                    "value=" + value +
-                    ", weight=" + weight +
-                    ", valuePerWeight=" + valuePerWeight +
-                    '}';
-        }
-
-        /**
-         *
-         * @param that
-         * @return
-         */
-        @Override
-        public int compareTo(Item that) {
-            return this.valuePerWeight.compareTo(that.valuePerWeight);
+            return "(" + value + "," + weight + ")";
         }
     }
 }
