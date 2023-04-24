@@ -18,31 +18,23 @@ public class _1_PartitionApproximatelyKSubsets {
 
     public static List<List<Integer>> partitionApproximatelyKSubsets(List<Integer> list, int k){
 
-        int[] sums = new int[list.size()];
-
-//        PriorityQueue<Integer> pq = new PriorityQueue<>(new Comparator<Integer>() {
-//            public int compare(Integer a, Integer b) {
-//                return sums[a]-sums[b];
-//            }
-//        });
-
+        int[] sums = new int[k];
         PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)->sums[a]-sums[b]);
 
-
-        List<List<Integer>> result = new ArrayList<>();
+        List<List<Integer>> subsetList = new ArrayList<>();
         for (int i=0; i<k; i++) {
-            result.add(new ArrayList<>());
+            subsetList.add(new ArrayList<>());
             pq.add(i);
         }
 
         for (int i=list.size()-1; i>=0; i--) {
-            int subsetNumber = pq.poll();
-            result.get(subsetNumber).add(list.get(i));
+            int subsetNumber = pq.remove();
+            subsetList.get(subsetNumber).add(list.get(i));
             sums[subsetNumber] += list.get(i);
             pq.add(subsetNumber);
         }
 
-        return result;
+        return subsetList;
     }
 
     /**
