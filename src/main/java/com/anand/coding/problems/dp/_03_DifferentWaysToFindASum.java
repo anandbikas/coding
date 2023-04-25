@@ -1,5 +1,7 @@
 package com.anand.coding.problems.dp;
 
+import java.util.Arrays;
+
 /**
  * Example: Given 3 numbers {1, 3, 5}, find total number of ways to form 'N'
  * using the sum of the given three numbers(repetitions and different arrangements allowed).
@@ -38,6 +40,8 @@ package com.anand.coding.problems.dp;
  * --------------------------------
  *
  * Note: If different arrangements not allowed, see CoinChange problem.
+ *
+ * /problems/combination-sum-iv/
  */
 public class _03_DifferentWaysToFindASum {
 
@@ -54,27 +58,13 @@ public class _03_DifferentWaysToFindASum {
         DP[0] = 1;
 
         long result = solveRec(A, sum, DP);
-
-        for(int i=0; i<=sum; i++){
-            System.out.print(String.format("%10d", DP[i]));
-        }
-        System.out.println();
+        System.out.println(Arrays.toString(DP));
         return result;
     }
     private static long solveRec(int []A, int sum, long []DP) {
 
-        if (sum < 0) {
-            return 0;
-        }
-
-//        // Already populated in DP array
-//        if(sum == 0){
-//            return 1;
-//        }
-
-        if(DP[sum]>0){
-            return DP[sum];
-        }
+        if (sum < 0)   return 0;
+        if (DP[sum]>0) return DP[sum];
 
         for (int x : A) {
             DP[sum] += solveRec(A, sum - x, DP);
@@ -95,21 +85,15 @@ public class _03_DifferentWaysToFindASum {
 
         for(int i=1; i<=sum; i++) {
             for (int x : A) {
-                if(x<=i){
-                    DP[i] += DP[i - x];
+                if(x<=i) {
+                    DP[i] += DP[i-x];
                 }
             }
         }
 
-        for(int i=0; i<=sum; i++){
-            System.out.print(String.format("%10d", DP[i]));
-        }
-        System.out.println();
+        System.out.println(Arrays.toString(DP));
         return DP[sum];
     }
-
-    // TODO: Next problem:
-    //  in a ring lock of N buds each containing 0-9 numbers, find the number of ways to to form a sum S.
 
     /**
      *
@@ -120,6 +104,5 @@ public class _03_DifferentWaysToFindASum {
 
         System.out.println(solveRec(A, 8));
         System.out.println(solveIterative(A, 8));
-
     }
 }
