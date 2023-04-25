@@ -1,12 +1,17 @@
 package com.anand.coding.problems.dp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Given weights and values of n items, put these items in a knapsack of capacity W to get the maximum total value
  *
  * Note: This can be solved using greedy as well.
+ *
+ * Two variations:
+ * 1. Bounded :     single item count
+ * 2. Unbounded :   unlimited item count
  *
  */
 public class _01_Knapsack_0_1 {
@@ -19,7 +24,7 @@ public class _01_Knapsack_0_1 {
         int [][] DP =  new int[n+1][weight+1];  //Item-Weight
         int finalResult = knapsackRec(wt, val, n, weight, DP);
 
-        printDPArray(DP, n, weight);
+        Util.printDPArray(DP, n, weight);
         return finalResult;
     }
     private static int knapsackRec(int[] wt, int[] val, int n, int w, int[][] DP) {
@@ -59,27 +64,26 @@ public class _01_Knapsack_0_1 {
             for(int w=1; w<=weight; w++) {
                 DP[i][w] = (wt[item]>w)
                         ? DP[i-1][w]
-                        : Math.max(DP[i-1][w],
-                                    val[item] + DP[i-1][w-wt[item]]);
-                                    //For unbounded knapsack, take i... val[item] + DP[i][w-wt[item]]);
+                        : Math.max(DP[i-1][w], val[item] + DP[i-1][w-wt[item]]);
+                        //For unbounded knapsack, take i... val[item] + DP[i][w-wt[item]]);
             }
         }
-        printDPArray(DP, n, weight);
+        Util.printDPArray(DP, n, weight);
 
         // Print the selected items.
-        List<Integer> itemWeights = new ArrayList<>();
-        List<Integer> itemValues = new ArrayList<>();
+        List<Integer> items = new ArrayList<>();
         int w=weight;
         for(int i=n; i>0 && w>0; i--) {
             int item = i-1;
             if (DP[i][w] != DP[i-1][w]) {
-                itemWeights.add(wt[item]);
-                itemValues.add(val[item]);
+                items.add(item);
                 w -= wt[item];
             }
             // For unbounded knapsack use, else { i--; } and remove i-- from for loop.
         }
-        System.out.println(itemWeights + "\n" + itemValues);
+        items.forEach(i -> System.out.print("(" + val[i] + "," + wt[i] + "), "));
+        System.out.println();
+
         return DP[n][weight];
     }
 
@@ -129,15 +133,5 @@ public class _01_Knapsack_0_1 {
 
         System.out.println(knapsackRec(wt, val, wt.length, weight));
         System.out.println(knapsack(wt, val, wt.length, weight));
-    }
-
-    public static void printDPArray(int [][] DP, int n, int m) {
-        for(int i=0; i<=n; i++) {
-            for(int j =0; j<=m; j++) {
-                System.out.printf("%4d", DP[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 }

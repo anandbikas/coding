@@ -8,25 +8,27 @@ import java.util.Collections;
 /**
  * Check if an array of positive integers be partitioned into k equal subsets?
  *
- * 0_1 Knapsack, trick is to assume weight equals val and find the maximum weight for capacity sum/k k times.
+ * 0_1 Knapsack, Assume integers as weights and find the maximum weight for sack capacity sum/k, k times.
  *
+ * Knapsack solution doesn't work. {10,10,7,8,10,4,9,7,9,10,4,6,7,1,8,5} can make 5 parts with sum=23
+ * But the result is false due to different element combination.
+ * See backtracking solution
  */
 public class _01_Knapsack_0_1_PartitionEquallyKSubsets {
 
     /**
      * DP Tabulation solution
      */
-    public static boolean canPartitionEquallyKSubsets(int[] nums, int k) {
+    public static boolean canPartitionEquallyKSubsets(int[] wt, int k) {
 
-        int sum = Arrays.stream(nums).sum();
+        int sum = Arrays.stream(wt).sum();
         if(sum==0 || sum%k!=0){
             return false;
         }
 
-        int n = nums.length;
+        int n = wt.length;
         int weight = sum/k;
-        int [] wt = Arrays.stream(nums).boxed().sorted(Collections.reverseOrder())
-                        .mapToInt(Integer::intValue).toArray();
+        wt = Arrays.stream(wt).boxed().sorted(Collections.reverseOrder()).mapToInt(Integer::intValue).toArray();
         System.out.println(Arrays.toString(wt));
 
         //Find k times.
@@ -44,7 +46,7 @@ public class _01_Knapsack_0_1_PartitionEquallyKSubsets {
                                     wt[item] + DP[i-1][w-wt[item]]);
                 }
             }
-            printDPArray(DP, n, weight);
+            Util.printDPArray(DP, n, weight);
 
             if(weight!=DP[n][weight]) {
                 return false;
@@ -64,13 +66,13 @@ public class _01_Knapsack_0_1_PartitionEquallyKSubsets {
             System.out.println(A);
 
             //Remainder list to be used to find the next partition
-            int x=0;
+            int j=0;
             for(int i=0; i<n; i++) {
                 if(wt[i]!=0) {
-                    wt[x++]=wt[i];
+                    wt[j++]=wt[i];
                 }
             }
-            n = x;
+            n = j;
         }
         return true;
     }
@@ -86,19 +88,7 @@ public class _01_Knapsack_0_1_PartitionEquallyKSubsets {
         System.out.println();
         System.out.println(canPartitionEquallyKSubsets(new int[]{1,2,3,5}, 2));
 
-        // Knapsack solution doesn't work. This below test case should make 5 parts with sum=23
-        // But the result is false due to different element combination.
         System.out.println();
-        System.out.println(canPartitionEquallyKSubsets(new int[]{10,10,7,8,10,4,9,7,9,10,4,6,7,1,8,5}, 5));
-    }
-
-    public static void printDPArray(int [][] DP, int n, int m) {
-        for(int i=0; i<=n; i++) {
-            for(int j =0; j<=m; j++) {
-                System.out.printf("%4d", DP[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
+        System.out.println(canPartitionEquallyKSubsets(new int[]{10,10,7,8,10,4,9,7,9,10,4,6,7,1,8,5}, 5)); // Incorrect answer.
     }
 }

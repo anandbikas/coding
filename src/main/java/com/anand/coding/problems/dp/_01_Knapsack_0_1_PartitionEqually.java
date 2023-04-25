@@ -8,26 +8,25 @@ import java.util.List;
  * Check if an array of positive integers be partitioned into two equal subsets?
  * Variation: If not possible, Partition with minimum possible absolute difference
  *
- * 0_1 Knapsack, trick is to assume weight equals val and find the maximum weight for capacity sum/2.
+ * 0_1 Knapsack, Assume integers as weights and find the maximum weight for sack capacity sum/2.
  *
- * leetcode.com/problems/partition-equal-subset-sum
- * leetcode.com/problems/last-stone-weight-ii
+ * /problems/partition-equal-subset-sum
+ * /problems/last-stone-weight-ii
  */
 public class _01_Knapsack_0_1_PartitionEqually {
 
     /**
      * DP Tabulation solution
      */
-    public static boolean canPartitionEqually(int[] nums) {
+    public static boolean canPartitionEqually(int[] wt) {
 
-        int sum = Arrays.stream(nums).sum();
+        int sum = Arrays.stream(wt).sum();
         if(sum==0 || sum%2==1){
             return false;
         }
 
-        int n = nums.length;
+        int n = wt.length;
         int weight = sum/2;
-        int [] wt = nums;
 
         int [][] DP = new int[n+1][weight+1];   //Item-Weight
 
@@ -42,7 +41,7 @@ public class _01_Knapsack_0_1_PartitionEqually {
                                     wt[item] + DP[i-1][w-wt[item]]);
             }
         }
-        printDPArray(DP, n, weight);
+        Util.printDPArray(DP, n, weight);
 
         // Print the partitioned lists.
         List<Integer> A = new ArrayList<>();
@@ -71,15 +70,5 @@ public class _01_Knapsack_0_1_PartitionEqually {
 
         System.out.println(canPartitionEqually(new int[]{1,5,11,5}));
         System.out.println(canPartitionEqually(new int[]{1,2,3,4,5,6,7}));
-    }
-
-    public static void printDPArray(int [][] DP, int n, int m) {
-        for(int i=0; i<=n; i++) {
-            for(int j =0; j<=m; j++) {
-                System.out.printf("%4d", DP[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 }
